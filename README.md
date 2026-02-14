@@ -1,22 +1,70 @@
 # Wstęp/Introduction
 
-To repozytorium ma zawierać docelowo różne kursy, w pierwszej kolejności związane z szeroko pojętą AI.
-Sukcesywnie będę dokładał kolejne elementy poszczególnych kursów.
-Chciałbym również, aby te kursy były tak przygotowane, aby ludzie o różnym poziomie zaawansowania mogli je wykonać
-i przede wszystkim się czegoś nauczyć. Patrz przykłady: Deep Learning (DL) - sieci konwolucyjne (CNN), gdzie przeszliśmy
-od  zrozumienia jak działają filtry po ich uczenie w sieci konwolucyjnej, razem z cechami  na wyższych warstwach.
-Jest tutaj kilka czysto autorskich pomysłów i/lub implemtacji, np. implentacja "Odkurzacza" (układu dwustanowego) i GridWorld z Suttona,
-"ręcznie" wykonana sieć neuronowa oraz propagacja wsteczna (backpropagation) bazując na książce Josha Starmera, implementacja
-została wykonana częściowo na tablicy - przeliczenia - oraz w arkuszu kalkulacyjnym, włącznie z backpropagation (sic!) :).
-Własne pomysły lub autorskie implementacje najczęściej brały się z potrzeby wytłumaczenia konkretnych problemów,
-ale których nie mogłem nigdzie znaleźć w sieci internetowej. Możliwe, że istnieją, ale ja ich nie widziałem,
-widziałem też, że np. "ręcznie" wykonana w arkuszu kalkulacyjnym sieć z backpropagation jest, ale już na przykład płatna.
-Każdy temat postaram się, aby był opatrzony odpowiednimi ćwiczeniami tak, aby pozwalały lepiej zrozumieć temat.
-Z drugiej strony chciałbym, aby te kursy to nie była czarna magia bez rozwiązań, więc muszę
-nauczyć się/znaleźć optimum pomiędzy podawaniem wiedzy, a pozwalaniem na jej własne przetworzenie w postaci wykonania
-odpowiednich ćwiczeń.
-Niestety nie mam jeszcze wyrobionej metody w jaki sposób to najlepiej osiągnąć, ale powoli się krystalizuje, 
-patrz ostatnie tematy w obu kursach Reinforcement Learning (RL) i DL.
+# Kursy AI – repozytorium edukacyjne
+
+To repozytorium docelowo będzie zawierać różne kursy, w pierwszej kolejności związane z szeroko pojętą sztuczną inteligencją (AI). Kolejne moduły i materiały będą dodawane sukcesywnie.
+
+Celem jest stworzenie kursów, które:
+
+- są dostępne dla osób na różnych poziomach zaawansowania,
+- prowadzą od intuicji i podstaw do bardziej zaawansowanych koncepcji,
+- pozwalają rzeczywiście zrozumieć mechanizmy działania algorytmów,
+- zawierają ćwiczenia wspierające samodzielne myślenie i praktykę.
+
+---
+
+## Przykładowe ścieżki
+
+### Deep Learning (DL)
+
+W kursie DL przechodzimy m.in. przez:
+
+- zrozumienie działania filtrów w sieciach konwolucyjnych (CNN),
+- budowę i trening sieci konwolucyjnej,
+- analizę cech wyższych warstw i ich interpretację.
+
+### Reinforcement Learning (RL)
+
+W kursie RL pojawiają się m.in.:
+
+- implementacja klasycznych środowisk (np. GridWorld w duchu Sutton & Barto),
+- własne implementacje algorytmów,
+- przejście od metod tablicowych do aproksymacji funkcji i metod głębokich.
+
+---
+
+## Autorskie elementy
+
+W repozytorium znajdują się również autorskie implementacje i pomysły dydaktyczne, m.in.:
+
+- implementacja „Odkurzacza” (układu dwustanowego),
+- ręcznie wykonana sieć neuronowa wraz z propagacją wsteczną (backpropagation),
+- pełne przeliczenia na tablicy i w arkuszu kalkulacyjnym — łącznie z backpropagation,
+- materiały inspirowane książką Josha Starmera, rozwinięte o własne elementy objaśniające.
+
+Wiele z tych implementacji powstało z potrzeby wyjaśnienia konkretnych zagadnień w sposób maksymalnie przejrzysty — takich materiałów często brakowało w otwartym dostępie (lub były dostępne wyłącznie komercyjnie).
+
+---
+
+## Filozofia dydaktyczna
+
+Każdy temat będzie opatrzony ćwiczeniami, które pomagają:
+
+- zbudować intuicję,
+- przejść od teorii do praktyki,
+- samodzielnie przeanalizować problem.
+
+Jednocześnie celem nie jest tworzenie „czarnej magii bez rozwiązań”. Staram się znaleźć równowagę między:
+
+- podaniem wiedzy,
+- a pozostawieniem przestrzeni na samodzielne przetworzenie materiału poprzez zadania.
+
+Metoda pracy wciąż ewoluuje i krystalizuje się wraz z rozwojem kursów — szczególnie widoczne jest to w najnowszych częściach RL i DL.
+
+---
+
+Repozytorium:  
+👉 https://github.com/zussini/kursy
 
 Docelowo chciałbym, aby to repozytorium było również po angielsku, ale w pierwszej kolejności 
 chcę je utrzymywać w języku polskim. Dopiero, potem, będę tłumaczył, prawdodpobnie automatycznie
