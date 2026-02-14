@@ -1,6 +1,6 @@
 # Wstęp/Introduction
 
-To docelowo będzie repozytorium z różnymi kursami, w pierwszej kolejności związanymi z szeroko pojętą AI.
+To repozytorium ma zawierać docelowo różne kursy, w pierwszej kolejności związane z szeroko pojętą AI.
 Sukcesywnie będę dokładał kolejne elementy poszczególnych kursów.
 Chciałbym również, aby te kursy były tak przygotowane, aby ludzie o różnym poziomie zaawansowania mogli je wykonać
 i przede wszystkim się czegoś nauczyć. Patrz przykłady: Deep Learning (DL) - sieci konwolucyjne (CNN), gdzie przeszliśmy
