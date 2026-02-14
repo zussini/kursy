@@ -1,4 +1,4 @@
-# Wstęp/Introduction
+## Wstęp / Introduction
 
 # Kursy AI – repozytorium edukacyjne
 
@@ -21,7 +21,7 @@ W kursie DL przechodzimy m.in. przez:
 
 - zrozumienie działania filtrów w sieciach konwolucyjnych (CNN),
 - budowę i trening sieci konwolucyjnej,
-- analizę cech wyższych warstw i ich interpretację.
+- analizę reprezentacji i cech na wyższych warstwach modelu.
 
 ### Reinforcement Learning (RL)
 
@@ -33,15 +33,15 @@ W kursie RL pojawiają się m.in.:
 
 ---
 
-## Autorskie elementy/implementacje
+## Autorskie elementy / implementacje
 
 W repozytorium znajdują się również autorskie implementacje i pomysły dydaktyczne, m.in.:
 
 - implementacja „Odkurzacza” (układu dwustanowego),
-- ręcznie wykonana sieć neuronowa wraz z propagacją wsteczną (backpropagation), w pełni przeliczone w arkuszu kalkulacyjnym inspirowane książką Josha Starmera,
-- ścieżka dydaktyczna/struktura kursu, dużo elementów przejść między tematami jest zaprojektowane w sposób ciągły, aby powstała jedna spójna historia.
+- ręcznie wykonana sieć neuronowa wraz z propagacją wsteczną (backpropagation), w pełni przeliczona w arkuszu kalkulacyjnym (inspirowana książką Josha Starmera),
+- zaprojektowana ścieżka dydaktyczna — wiele przejść między tematami jest ułożonych w sposób ciągły, tak aby powstała jedna spójna historia.
 
-Wiele z tych implementacji powstało z potrzeby wyjaśnienia konkretnych zagadnień w sposób maksymalnie przejrzysty — takich materiałów nie mogłe znaleźć albo były porozrzucane między różnymi repozytoriami w otwartym dostępie (lub były dostępne wyłącznie komercyjnie).
+Wiele z tych implementacji powstało z potrzeby wyjaśnienia konkretnych zagadnień w sposób maksymalnie przejrzysty. Często brakowało takich materiałów w jednym miejscu — były rozproszone między różnymi repozytoriami, niekompletne lub dostępne wyłącznie komercyjnie.
 
 ---
 
