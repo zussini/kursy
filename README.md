@@ -5,6 +5,12 @@ Sukcesywnie będę dokładał kolejne elementy poszczególnych kursów.
 Chciałbym również, aby te kursy były tak przygotowane, aby ludzie o różnym poziomie zaawansowania mogli je wykonać
 i przede wszystkim się czegoś nauczyć. Patrz przykłady: Deep Learning (DL) - sieci konwolucyjne (CNN), gdzie przeszliśmy
 od  zrozumienia jak działają filtry po ich uczenie w sieci konwolucyjnej, razem z cechami  na wyższych warstwach.
+Jest tutaj kilka czysto autorskich pomysłów i/lub implemtacji, np. implentacja "Odkurzacza" (układu dwustanowego) i GridWorld z Suttona,
+"ręcznie" wykonana sieć neuronowa oraz propagacja wsteczna (backpropagation) bazując na książce Josha Starmera, implementacja
+została wykonana częściowo na tablicy - przeliczenia - oraz w arkuszu kalkulacyjnym, włącznie z backpropagation (sic!) :).
+Własne pomysły lub autorskie implementacje najczęściej brały się z potrzeby wytłumaczenia konkretnych problemów,
+ale których nie mogłem nigdzie znaleźć w sieci internetowej. Możliwe, że istnieją, ale ja ich nie widziałem,
+widziałem też, że np. "ręcznie" wykonana w arkuszu kalkulacyjnym sieć z backpropagation jest, ale już na przykład płatna.
 Każdy temat postaram się, aby był opatrzony odpowiednimi ćwiczeniami tak, aby pozwalały lepiej zrozumieć temat.
 Z drugiej strony chciałbym, aby te kursy to nie była czarna magia bez rozwiązań, więc muszę
 nauczyć się/znaleźć optimum pomiędzy podawaniem wiedzy, a pozwalaniem na jej własne przetworzenie w postaci wykonania
