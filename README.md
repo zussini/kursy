@@ -17,6 +17,10 @@ nauczyć się/znaleźć optimum pomiędzy podawaniem wiedzy, a pozwalaniem na je
 odpowiednich ćwiczeń.
 Niestety nie mam jeszcze wyrobionej metody w jaki sposób to najlepiej osiągnąć, ale powoli się krystalizuje, 
 patrz ostatnie tematy w obu kursach Reinforcement Learning (RL) i DL.
+
+Docelowo chciałbym, aby to repozytorium było również po angielsku, ale w pierwszej kolejności 
+chcę je utrzymywać w języku polskim. Dopiero, potem, będę tłumaczył, prawdodpobnie automatycznie
+z lekkimi korektami, jeśli znajdą się błędy.
  
 # Licensing Model (Dual License)
 
