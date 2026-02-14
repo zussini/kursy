@@ -33,16 +33,15 @@ W kursie RL pojawiają się m.in.:
 
 ---
 
-## Autorskie elementy
+## Autorskie elementy/implementacje
 
 W repozytorium znajdują się również autorskie implementacje i pomysły dydaktyczne, m.in.:
 
 - implementacja „Odkurzacza” (układu dwustanowego),
-- ręcznie wykonana sieć neuronowa wraz z propagacją wsteczną (backpropagation),
-- pełne przeliczenia na tablicy i w arkuszu kalkulacyjnym — łącznie z backpropagation,
-- materiały inspirowane książką Josha Starmera, rozwinięte o własne elementy objaśniające.
+- ręcznie wykonana sieć neuronowa wraz z propagacją wsteczną (backpropagation), w pełni przeliczone w arkuszu kalkulacyjnym inspirowane książką Josha Starmera,
+- ścieżka dydaktyczna/struktura kursu, dużo elementów przejść między tematami jest zaprojektowane w sposób ciągły, aby powstała jedna spójna historia.
 
-Wiele z tych implementacji powstało z potrzeby wyjaśnienia konkretnych zagadnień w sposób maksymalnie przejrzysty — takich materiałów często brakowało w otwartym dostępie (lub były dostępne wyłącznie komercyjnie).
+Wiele z tych implementacji powstało z potrzeby wyjaśnienia konkretnych zagadnień w sposób maksymalnie przejrzysty — takich materiałów nie mogłe znaleźć albo były porozrzucane między różnymi repozytoriami w otwartym dostępie (lub były dostępne wyłącznie komercyjnie).
 
 ---
 
@@ -52,11 +51,12 @@ Każdy temat będzie opatrzony ćwiczeniami, które pomagają:
 
 - zbudować intuicję,
 - przejść od teorii do praktyki,
-- samodzielnie przeanalizować problem.
+- samodzielnie przeanalizować problem,
+- zachowanie ciągłości loginczej między tematami, starałem się łączyć kolejne notebooki między sobą, są nawet przedstawione zależności dalekozasięgowe jak połączenie implementacji wczesnych z DL z późnymi w RL - głębokim uczeniem ze wzmocnieniem.
 
-Jednocześnie celem nie jest tworzenie „czarnej magii bez rozwiązań”. Staram się znaleźć równowagę między:
+Jednocześnie celem nie jest tworzenie „czarnej magii bez rozwiązań”. Staram się zachować pewną równowagę pomiędzy:
 
-- podaniem wiedzy,
+- podaniem wiedzy i materiałów (rozwiązanych lub częściowo rozwiązanych)
 - a pozostawieniem przestrzeni na samodzielne przetworzenie materiału poprzez zadania.
 
 Metoda pracy wciąż ewoluuje i krystalizuje się wraz z rozwojem kursów — szczególnie widoczne jest to w najnowszych częściach RL i DL.
