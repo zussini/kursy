@@ -1,3 +1,17 @@
+# Wstęp/Introduction
+
+To docelowo będzie repozytorium z różnymi kursami, w pierwszej kolejności związanymi z szeroko pojętą AI.
+Sukcesywnie będę dokładał kolejne elementy poszczególnych kursów.
+Chciałbym również, aby te kursy były tak przygotowane, aby ludzie o różnym poziomie zaawansowania mogli je wykonać
+i przede wszystkim się czegoś nauczyć. Patrz przykłady: Deep Learning (DL) - sieci konwolucyjne (CNN), gdzie przeszliśmy
+od  zrozumienia jak działają filtry po ich uczenie w sieci konwolucyjnej, razem z cechami  na wyższych warstwach.
+Każdy temat postaram się, aby był opatrzony odpowiednimi ćwiczeniami tak, aby pozwalały lepiej zrozumieć temat.
+Z drugiej strony chciałbym, aby te kursy to nie była czarna magia bez rozwiązań, więc muszę
+nauczyć się/znaleźć optimum pomiędzy podawaniem wiedzy, a pozwalaniem na jej własne przetworzenie w postaci wykonania
+odpowiednich ćwiczeń.
+Niestety nie mam jeszcze wyrobionej metody w jaki sposób to najlepiej osiągnąć, ale powoli się krystalizuje, 
+patrz ostatnie tematy w obu kursach Reinforcement Learning (RL) i DL.
+ 
 # Licensing Model (Dual License)
 
 This repository uses a content-type-based dual license.
