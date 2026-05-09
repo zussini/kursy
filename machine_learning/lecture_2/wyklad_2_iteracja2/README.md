@@ -16,7 +16,7 @@ Najważniejszy plik:
 - `04_matplotlib_wprawki.ipynb`
 
 ## Dodatki
-- `vanderplas_selected/` — wybrane notebooki do pokazania fragmentami,
+- zewnetrzne linki do upstreamowych notebookow PDSH zamiast lokalnej kopii,
 - `05_bonus_pygame_przerywnik.md` — notatka o opcjonalnym przerywniku,
 - `data/Ankieta_ML.csv` — dane ankiety,
 - `plots/` i `tables/` — wyniki wygenerowane przez notebook.

@@ -1,4 +1,0 @@
-import pandas
-pandas.__version__
-%history
-%history -f lecture3_ipython.log

@@ -29,7 +29,7 @@ To podejście lepiej pasuje do wyników ankiety: grupa ma już podstawy Python/S
 - `02_numpy_wprawki.ipynb` — NumPy pod potrzeby ankiety,
 - `03_pandas_wprawki.ipynb` — pandas pod potrzeby ankiety,
 - `04_matplotlib_wprawki.ipynb` — matplotlib pod potrzeby ankiety,
-- `vanderplas_selected/` — wybrane notebooki Jake'a VanderPlasa, które warto pokazać fragmentami,
+- zewnetrzne linki do upstreamowych notebookow Jake'a VanderPlasa zamiast lokalnej kopii,
 - `data/Ankieta_ML.csv` — dane wejściowe,
 - `plots/` i `tables/` — wykresy i tabele generowane przez ten notebook.
 
@@ -44,27 +44,27 @@ To podejście lepiej pasuje do wyników ankiety: grupa ma już podstawy Python/S
 ## Lista notebooków VanderPlasa, które warto włączyć
 
 ### IPython / Jupyter
-- [01.01 Help and Documentation](vanderplas_selected/01_ipython/01.01-Help-And-Documentation.ipynb)
-- [01.06 Errors and Debugging](vanderplas_selected/01_ipython/01.06-Errors-and-Debugging.ipynb)
+- [01.01 Help and Documentation](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/01.01-Help-And-Documentation.ipynb)
+- [01.06 Errors and Debugging](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/01.06-Errors-and-Debugging.ipynb)
 
 ### NumPy
-- [02.01 Understanding Data Types](vanderplas_selected/02_numpy/02.01-Understanding-Data-Types.ipynb)
-- [02.02 The Basics of NumPy Arrays](vanderplas_selected/02_numpy/02.02-The-Basics-Of-NumPy-Arrays.ipynb)
-- [02.04 Computation on arrays: aggregates](vanderplas_selected/02_numpy/02.04-Computation-on-arrays-aggregates.ipynb)
-- [02.06 Boolean Arrays and Masks](vanderplas_selected/02_numpy/02.06-Boolean-Arrays-and-Masks.ipynb)
+- [02.01 Understanding Data Types](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/02.01-Understanding-Data-Types.ipynb)
+- [02.02 The Basics of NumPy Arrays](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/02.02-The-Basics-Of-NumPy-Arrays.ipynb)
+- [02.04 Computation on arrays: aggregates](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/02.04-Computation-on-arrays-aggregates.ipynb)
+- [02.06 Boolean Arrays and Masks](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/02.06-Boolean-Arrays-and-Masks.ipynb)
 
 ### pandas
-- [03.02 Data Indexing and Selection](vanderplas_selected/03_pandas/03.02-Data-Indexing-and-Selection.ipynb)
-- [03.04 Missing Values](vanderplas_selected/03_pandas/03.04-Missing-Values.ipynb)
-- [03.07 Merge and Join](vanderplas_selected/03_pandas/03.07-Merge-and-Join.ipynb)
-- [03.08 Aggregation and Grouping](vanderplas_selected/03_pandas/03.08-Aggregation-and-Grouping.ipynb)
-- [03.09 Pivot Tables](vanderplas_selected/03_pandas/03.09-Pivot-Tables.ipynb)
-- [03.10 Working With Strings](vanderplas_selected/03_pandas/03.10-Working-With-Strings.ipynb)
+- [03.02 Data Indexing and Selection](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.02-Data-Indexing-and-Selection.ipynb)
+- [03.04 Missing Values](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.04-Missing-Values.ipynb)
+- [03.07 Merge and Join](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.07-Merge-and-Join.ipynb)
+- [03.08 Aggregation and Grouping](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.08-Aggregation-and-Grouping.ipynb)
+- [03.09 Pivot Tables](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.09-Pivot-Tables.ipynb)
+- [03.10 Working With Strings](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.10-Working-With-Strings.ipynb)
 
 ### matplotlib
-- [04.01 Simple Line Plots](vanderplas_selected/04_matplotlib/04.01-Simple-Line-Plots.ipynb)
-- [04.02 Simple Scatter Plots](vanderplas_selected/04_matplotlib/04.02-Simple-Scatter-Plots.ipynb)
-- [04.05 Histograms and Binnings](vanderplas_selected/04_matplotlib/04.05-Histograms-and-Binnings.ipynb)
+- [04.01 Simple Line Plots](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/04.01-Simple-Line-Plots.ipynb)
+- [04.02 Simple Scatter Plots](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/04.02-Simple-Scatter-Plots.ipynb)
+- [04.05 Histograms and Binnings](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/04.05-Histograms-and-Binnings.ipynb)
 
 ### Jak to scalać
 Najlepszy tryb to nie liniowe „czytanie” całych notebooków, tylko:
@@ -477,8 +477,8 @@ pokazać, że analiza danych zaczyna się od hipotez, a dopiero potem wchodzą n
 
 #### C1. Jupyter / IPython (20–30 min)
 Najpierw krótko:
-- [01.01 Help and Documentation](vanderplas_selected/01_ipython/01.01-Help-And-Documentation.ipynb)
-- [01.06 Errors and Debugging](vanderplas_selected/01_ipython/01.06-Errors-and-Debugging.ipynb)
+- [01.01 Help and Documentation](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/01.01-Help-And-Documentation.ipynb)
+- [01.06 Errors and Debugging](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/01.06-Errors-and-Debugging.ipynb)
 
 Potem lokalnie:
 - [01_jupyter_python_wprawki.ipynb](01_jupyter_python_wprawki.ipynb)
@@ -488,10 +488,10 @@ bo Jupyter ma niższy wynik i większy rozrzut niż zwykłe podstawy Pythona.
 
 #### C2. NumPy (35–45 min)
 Najpierw krótko:
-- [02.01 Understanding Data Types](vanderplas_selected/02_numpy/02.01-Understanding-Data-Types.ipynb)
-- [02.02 The Basics of NumPy Arrays](vanderplas_selected/02_numpy/02.02-The-Basics-Of-NumPy-Arrays.ipynb)
-- [02.04 Computation on arrays: aggregates](vanderplas_selected/02_numpy/02.04-Computation-on-arrays-aggregates.ipynb)
-- [02.06 Boolean Arrays and Masks](vanderplas_selected/02_numpy/02.06-Boolean-Arrays-and-Masks.ipynb)
+- [02.01 Understanding Data Types](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/02.01-Understanding-Data-Types.ipynb)
+- [02.02 The Basics of NumPy Arrays](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/02.02-The-Basics-Of-NumPy-Arrays.ipynb)
+- [02.04 Computation on arrays: aggregates](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/02.04-Computation-on-arrays-aggregates.ipynb)
+- [02.06 Boolean Arrays and Masks](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/02.06-Boolean-Arrays-and-Masks.ipynb)
 
 Potem lokalnie:
 - [02_numpy_wprawki.ipynb](02_numpy_wprawki.ipynb)
@@ -501,12 +501,12 @@ bo `shape`, slicing, maski i wektorowość są jednym z głównych braków.
 
 #### C3. pandas (60–75 min)
 Najpierw krótko:
-- [03.02 Data Indexing and Selection](vanderplas_selected/03_pandas/03.02-Data-Indexing-and-Selection.ipynb)
-- [03.04 Missing Values](vanderplas_selected/03_pandas/03.04-Missing-Values.ipynb)
-- [03.07 Merge and Join](vanderplas_selected/03_pandas/03.07-Merge-and-Join.ipynb)
-- [03.08 Aggregation and Grouping](vanderplas_selected/03_pandas/03.08-Aggregation-and-Grouping.ipynb)
-- [03.09 Pivot Tables](vanderplas_selected/03_pandas/03.09-Pivot-Tables.ipynb)
-- [03.10 Working With Strings](vanderplas_selected/03_pandas/03.10-Working-With-Strings.ipynb)
+- [03.02 Data Indexing and Selection](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.02-Data-Indexing-and-Selection.ipynb)
+- [03.04 Missing Values](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.04-Missing-Values.ipynb)
+- [03.07 Merge and Join](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.07-Merge-and-Join.ipynb)
+- [03.08 Aggregation and Grouping](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.08-Aggregation-and-Grouping.ipynb)
+- [03.09 Pivot Tables](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.09-Pivot-Tables.ipynb)
+- [03.10 Working With Strings](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/03.10-Working-With-Strings.ipynb)
 
 Potem lokalnie:
 - [03_pandas_wprawki.ipynb](03_pandas_wprawki.ipynb)
@@ -516,9 +516,9 @@ to jest najważniejszy blok całego spotkania.
 
 #### C4. matplotlib (25–35 min)
 Najpierw krótko:
-- [04.01 Simple Line Plots](vanderplas_selected/04_matplotlib/04.01-Simple-Line-Plots.ipynb)
-- [04.02 Simple Scatter Plots](vanderplas_selected/04_matplotlib/04.02-Simple-Scatter-Plots.ipynb)
-- [04.05 Histograms and Binnings](vanderplas_selected/04_matplotlib/04.05-Histograms-and-Binnings.ipynb)
+- [04.01 Simple Line Plots](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/04.01-Simple-Line-Plots.ipynb)
+- [04.02 Simple Scatter Plots](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/04.02-Simple-Scatter-Plots.ipynb)
+- [04.05 Histograms and Binnings](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks_v1/04.05-Histograms-and-Binnings.ipynb)
 
 Potem lokalnie:
 - [04_matplotlib_wprawki.ipynb](04_matplotlib_wprawki.ipynb)
