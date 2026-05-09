@@ -1,0 +1,14 @@
+[project]
+name = "ml-teaching-pack"
+version = "0.1.0"
+description = "A didactic ML pack for KNN, PCA, SVM, trees, ensembles, XGBoost optional, and manifold learning."
+requires-python = ">=3.9"
+dependencies = [
+    "numpy>=1.23",
+    "pandas>=1.5",
+    "matplotlib>=3.6",
+    "scikit-learn>=1.2",
+]
+
+[tool.setuptools]
+packages = ["ml_teaching_pack"]

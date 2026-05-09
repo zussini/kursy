@@ -1,0 +1,37 @@
+# GG05 ROC: przesuwanie progu na gotowych score'ach
+threshold = 0.5
+s1=0.95
+y1=1
+s2=0.85
+y2=1
+s3=0.70
+y3=0
+s4=0.60
+y4=1
+s5=0.45
+y5=0
+s6=0.35
+y6=1
+s7=0.20
+y7=0
+s8=0.10
+y8=0
+pred1=If(s1>=threshold,1,0)
+pred2=If(s2>=threshold,1,0)
+pred3=If(s3>=threshold,1,0)
+pred4=If(s4>=threshold,1,0)
+pred5=If(s5>=threshold,1,0)
+pred6=If(s6>=threshold,1,0)
+pred7=If(s7>=threshold,1,0)
+pred8=If(s8>=threshold,1,0)
+TP=pred1*y1+pred2*y2+pred3*y3+pred4*y4+pred5*y5+pred6*y6+pred7*y7+pred8*y8
+FP=pred1*(1-y1)+pred2*(1-y2)+pred3*(1-y3)+pred4*(1-y4)+pred5*(1-y5)+pred6*(1-y6)+pred7*(1-y7)+pred8*(1-y8)
+FN=(1-pred1)*y1+(1-pred2)*y2+(1-pred3)*y3+(1-pred4)*y4+(1-pred5)*y5+(1-pred6)*y6+(1-pred7)*y7+(1-pred8)*y8
+TN=(1-pred1)*(1-y1)+(1-pred2)*(1-y2)+(1-pred3)*(1-y3)+(1-pred4)*(1-y4)+(1-pred5)*(1-y5)+(1-pred6)*(1-y6)+(1-pred7)*(1-y7)+(1-pred8)*(1-y8)
+TPR=TP/(TP+FN)
+FPR=FP/(FP+TN)
+ROCpoint=(FPR,TPR)
+Text("threshold = " + Round(threshold, 2), (0.1, 1.15))
+Text("TPR = " + Round(TPR, 3), (0.1, 1.05))
+Text("FPR = " + Round(FPR, 3), (0.1, 0.95))
+Text("ROC point = (FPR, TPR)", (0.1, 0.85))

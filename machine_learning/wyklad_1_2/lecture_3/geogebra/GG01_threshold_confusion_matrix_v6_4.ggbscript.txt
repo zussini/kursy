@@ -1,0 +1,28 @@
+// GG01: threshold, confusion matrix, sensitivity/specificity
+// Cel: pokazać, że score to nie to samo co decyzja. Decyzję daje próg t.
+// Wklejaj linia po linii w GeoGebrze Classic.
+
+t = Slider(0, 1, 0.01)
+SetValue(t, 0.5)
+
+// Punkty: x = score, y = true label 0/1
+A = (0.95, 1)
+B = (0.80, 0)
+C = (0.78, 1)
+D = (0.66, 1)
+E = (0.60, 0)
+F = (0.45, 0)
+G = (0.42, 1)
+H = (0.30, 0)
+I = (0.22, 1)
+J = (0.10, 0)
+
+thresholdLine = x = t
+Text("Próg t przesuwa granicę decyzji", (0.05, 1.25))
+Text("Jeśli score >= t, predykcja = 1", (0.05, 1.15))
+Text("Punkty na y=1 to prawdziwe pozytywy, y=0 to prawdziwe negatywy", (0.05, -0.15))
+
+// Ćwiczenie na zajęciach:
+// 1. Ustaw t=0.5.
+// 2. Policz ręcznie TP, FP, TN, FN.
+// 3. Przesuń t do 0.7 i zapytaj: co zmieniło się w recall i precision?

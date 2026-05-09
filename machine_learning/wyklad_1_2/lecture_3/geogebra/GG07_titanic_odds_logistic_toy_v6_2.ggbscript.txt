@@ -1,0 +1,32 @@
+// GG07 Titanic: odds, logit i prosty model survived ~ female
+// Wklejaj linia po linii do GeoGebry Classic.
+
+female_survived = 233
+female_died = 81
+male_survived = 109
+male_died = 468
+
+odds_female = female_survived / female_died
+odds_male = male_survived / male_died
+OR = odds_female / odds_male
+logOR = ln(OR)
+beta0 = ln(odds_male)
+beta1 = logOR
+
+sigmoid(x) = 1 / (1 + exp(-x))
+p_male = sigmoid(beta0)
+p_female = sigmoid(beta0 + beta1)
+
+Text("Titanic: survived ~ female", (-4, 5))
+Text("odds female = " + odds_female, (-4, 4.4))
+Text("odds male = " + odds_male, (-4, 3.8))
+Text("OR = " + OR, (-4, 3.2))
+Text("log(OR) = beta1 = " + beta1, (-4, 2.6))
+Text("p male = " + p_male, (-4, 2.0))
+Text("p female = " + p_female, (-4, 1.4))
+
+A = (0, p_male)
+B = (1, p_female)
+Segment(A, B)
+Text("male", (0, -0.15))
+Text("female", (1, -0.15))

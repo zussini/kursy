@@ -1,0 +1,11 @@
+mouse_id,genotype,gene_expression
+C1,Control,1.5
+C2,Control,1.8
+C3,Control,2.2
+C4,Control,2.4
+C5,Control,3.1
+M1,Mutant,2.9
+M2,Mutant,3.2
+M3,Mutant,3.6
+M4,Mutant,3.8
+M5,Mutant,4.5

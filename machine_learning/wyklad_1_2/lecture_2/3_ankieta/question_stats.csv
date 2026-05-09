@@ -1,0 +1,66 @@
+qid,question,mean,median,std,pct_5,pct_4_5,pct_1_2,n0
+Q01,Potrafię swobodnie pracować w Jupyterze / Colabie,3.36,3.0,1.2871156384205213,24.0,48.0,28.000000000000004,0
+Q02,"Rozumiem podstawowe typy danych w Pythonie (listy, słowniki, tuple, sety)",4.08,4.0,0.9092121131323904,40.0,72.0,4.0,0
+Q03,Potrafię pociąć string (przez split) do listy.,4.04,4.0,0.9345230512584125,36.0,76.0,8.0,0
+Q04,Potrafię programować obiektowo w pythonie,3.6,4.0,1.0408329997330663,24.0,52.0,16.0,0
+Q05,Potrafię pisać funkcje i używać parametrów / wartości zwracanych,4.28,4.0,0.8426149773176358,48.0,84.0,4.0,0
+Q06,Potrafię samodzielnie debugować prosty błąd,4.0,4.0,1.0408329997330663,40.0,72.0,12.0,0
+Q07,"Potrafię korzystać z dokumentacji biblioteki, aby znaleźć potrzebną funkcję",4.28,5.0,0.8906926143924926,52.0,80.0,4.0,0
+Q08,Rozumiem różnicę między pętlą a podejściem bardziej 'wektorowym' / operacjami na kolekcjach,3.8,4.0,1.0801234497346432,32.0,60.0,8.0,0
+Q09,Potrafię utworzyć tablicę NumPy i wykonywać na niej podstawowe operacje,3.52,4.0,1.2948616399703354,32.0,52.0,28.000000000000004,0
+Q10,"Rozumiem kształt danych (shape), indeksowanie i slicing w NumPy",2.92,3.0,1.255653880122491,12.0,32.0,36.0,0
+Q11,Potrafię filtrować i wybierać dane w pandas DataFrame,2.96,3.0,1.3063945294843617,16.0,32.0,36.0,0
+Q12,Potrafię użyć groupby / agregacji w pandas,2.56,2.0,1.2935738607954836,8.0,28.000000000000004,56.00000000000001,0
+Q13,Potrafię łączyć tabele / ramki danych (merge / join) w pandas,2.52,2.0,1.2948616399703354,12.0,20.0,56.00000000000001,0
+Q14,Potrafię wykrywać i obsługiwać braki danych,2.68,3.0,1.3140268896284684,8.0,32.0,48.0,0
+Q15,"Potrafię przygotować prosty wykres (histogram, scatter, line, bar)",3.4,4.0,1.4433756729740645,32.0,52.0,32.0,0
+Q16,Rozumiem składnię SELECT / WHERE / ORDER BY,4.6,5.0,0.6454972243679028,68.0,92.0,0.0,0
+Q17,Rozumiem GROUP BY i podstawowe agregacje SQL,4.52,5.0,0.6531972647421808,60.0,92.0,0.0,0
+Q18,Rozumiem różnicę między JOINami (INNER / LEFT) na poziomie praktycznym,4.24,4.0,0.7788880963698616,44.0,80.0,0.0,0
+Q19,"Rozumiem pojęcie klucza głównego, klucza obcego i granularności danych",4.2,4.0,0.7071067811865476,36.0,84.0,0.0,0
+Q20,"Rozumiem średnią, medianę, odchylenie standardowe i wariancję",4.36,5.0,0.7571877794400365,52.0,84.0,0.0,0
+Q21,Rozumiem pojęcia percentyl / kwartyl / rozkład,3.76,4.0,0.7788880963698616,16.0,64.0,4.0,0
+Q22,"Rozumiem, czym jest korelacja i dlaczego nie oznacza przyczynowości",3.96,4.0,0.8888194417315588,28.000000000000004,76.0,8.0,0
+Q23,"Rozumiem, czym jest kowariancja",2.96,3.0,1.019803902718557,8.0,28.000000000000004,36.0,0
+Q24,Rozumiem intuicję prawdopodobieństwa warunkowego,3.52,4.0,1.2288205727444508,24.0,56.00000000000001,20.0,0
+Q25,"Rozumiem, czym jest próbkowanie i skąd bierze się błąd estymacji",3.28,3.0,1.173314393786536,20.0,40.0,28.000000000000004,0
+Q26,Rozumiem intuicję funkcji liniowej i nachylenia,3.72,4.0,1.307669683062202,40.0,56.00000000000001,16.0,0
+Q27,Rozumiem różnicę między funkcją liniową a kwadratową,4.52,5.0,0.714142842854285,64.0,88.0,0.0,0
+Q28,Rozumiem różnicę między funkcją liniową i kwadratową a wielomianami wyższych stopni,4.36,5.0,0.99498743710662,60.0,84.0,4.0,0
+Q29,"Potrafię policzyć proste pochodne, np. x, x^2, (x-1)^3",4.44,5.0,0.7118052168020874,56.00000000000001,88.0,0.0,0
+Q30,Rozumiem intuicję pochodnej jako miary zmiany,4.08,4.0,1.0376254944182253,48.0,68.0,8.0,0
+Q31,"Rozumiem wektory i macierze
+",4.16,4.0,0.8981462390204987,44.0,76.0,4.0,0
+Q32,"Rozumiem, czym jest funkcja straty i dlaczego model ją minimalizuje.",2.96,3.0,1.4854853303438127,20.0,40.0,40.0,0
+Q33,Rozumiem różnicę między uczeniem nadzorowanym i nienadzorowanym,3.24,4.0,1.4798648586948742,20.0,56.00000000000001,28.000000000000004,0
+Q34,Rozumiem pojęcia feature (cecha) / target / etykieta,3.0,3.0,1.4433756729740645,24.0,32.0,36.0,0
+Q35,"Rozumiem, po co dzielimy dane na train / validation / test",3.52,4.0,1.4753530650887152,36.0,60.0,32.0,0
+Q36,"Rozumiem, czym jest overfitting i underfitting",3.44,4.0,1.6093476939431082,36.0,60.0,28.000000000000004,0
+Q37,"Rozumiem, czym jest data leakage",2.52,3.0,1.1944315244779278,8.0,16.0,48.0,0
+Q38,Rozumiem różnicę między zadaniem regresji a klasyfikacji,3.24,3.0,1.6401219466856725,36.0,48.0,36.0,0
+Q39,"Rozumiem, że dobór metryki zależy od problemu",3.52,4.0,1.3266499161421599,32.0,52.0,24.0,0
+Q40,Mam intuicję działania modeli drzewiastych (np. decision tree / random forest),2.96,3.0,1.3686976778431872,20.0,32.0,40.0,0
+Q41,Potrafię korzystać z Breadth First Search (BFS) i/lub Depth First Search (DFS),3.64,4.0,1.186029791643813,28.000000000000004,60.0,20.0,0
+Q42,Potrafię korzystać z merge- i quicksort,3.92,4.0,0.9092121131323904,32.0,64.0,4.0,0
+Q43,Potrafię pracować z nie do końca doprecyzowanym problemem.,3.76,4.0,1.1284207253207172,32.0,64.0,20.0,0
+Q44,Potrafię zaplanować pracę nad zadaniem rozłożonym na kilka dni / tygodni,4.2,4.0,0.7637626158259734,40.0,80.0,0.0,0
+Q45,Potrafię czytać anglojęzyczną dokumentację techniczną,4.72,5.0,0.45825756949558394,72.0,100.0,0.0,0
+Q46,"Czuję się komfortowo, prezentując wynik swojej pracy",3.84,4.0,1.0279429296739517,24.0,76.0,12.0,0
+Q47,Potrafię współpracować z innymi nad wspólnym zadaniem,4.2,4.0,0.9128709291752769,48.0,76.0,4.0,0
+Q48,Zależy mi na realnym nauczeniu się materiału,4.36,5.0,0.8103497187428812,52.0,88.0,4.0,0
+Q49,Zależy mi przede wszystkim na sprawnym zaliczeniu kursu,4.12,4.0,0.9273618495495703,44.0,72.0,4.0,0
+Q50,Preferuję zaliczenie w formie pisemnej,1.6,1.0,1.0408329997330663,4.0,8.0,88.0,0
+Q51,Preferuję zaliczenie w formie 2–3 projektów,4.68,5.0,0.6904105059069326,76.0,96.0,4.0,0
+Q52,Chciał(a)bym więcej teorii i wyjaśnień na wykładzie,3.4,3.0,0.8660254037844387,16.0,32.0,8.0,0
+Q53,Chciał(a)bym więcej pracy praktycznej / kodowania / analizy danych,3.96,4.0,0.7895146188218007,28.000000000000004,68.0,0.0,0
+Q54,"Jak Pani/Panu odpowiada forma wczorajszych  zajęć - początkowe wprowadzenie, potem praca samodzielna (5 - bardzo odpowiada, 1 - nie odpowiada, 0 - nie było mnie )? ",4.5,5.0,0.659380473395787,56.00000000000001,88.0,0.0,1
+Q55,"Jak dużo zrozumiał(a) Pan(i) z wczorajszych zajęć - subiektwynie  (0 - nie było mnie, 1 - nic, 5 - wszystko) ?",4.166666666666667,4.0,0.7613869876268811,32.0,84.0,4.0,1
+Q56,"Jak Pani/Panu odpowiada forma dzisiejszych zajęć - forma pracy hands-on, czyli mocna granulacja zadań z samodzielnym powtarzaniem (5 - bardzo odpowiada, 1 - nie odpowiada, 0 - nie było mnie)?",4.083333333333333,4.0,0.9743076322798876,36.0,80.0,12.0,1
+Q57,"Jak dużo zrozumiał(a) Pan(i) z dzisiejszych zajęć, znowu subiektywnie ;) (0 - nie było mnie, 1 - nic, 5 - wszystko) ?",4.083333333333333,4.0,0.928611242975073,40.0,68.0,4.0,1
+Q58,"Preferuję zajęcia z samym podawaniem wiedzy np. poprzez slajdy, od takich w których się aktywnie uczestniczy",2.92,3.0,1.2884098726725126,12.0,36.0,40.0,0
+Q59,"Potrzebuję ścieżki wyrównawczej / dodatkowych zadań podstawowych (np. drzewa, traversal, sortowanie, wyszukiwanie) ",1.92,2.0,0.9966610925150702,0.0,8.0,72.0,0
+Q60,Był(a)bym zainteresowany(a) ścieżką advanced / samodzielnie wymyślonym projektem,2.88,3.0,1.3012814197295424,16.0,28.000000000000004,40.0,0
+Q61,Chciał(a)bym regularnych krótkich konsultacji / checkpointów do projektów,2.64,3.0,0.8103497187428812,0.0,8.0,32.0,0
+Q62,Stresuje mnie matematyka / statystyka w kontekście tego kursu.,2.08,2.0,0.9539392014169455,0.0,8.0,68.0,0
+Q63,Wolę pracować indywidualnie,4.0,5.0,1.2909944487358056,52.0,68.0,12.0,0
+Q64,Wolę pracować w parze lub małej grupie,2.52,2.0,1.3880441875771343,12.0,24.0,52.0,0

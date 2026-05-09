@@ -1,0 +1,12 @@
+pair,left,right,mean_left,mean_right,diff_left_minus_right,n,p
+Q12 vs Q17,pandas groupby,SQL groupby,2.56,4.52,-1.96,25,3.336189035696841e-05
+Q13 vs Q18,pandas merge/join,SQL joiny praktyczne,2.52,4.24,-1.72,25,7.369543947797707e-05
+Q19 vs Q18,klucze/granularność,joiny praktyczne,4.2,4.24,-0.04,25,0.7388826803635273
+Q26 vs Q27,nachylenie funkcji liniowej,liniowa vs kwadratowa,3.72,4.52,-0.8,25,0.0009525490589613558
+Q27 vs Q28,liniowa vs kwadratowa,vs wielomiany wyższych stopni,4.52,4.36,0.16,25,0.10247043485974937
+Q29 vs Q30,liczenie pochodnych,pochodna jako zmiana,4.44,4.08,0.36,25,0.012554918596966533
+Q54 vs Q56,forma wczorajszych zajęć,forma dzisiejszego hands-on,4.5,4.083333333333333,0.4166666666666667,24,0.03887138185480146
+Q55 vs Q57,zrozumienie wczoraj,zrozumienie dziś,4.166666666666667,4.083333333333333,0.08333333333333333,24,0.47950012218695337
+Q50 vs Q51,zaliczenie pisemne,zaliczenie projektowe,1.6,4.68,-3.08,25,2.0708543329092698e-05
+Q52 vs Q53,więcej teorii,więcej praktyki,3.4,3.96,-0.56,25,0.04926693652820466
+Q63 vs Q64,praca indywidualna,praca w parze/grupie,4.0,2.52,1.48,25,0.012927965110180429

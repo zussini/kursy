@@ -1,0 +1,30 @@
+// GG02: skala, odległość i cosine similarity
+// Cel: pokazać, że bez skalowania jedna cecha może zdominować odległość.
+// Wklejaj linia po linii w GeoGebrze Classic.
+
+A = (22, 3000)
+B = (24, 3200)
+C = (60, 3500)
+
+Segment(A, B)
+Segment(A, C)
+Segment(B, C)
+
+Text("Dane przed skalowaniem: x=wiek, y=dochód", (20, 3700))
+Text("Odległość jest zdominowana przez dochód", (20, 3600))
+
+// Druga mini-scena po skalowaniu, obok oryginalnej
+A2 = (80, 0)
+B2 = (80.1, 0.2)
+C2 = (81.9, 0.5)
+Segment(A2, B2)
+Segment(A2, C2)
+Segment(B2, C2)
+Text("Po skalowaniu relacje geometryczne są inne", (80, 2))
+
+// Wektor do normy L2
+v = Vector((0,0), (3,4))
+Text("||[3,4]||_2 = 5", (1, 4.5))
+
+// Ćwiczenie:
+// Policz z grupą d(A,B), d(A,C), a potem porównaj z intuicją po skalowaniu.

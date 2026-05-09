@@ -1,0 +1,24 @@
+// GG08 Tips: regresja liniowa i reszty na kilku punktach
+// Punkty są małą próbką dydaktyczną, nie całym zbiorem tips.
+
+A = (16.99, 1.01)
+B = (10.34, 1.66)
+C = (21.01, 3.50)
+D = (23.68, 3.31)
+E = (24.59, 3.61)
+F = (25.29, 4.71)
+G = (8.77, 2.00)
+H = (26.88, 3.12)
+
+L = {A, B, C, D, E, F, G, H}
+
+b = Slider(-2, 5, 0.1)
+a = Slider(-1, 1, 0.01)
+line_manual: y = a x + b
+
+SSE = Sum((y(Element(L, i)) - (a * x(Element(L, i)) + b))^2, i, 1, Length(L))
+fit = FitLine(L)
+
+Text("Tips: ręczne dopasowanie prostej", (5, 6))
+Text("SSE manual = " + SSE, (5, 5.4))
+Text("Porównaj line_manual z FitLine(L)", (5, 4.8))

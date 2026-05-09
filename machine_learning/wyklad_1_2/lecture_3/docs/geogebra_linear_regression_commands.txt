@@ -1,0 +1,27 @@
+# GeoGebra commands — linear regression, SSE, R², F
+
+L = {(0.9,1.4), (1.8,2.6), (2.4,1.0), (3.5,3.7), (3.9,5.5), (4.4,3.2), (5.1,3.0), (5.6,4.9), (6.3,6.3)}
+
+# Utwórz suwaki a i b, a potem wpisz:
+f(x) = a*x + b
+SSE_manual = SumSquaredErrors(L, f)
+
+g(x) = FitLine(L)
+SSE_fit = SumSquaredErrors(L, g)
+
+ybar = Mean({1.4,2.6,1.0,3.7,5.5,3.2,3.0,4.9,6.3})
+m(x) = ybar
+SSE_mean = SumSquaredErrors(L, m)
+
+R2 = 1 - SSE_fit / SSE_mean
+
+n = 9
+p = 1
+Fstat = ((SSE_mean - SSE_fit) / p) / (SSE_fit / (n - p - 1))
+
+p1(x) = FitPoly(L, 1)
+p2(x) = FitPoly(L, 2)
+p5(x) = FitPoly(L, 5)
+SSE_p1 = SumSquaredErrors(L, p1)
+SSE_p2 = SumSquaredErrors(L, p2)
+SSE_p5 = SumSquaredErrors(L, p5)

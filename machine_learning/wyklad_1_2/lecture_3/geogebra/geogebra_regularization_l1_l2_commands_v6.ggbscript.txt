@@ -1,0 +1,19 @@
+
+// GeoGebra-ready commands: L1 vs L2 regularization geometry
+// Idea: L2 = okrąg, L1 = romb. Ostre rogi L1 sprzyjają zerom.
+
+L2 = x^2 + y^2 = 1
+L1a = x + y = 1
+L1b = x - y = 1
+L1c = -x + y = 1
+L1d = -x - y = 1
+
+B0 = (0, 0)
+B1 = (1, 0)
+B2 = (0, 1)
+B3 = (-1, 0)
+B4 = (0, -1)
+L1Diamond = Polygon(B1, B2, B3, B4)
+
+Text("L2: okrąg, współczynniki są zmniejszane", (-1.7, 1.4))
+Text("L1: romb, ostre rogi -> możliwe beta_j=0", (-1.7, 1.2))

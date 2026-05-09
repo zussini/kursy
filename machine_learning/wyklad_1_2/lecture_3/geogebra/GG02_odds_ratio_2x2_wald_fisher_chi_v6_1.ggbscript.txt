@@ -1,0 +1,31 @@
+# GG02 odds ratio z tabeli 2x2
+# a,b,c,d możesz zamienić na suwaki/liczby całkowite.
+a = 23
+b = 117
+c = 6
+d = 210
+N = a + b + c + d
+row1 = a + b
+row2 = c + d
+col1 = a + c
+col2 = b + d
+odds_mut = a / b
+odds_no_mut = c / d
+OR = (a * d) / (b * c)
+logOR = ln(OR)
+SElogOR = sqrt(1/a + 1/b + 1/c + 1/d)
+zWald = logOR / SElogOR
+# Expected counts under independence
+Ea = row1 * col1 / N
+Eb = row1 * col2 / N
+Ec = row2 * col1 / N
+Ed = row2 * col2 / N
+chiSquare = (a - Ea)^2/Ea + (b - Eb)^2/Eb + (c - Ec)^2/Ec + (d - Ed)^2/Ed
+# Probability of exactly this a under fixed margins
+pThisTable = BinomialCoefficient(col1, a) * BinomialCoefficient(N - col1, row1 - a) / BinomialCoefficient(N, row1)
+Text("OR = ad/bc = " + Round(OR, 3), (1, 6))
+Text("log(OR) = " + Round(logOR, 3), (1, 5.5))
+Text("SE(logOR) = " + Round(SElogOR, 3), (1, 5))
+Text("z Wald = " + Round(zWald, 3), (1, 4.5))
+Text("chi-square = " + Round(chiSquare, 3), (1, 4))
+Text("P(ta tabela | marginesy) = " + Round(pThisTable, 5), (1, 3.5))

@@ -1,0 +1,14 @@
+# GG01 probability -> odds -> log-odds
+# Wklej w GeoGebrze. Potem ustaw p jako suwak od 0.01 do 0.99.
+p = 0.2
+odds = p / (1 - p)
+logodds = ln(odds)
+probFromLogodds = 1 / (1 + exp(-logodds))
+oddsFun(x) = x / (1 - x)
+logitFun(x) = ln(x / (1 - x))
+sigmoidFun(x) = 1 / (1 + exp(-x))
+P_odds = (p, odds)
+P_logit = (p, logodds)
+Text("p = " + Round(p, 3), (0.05, 5))
+Text("odds = p/(1-p) = " + Round(odds, 3), (0.05, 4.5))
+Text("log(odds) = " + Round(logodds, 3), (0.05, 4))

@@ -1,0 +1,27 @@
+// GG10: Próg decyzyjny i confusion matrix — wersja toy
+// Oś x to score modelu. Punkty na y=1 są faktycznie pozytywne, punkty na y=0 faktycznie negatywne.
+// Suwak t zmienia próg klasyfikacji.
+
+t = Slider(0, 1, 0.01, 0.5)
+L = x = t
+
+P1 = (0.90, 1)
+P2 = (0.75, 1)
+P3 = (0.55, 1)
+P4 = (0.35, 1)
+N1 = (0.80, 0)
+N2 = (0.45, 0)
+N3 = (0.25, 0)
+N4 = (0.10, 0)
+
+TP = If(x(P1) >= t, 1, 0) + If(x(P2) >= t, 1, 0) + If(x(P3) >= t, 1, 0) + If(x(P4) >= t, 1, 0)
+FN = 4 - TP
+FP = If(x(N1) >= t, 1, 0) + If(x(N2) >= t, 1, 0) + If(x(N3) >= t, 1, 0) + If(x(N4) >= t, 1, 0)
+TN = 4 - FP
+TPR = TP / (TP + FN)
+FPR = FP / (FP + TN)
+
+Text("threshold t = " + t, (0.05, 1.35))
+Text("TP = " + TP + ", FN = " + FN, (0.05, 1.20))
+Text("FP = " + FP + ", TN = " + TN, (0.05, 1.05))
+Text("TPR = " + TPR + ", FPR = " + FPR, (0.05, 0.90))

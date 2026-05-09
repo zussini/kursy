@@ -1,0 +1,13 @@
+mouse_id,genotype,weight_g,gene_expression
+CW1,Control,19.0,2.35
+CW2,Control,20.0,2.65
+CW3,Control,21.0,2.65
+CW4,Control,22.0,2.88
+CW5,Control,23.0,2.85
+CW6,Control,24.0,3.04
+MW1,Mutant,19.0,3.53
+MW2,Mutant,20.0,3.39
+MW3,Mutant,21.0,3.61
+MW4,Mutant,22.0,3.74
+MW5,Mutant,23.0,3.7
+MW6,Mutant,24.0,3.99

@@ -1,0 +1,66 @@
+qnum,question,section
+1,Potrafię swobodnie pracować w Jupyterze / Colabie,Python / programowanie
+2,"Rozumiem podstawowe typy danych w Pythonie (listy, słowniki, tuple, sety)",Python / programowanie
+3,Potrafię pociąć string (przez split) do listy.,Python / programowanie
+4,Potrafię programować obiektowo w pythonie,Python / programowanie
+5,Potrafię pisać funkcje i używać parametrów / wartości zwracanych,Python / programowanie
+6,Potrafię samodzielnie debugować prosty błąd,Python / programowanie
+7,"Potrafię korzystać z dokumentacji biblioteki, aby znaleźć potrzebną funkcję",Python / programowanie
+8,Rozumiem różnicę między pętlą a podejściem bardziej 'wektorowym' / operacjami na kolekcjach,Python / programowanie
+9,Potrafię utworzyć tablicę NumPy i wykonywać na niej podstawowe operacje,NumPy / pandas / wizualizacja
+10,"Rozumiem kształt danych (shape), indeksowanie i slicing w NumPy",NumPy / pandas / wizualizacja
+11,Potrafię filtrować i wybierać dane w pandas DataFrame,NumPy / pandas / wizualizacja
+12,Potrafię użyć groupby / agregacji w pandas,NumPy / pandas / wizualizacja
+13,Potrafię łączyć tabele / ramki danych (merge / join) w pandas,NumPy / pandas / wizualizacja
+14,Potrafię wykrywać i obsługiwać braki danych,NumPy / pandas / wizualizacja
+15,"Potrafię przygotować prosty wykres (histogram, scatter, line, bar)",NumPy / pandas / wizualizacja
+16,Rozumiem składnię SELECT / WHERE / ORDER BY,SQL / relacyjne bazy
+17,Rozumiem GROUP BY i podstawowe agregacje SQL,SQL / relacyjne bazy
+18,Rozumiem różnicę między JOINami (INNER / LEFT) na poziomie praktycznym,SQL / relacyjne bazy
+19,"Rozumiem pojęcie klucza głównego, klucza obcego i granularności danych",SQL / relacyjne bazy
+20,"Rozumiem średnią, medianę, odchylenie standardowe i wariancję",Matematyka i statystyka
+21,Rozumiem pojęcia percentyl / kwartyl / rozkład,Matematyka i statystyka
+22,"Rozumiem, czym jest korelacja i dlaczego nie oznacza przyczynowości",Matematyka i statystyka
+23,"Rozumiem, czym jest kowariancja",Matematyka i statystyka
+24,Rozumiem intuicję prawdopodobieństwa warunkowego,Matematyka i statystyka
+25,"Rozumiem, czym jest próbkowanie i skąd bierze się błąd estymacji",Matematyka i statystyka
+26,Rozumiem intuicję funkcji liniowej i nachylenia,Matematyka i statystyka
+27,Rozumiem różnicę między funkcją liniową a kwadratową,Matematyka i statystyka
+28,Rozumiem różnicę między funkcją liniową i kwadratową a wielomianami wyższych stopni,Matematyka i statystyka
+29,"Potrafię policzyć proste pochodne, np. x, x^2, (x-1)^3",Matematyka i statystyka
+30,Rozumiem intuicję pochodnej jako miary zmiany,Matematyka i statystyka
+31,"Rozumiem wektory i macierze
+",Matematyka i statystyka
+32,"Rozumiem, czym jest funkcja straty i dlaczego model ją minimalizuje.",ML podstawy + sprawność algorytmiczna
+33,Rozumiem różnicę między uczeniem nadzorowanym i nienadzorowanym,ML podstawy + sprawność algorytmiczna
+34,Rozumiem pojęcia feature (cecha) / target / etykieta,ML podstawy + sprawność algorytmiczna
+35,"Rozumiem, po co dzielimy dane na train / validation / test",ML podstawy + sprawność algorytmiczna
+36,"Rozumiem, czym jest overfitting i underfitting",ML podstawy + sprawność algorytmiczna
+37,"Rozumiem, czym jest data leakage",ML podstawy + sprawność algorytmiczna
+38,Rozumiem różnicę między zadaniem regresji a klasyfikacji,ML podstawy + sprawność algorytmiczna
+39,"Rozumiem, że dobór metryki zależy od problemu",ML podstawy + sprawność algorytmiczna
+40,Mam intuicję działania modeli drzewiastych (np. decision tree / random forest),ML podstawy + sprawność algorytmiczna
+41,Potrafię korzystać z Breadth First Search (BFS) i/lub Depth First Search (DFS),ML podstawy + sprawność algorytmiczna
+42,Potrafię korzystać z merge- i quicksort,ML podstawy + sprawność algorytmiczna
+43,Potrafię pracować z nie do końca doprecyzowanym problemem.,"Praca, preferencje i feedback"
+44,Potrafię zaplanować pracę nad zadaniem rozłożonym na kilka dni / tygodni,"Praca, preferencje i feedback"
+45,Potrafię czytać anglojęzyczną dokumentację techniczną,"Praca, preferencje i feedback"
+46,"Czuję się komfortowo, prezentując wynik swojej pracy","Praca, preferencje i feedback"
+47,Potrafię współpracować z innymi nad wspólnym zadaniem,"Praca, preferencje i feedback"
+48,Zależy mi na realnym nauczeniu się materiału,"Praca, preferencje i feedback"
+49,Zależy mi przede wszystkim na sprawnym zaliczeniu kursu,"Praca, preferencje i feedback"
+50,Preferuję zaliczenie w formie pisemnej,"Praca, preferencje i feedback"
+51,Preferuję zaliczenie w formie 2–3 projektów,"Praca, preferencje i feedback"
+52,Chciał(a)bym więcej teorii i wyjaśnień na wykładzie,"Praca, preferencje i feedback"
+53,Chciał(a)bym więcej pracy praktycznej / kodowania / analizy danych,"Praca, preferencje i feedback"
+54,"Jak Pani/Panu odpowiada forma wczorajszych  zajęć - początkowe wprowadzenie, potem praca samodzielna (5 - bardzo odpowiada, 1 - nie odpowiada, 0 - nie było mnie )? ","Praca, preferencje i feedback"
+55,"Jak dużo zrozumiał(a) Pan(i) z wczorajszych zajęć - subiektwynie  (0 - nie było mnie, 1 - nic, 5 - wszystko) ?","Praca, preferencje i feedback"
+56,"Jak Pani/Panu odpowiada forma dzisiejszych zajęć - forma pracy hands-on, czyli mocna granulacja zadań z samodzielnym powtarzaniem (5 - bardzo odpowiada, 1 - nie odpowiada, 0 - nie było mnie)?","Praca, preferencje i feedback"
+57,"Jak dużo zrozumiał(a) Pan(i) z dzisiejszych zajęć, znowu subiektywnie ;) (0 - nie było mnie, 1 - nic, 5 - wszystko) ?","Praca, preferencje i feedback"
+58,"Preferuję zajęcia z samym podawaniem wiedzy np. poprzez slajdy, od takich w których się aktywnie uczestniczy","Praca, preferencje i feedback"
+59,"Potrzebuję ścieżki wyrównawczej / dodatkowych zadań podstawowych (np. drzewa, traversal, sortowanie, wyszukiwanie) ","Praca, preferencje i feedback"
+60,Był(a)bym zainteresowany(a) ścieżką advanced / samodzielnie wymyślonym projektem,"Praca, preferencje i feedback"
+61,Chciał(a)bym regularnych krótkich konsultacji / checkpointów do projektów,"Praca, preferencje i feedback"
+62,Stresuje mnie matematyka / statystyka w kontekście tego kursu.,"Praca, preferencje i feedback"
+63,Wolę pracować indywidualnie,"Praca, preferencje i feedback"
+64,Wolę pracować w parze lub małej grupie,"Praca, preferencje i feedback"

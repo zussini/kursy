@@ -1,0 +1,18 @@
+
+// GeoGebra-ready commands: odds, logit, logistic curve
+// Utwórz suwaki beta0 i beta1, jeśli GeoGebra nie zrobi tego automatycznie.
+
+beta0 = -3
+beta1 = 1.2
+
+p(x) = 1 / (1 + exp(-(beta0 + beta1 x)))
+logit(x) = beta0 + beta1 x
+
+A = (0, p(0))
+B = (1, p(1))
+C = (2, p(2))
+D = (3, p(3))
+
+Text("p(x)=1/(1+e^(-(beta0+beta1*x)))", (-1, 1.15))
+Text("logit(p)=beta0+beta1*x", (-1, 1.0))
+Text("Zmieniaj beta0 i beta1", (-1, .85))

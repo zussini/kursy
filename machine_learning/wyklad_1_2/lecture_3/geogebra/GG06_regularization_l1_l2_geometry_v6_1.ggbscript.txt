@@ -1,0 +1,15 @@
+# GG06 geometria regularyzacji L1 i L2
+lambda = 1.5
+# minimum nieukaranej straty w punkcie (2,1)
+loss(x,y) = (x - 2)^2 + (y - 1)^2
+contour1: loss(x,y) = 0.5
+contour2: loss(x,y) = 1
+contour3: loss(x,y) = 2
+L2: x^2 + y^2 = lambda^2
+L1: abs(x) + abs(y) = lambda
+O = (0,0)
+B_unreg = (2,1)
+Text("Kontury straty: (beta1-2)^2+(beta2-1)^2", (-3, 3))
+Text("L2: beta1^2+beta2^2 <= lambda^2", (-3, 2.7))
+Text("L1: |beta1|+|beta2| <= lambda", (-3, 2.4))
+Text("L1 ma narożniki na osiach -> łatwiej o beta=0", (-3, 2.1))

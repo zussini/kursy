@@ -1,0 +1,20 @@
+qa_num,qa_label,qb_num,qb_label,mean_a,mean_b,mean_diff_a_minus_b,median_diff_a_minus_b,pct_a_gt_b,pct_a_lt_b
+1,Jupyter/Colab,8,wektorowe vs kolekcje,3.36,3.8,-0.44,-1.0,20.0,52.0
+12,pandas groupby,17,SQL GROUP BY,2.56,4.52,-1.96,-2.0,0.0,88.0
+13,pandas merge,18,SQL JOIN,2.52,4.24,-1.72,-2.0,0.0,80.0
+15,prosty wykres,53,chęć więcej praktyki,3.4,3.96,-0.56,-1.0,32.0,52.0
+19,klucze / granularność,18,JOIN praktyczny,4.2,4.24,-0.04,0.0,12.0,12.0
+20,średnia/mediana/odch,21,percentyl/kwartyl/rozkład,4.36,3.76,0.6,0.0,48.0,4.0
+22,korelacja,23,kowariancja,3.96,2.96,1.0,1.0,72.0,4.0
+26,nachylenie funkcji,29,liczenie pochodnych,3.72,4.44,-0.72,0.0,8.0,48.0
+29,liczenie pochodnych,30,pochodna jako zmiana,4.44,4.08,0.36,0.0,36.0,4.0
+27,liniowa vs kwadratowa,28,wielomiany wyższych stopni,4.52,4.36,0.16,0.0,12.0,0.0
+35,train/val/test,36,overfitting,3.52,3.44,0.08,0.0,16.0,16.0
+36,overfitting,37,data leakage,3.44,2.52,0.92,1.0,56.00000000000001,4.0
+38,regresja vs klasyfikacja,39,dobór metryki,3.24,3.52,-0.28,0.0,16.0,24.0
+48,realne nauczenie się,49,sprawne zaliczenie,4.36,4.12,0.24,0.0,44.0,24.0
+50,zaliczenie pisemne,51,zaliczenie projektowe,1.6,4.68,-3.08,-4.0,4.0,96.0
+52,więcej teorii,53,więcej praktyki,3.4,3.96,-0.56,-1.0,16.0,52.0
+54,forma zajęć wczoraj,56,forma zajęć dziś,4.5,4.083333333333333,0.4166666666666667,0.0,33.33333333333333,8.333333333333332
+55,zrozumienie wczoraj,57,zrozumienie dziś,4.166666666666667,4.083333333333333,0.08333333333333333,0.0,20.833333333333336,12.5
+63,praca indywidualna,64,praca w parze / grupie,4.0,2.52,1.48,2.0,60.0,16.0

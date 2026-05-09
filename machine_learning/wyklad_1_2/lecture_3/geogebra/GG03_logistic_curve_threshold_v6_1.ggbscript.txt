@@ -1,0 +1,14 @@
+# GG03 regresja logistyczna: linia na log-odds, sigmoid na probability
+beta0 = -3
+beta1 = 1.2
+threshold = 0.5
+eta(x) = beta0 + beta1 * x
+p(x) = 1 / (1 + exp(-eta(x)))
+logitLine(x) = eta(x)
+xDecision = (ln(threshold/(1-threshold)) - beta0) / beta1
+A = (xDecision, threshold)
+ThresholdLine: y = threshold
+DecisionLine: x = xDecision
+Text("logit(p)=beta0+beta1*x", (-1, 1.1))
+Text("p(x)=1/(1+exp(-(beta0+beta1*x)))", (-1, 1.0))
+Text("x decision = " + Round(xDecision, 3), (-1, 0.9))

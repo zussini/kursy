@@ -1,0 +1,29 @@
+// GeoGebra logistic regression v7 — commands to paste line by line
+// Demo 1: sigmoid and logit
+b0 = Slider(-5, 5, 0.1)
+b1 = Slider(-5, 5, 0.1)
+eta(x) = b0 + b1 x
+p(x) = 1 / (1 + exp(-eta(x)))
+f = Function(p, -10, 10)
+line_eta = Function(eta, -10, 10)
+A = (0, 0.5)
+
+// Demo 2: probability, odds, log-odds
+prob = Slider(0.01, 0.99, 0.01)
+odds = prob / (1 - prob)
+logodds = ln(odds)
+A_odds = (prob, odds)
+B_logodds = (prob, logodds)
+odds_fun(x) = x / (1 - x)
+logit_fun(x) = ln(x / (1 - x))
+Function(odds_fun, 0.01, 0.99)
+Function(logit_fun, 0.01, 0.99)
+
+// Demo 3: L1 vs L2 regularization geometry
+r = Slider(0.5, 5, 0.1)
+L2 = x^2 + y^2 = r^2
+P1 = (r, 0)
+P2 = (0, r)
+P3 = (-r, 0)
+P4 = (0, -r)
+L1 = Polygon(P1, P2, P3, P4)

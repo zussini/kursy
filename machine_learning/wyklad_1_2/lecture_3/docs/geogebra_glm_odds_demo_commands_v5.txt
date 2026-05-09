@@ -1,0 +1,29 @@
+# GeoGebra / proste demo do tablicy: t-test jako regresja i odds
+
+# 1. t-test/regresja: wpisz punkty jako x=0 dla Control, x=1 dla Mutant.
+#    Oś X to kod grupy, oś Y to ekspresja genu.
+C1=(0,1.5)
+C2=(0,1.8)
+C3=(0,2.2)
+C4=(0,2.4)
+C5=(0,3.1)
+M1=(1,2.9)
+M2=(1,3.3)
+M3=(1,3.6)
+M4=(1,3.9)
+M5=(1,4.3)
+L={C1,C2,C3,C4,C5,M1,M2,M3,M4,M5}
+fit=FitLine(L)
+
+# Średnie: Control = 2.2, Mutant = 3.6.
+ControlMeanLine: y=2.2
+MutantMeanLine: y=3.6
+
+# Pytanie do studentów:
+# Co oznacza nachylenie linii, gdy x=0 to Control, a x=1 to Mutant?
+# Odpowiedź: różnicę średnich, czyli 3.6 - 2.2 = 1.4.
+
+# 2. Odds/log-odds: można użyć suwaka p w zakresie 0.01..0.99.
+# odds = p/(1-p)
+# logodds = ln(odds)
+# Punkt P=(p, logodds) przesuwa się po krzywej logit.

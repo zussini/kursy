@@ -1,0 +1,817 @@
+import numpy
+numpy.__version__
+%paste
+Out
+for k in sorted(Out):
+    print(f"\nOut[{k}]:")
+    print(Out[k])
+%paste
+%paste
+%paste
+Out
+    np.abs(-1)
+np.abs(-1)
+np.abs(-10)
+%paste
+%paste
+%xpaste
+%paste
+result
+%paste
+result
+import array
+L = list(range(10))
+A = array.array('i', L)
+A
+%paste
+%paste
+np.array([1, 2, 3, 4], dtype='float32')
+%paste
+%paste
+# nested lists result in multi-dimensional arrays
+np.array([range(i, i + 3) for i in [2, 4, 6]])
+np.zeros(10, dtype=int)
+np.ones((3, 5), dtype=float)
+np.full((3, 5), 3.14)
+np.arange(0, 20, 2)
+np.linspace(0, 1, 5)
+np.random.random((3, 3))
+np.random.normal(0, 1, (3, 3))
+np.random.randint(0, 10, (3, 3))
+np.eye(3)
+np.empty(3)
+np.zeros(10, dtype='int16')
+np.zeros(10, dtype=np.int16)
+%paste
+import numpy as np
+np.random.seed(0)  # seed for reproducibility
+
+x1 = np.random.randint(10, size=6)  # One-dimensional array
+x2 = np.random.randint(10, size=(3, 4))  # Two-dimensional array
+x3 = np.random.randint(10, size=(3, 4, 5))  # Three-dimensional array
+print("x3 ndim: ", x3.ndim)
+print("x3 shape:", x3.shape)
+print("x3 size: ", x3.size)
+%paste
+%paste
+%cpaste
+$paste
+%paste
+x1
+x1[0]
+x1[4]
+x1[-1]
+x2
+x2[2,0
+]
+x2[2,-1]
+x2[0,0] = 12
+x2
+x1[0] = 3.14159
+x1
+x = np.arange(10)
+x
+x[:5]
+x[5:]
+x[4:7]
+x[::2]
+x[1::2]
+x[::-1]
+x[5::-1]
+x[5::-2]
+x2
+x2[:2,:3]
+x2[:3,:2]
+x2[::-1,::-1]
+print(x2[:,0])
+print(x2[0,:])
+print(x2[1,:])
+print(x2[2,:])
+print(x2)
+x2_sub = x2[:2,:2]
+print(x2_sub)
+x2_sub[0,0] = x2[:2,:2]
+x2_sub = x2[:2,:2]
+print(x2_sub)
+x2_sub[0,0] = 99
+print(x2_sub)
+print(x2)
+x2_sub_copy = x2[:2,:2].copy()
+print(x2_sub_copy)
+x2_sub_copy[0,0] = 42
+print(x2_sub_copy)
+print(x2)
+grid = np.arange(1,10).reshape((3,3))
+grid
+x = np.array([1,2,3])
+x.reshape((1,3))
+x[np.newaxis,:]
+x.reshape((3,1))
+x[:,np.newaxis]
+%paste
+x = np.array([1, 2, 3])
+y = np.array([3, 2, 1])
+np.concatenate([x, y])
+z = [99, 99, 99]
+print(np.concatenate([x, y, z]))
+grid = np.array([[1, 2, 3],
+                 [4, 5, 6]])
+np.concatenate([grid, grid])
+# concatenate along the second axis (zero-indexed)
+np.concatenate([grid, grid], axis=1)
+x = np.array([1, 2, 3])
+grid = np.array([[9, 8, 7],
+                 [6, 5, 4]])
+
+# vertically stack the arrays
+np.vstack([x, grid])
+# horizontally stack the arrays
+y = np.array([[99],
+              [99]])
+np.hstack([grid, y])
+x = [1, 2, 3, 99, 99, 3, 2, 1]
+x1, x2, x3 = np.split(x, [3, 5])
+print(x1, x2, x3)
+grid = np.arange(16).reshape((4, 4))
+grid
+upper, lower = np.vsplit(grid, [2])
+print(upper)
+print(lower)
+left, right = np.hsplit(grid, [2])
+print(left)
+print(right)
+!sqlite3 ~/.ipython/profile_default/history.sqlite \
+  "select distinct session from history order by session;"
+%history 771/1-1000 -f my_history.py
+%history 768/1-1000 -f my_history.py
+%history 766/1-1000 -f my_history.py
+%paste
+%paste
+big_array = np.random.randint(1, 100, size=1000000)
+%timeit compute_reciprocals(big_array)
+print(compute_reciprocals(values))
+print(1.0 / values)
+%timeit (1.0 / big_array)
+np.arange(5) / np.arange(1, 6)
+x = np.arange(9).reshape((3, 3))
+2 ** x
+%timeit np.arange(5) / np.arange(1, 6)
+print(compute_reciprocals(values))
+%timeit print(1.0 / values)
+print(compute_reciprocals(values))
+print(1.0 / values)
+%time print(compute_reciprocals(values))
+%time print(1.0 / values)
+%time print(compute_reciprocals(values))
+%time print(1.0 / values)
+%time print(compute_reciprocals(values))
+%time print(1.0 / values)
+%time print(compute_reciprocals(values))
+%time print(1.0 / values)
+%time print(compute_reciprocals(values))
+%time print(1.0 / values)
+%time print(compute_reciprocals(values))
+%time print(1.0 / values)
+%time print(compute_reciprocals(values))
+%time print(1.0 / values)
+%time print(compute_reciprocals(values))
+%time print(1.0 / values)
+
+%timeit compute_reciprocals(big_array)
+%timeit (1.0 / big_array)
+x = np.arange(9).reshape((3, 3))
+2 ** x
+np.random.seed(0)
+x = np.random.randn(1_000_000)
+
+# ZŁE: pętla w Pythonie + ufunc na skalarkach (narzut Pythona dominuje)
+def softplus_bad(x):
+    x = np.asarray(x, dtype=np.float64)
+    out = np.empty_like(x)
+    for i in range(x.size):
+        xi = x[i]
+        out[i] = np.log1p(np.exp(-abs(xi))) + max(xi, 0.0)  # ufuncy, ale wołane 1e6 razy
+    return out
+
+# DOBRE: ufuncy na całej tablicy (bez pętli w Pythonie)
+def softplus_good(x):
+    x = np.asarray(x, dtype=np.float64)
+    return np.log1p(np.exp(-np.abs(x))) + np.maximum(x, 0.0)
+
+# poprawność
+a = softplus_bad(x)
+b = softplus_good(x)
+print("same?", np.allclose(a, b, rtol=1e-12, atol=1e-12))
+
+# czas
+%timeit softplus_bad(x)
+%timeit softplus_good(x)
+x = np.arange(4)
+print("x     =", x)
+print("x + 5 =", x + 5)
+print("x - 5 =", x - 5)
+print("x * 2 =", x * 2)
+print("x / 2 =", x / 2)
+print("x // 2 =", x // 2)  # floor division
+print("-x     = ", -x)
+print("x ** 2 = ", x ** 2)
+print("x % 2  = ", x % 2)
+%paste
+%paste
+x = np.arange(4)
+print("x     =", x)
+print("x + 5 =", x + 5)
+print("x - 5 =", x - 5)
+print("x * 2 =", x * 2)
+print("x / 2 =", x / 2)
+print("x // 2 =", x // 2)  # floor division
+print("-x     = ", -x)
+print("x ** 2 = ", x ** 2)
+print("x % 2  = ", x % 2)
+np.add(x, 2)
+x = np.array([-2, -1, 0, 1, 2])
+abs(x)
+np.absolute(x)
+np.abs(x)
+x = np.array([3 - 4j, 4 - 3j, 2 + 0j, 0 + 1j])
+np.abs(x)
+theta = np.linspace(0, np.pi, 3)
+print("theta      = ", theta)
+print("sin(theta) = ", np.sin(theta))
+print("cos(theta) = ", np.cos(theta))
+print("tan(theta) = ", np.tan(theta))
+x = [-1, 0, 1]
+print("x         = ", x)
+print("arcsin(x) = ", np.arcsin(x))
+print("arccos(x) = ", np.arccos(x))
+print("arctan(x) = ", np.arctan(x))
+x = [1, 2, 3]
+print("x     =", x)
+print("e^x   =", np.exp(x))
+print("2^x   =", np.exp2(x))
+print("3^x   =", np.power(3, x))
+x = [1, 2, 4, 10]
+print("x        =", x)
+print("ln(x)    =", np.log(x))
+print("log2(x)  =", np.log2(x))
+print("log10(x) =", np.log10(x))
+x = [0, 0.001, 0.01, 0.1]
+print("exp(x) - 1 =", np.expm1(x))
+print("log(1 + x) =", np.log1p(x))
+from scipy import special
+# Gamma functions (generalized factorials) and related functions
+x = [1, 5, 10]
+print("gamma(x)     =", special.gamma(x))
+print("ln|gamma(x)| =", special.gammaln(x))
+print("beta(x, 2)   =", special.beta(x, 2))
+# Error function (integral of Gaussian)
+# its complement, and its inverse
+x = np.array([0, 0.3, 0.7, 1.0])
+print("erf(x)  =", special.erf(x))
+print("erfc(x) =", special.erfc(x))
+print("erfinv(x) =", special.erfinv(x))
+x = np.arange(5)
+y = np.empty(5)
+np.multiply(x, 10, out=y)
+print(y)
+y = np.zeros(10)
+np.power(2, x, out=y[::2])
+print(y)
+x = np.arange(1, 6)
+np.add.reduce(x)
+x
+np.multiply.reduce(x)
+np.multiply(x)
+np.add.accumulate(x)
+x
+np.multiply.accumulate(x)
+x = np.arange(1, 6)
+np.multiply.outer(x, x)
+import numpy as np
+L = np.random.random(100)
+sum(L)
+np.sum(L)
+big_array = np.random.rand(1000000)
+%timeit sum(big_array)
+%timeit np.sum(big_array)
+min(big_array), max(big_array)
+%paste
+np.min(big_array), np.max(big_array)
+%timeit np.min(big_array), np.max(big_array)
+%timeit min(big_array)
+%timeit np.min(big_array)
+print(big_array.min(), big_array.max(), big_array.sum())
+M = np.random.random((3, 4))
+print(M)
+M.sum()
+M.min(axis=0)
+M.min(axis=1)
+M.min(axis=2)
+M = np.random.random((3, 4))
+print(M)
+M.min(axis=0)
+M.min(axis=1)
+M.max(axis=1)
+!head -4 data/president_heights.csv
+!head -4 data/president_heights.csv
+!head -4 2_numpy_wyklad/data/president_heights.csv
+import pandas as pd
+data = pd.read_csv('data/president_heights.csv')
+heights = np.array(data['height(cm)'])
+print(heights)
+import pandas as pd
+data = pd.read_csv('2_numpy_wyklad/data/president_heights.csv')
+heights = np.array(data['height(cm)'])
+print(heights)
+print("Mean height:       ", heights.mean())
+print("Standard deviation:", heights.std())
+print("Minimum height:    ", heights.min())
+print("Maximum height:    ", heights.max())
+print("25th percentile:   ", np.percentile(heights, 25))
+print("Median:            ", np.median(heights))
+print("75th percentile:   ", np.percentile(heights, 75))
+%matplotlib inline
+import matplotlib.pyplot as plt
+import seaborn; seaborn.set()  # set plot style
+plt.hist(heights)
+plt.title('Height Distribution of US Presidents')
+plt.xlabel('height (cm)')
+plt.ylabel('number');
+import numpy as np
+a = np.array([0, 1, 2])
+b = np.array([5, 5, 5])
+a + b
+a + 5
+M = np.ones((3, 3))
+M
+M + a
+a = np.arange(3)
+b = np.arange(3)[:, np.newaxis]
+
+print(a)
+print(b)
+a + b
+M = np.ones((2, 3))
+a = np.arange(3)
+M
+a
+M+a
+a+M
+a = np.arange(3).reshape((3, 1))
+b = np.arange(3)
+a
+b
+a + b
+M = np.ones((3, 2))
+a = np.arange(3)
+M
+a
+M + a
+a[:, np.newaxis].shape
+a
+a.shape
+a[:, np.newaxis]
+a
+M + a[:, np.newaxis]
+np.logaddexp(M, a[:, np.newaxis])
+X = np.random.random((10, 3))
+Xmean = X.mean(0)
+Xmean
+X_centered = X - Xmean
+X_centered.mean(0)
+# x and y have 50 steps from 0 to 5
+x = np.linspace(0, 5, 50)
+y = np.linspace(0, 5, 50)[:, np.newaxis]
+
+z = np.sin(x) ** 10 + np.cos(10 + y * x) * np.cos(x)
+%matplotlib inline
+import matplotlib.pyplot as plt
+plt.imshow(z, origin='lower', extent=[0, 5, 0, 5],
+           cmap='viridis')
+plt.colorbar();
+
+def pairwise_sq_dists(X: np.ndarray, C: np.ndarray) -> np.ndarray:
+    X = np.asarray(X, dtype=np.float64)
+    C = np.asarray(C, dtype=np.float64)
+    diff = X[:, None, :] - C[None, :, :]
+    return np.sum(diff * diff, axis=2)
+
+# reference slow version (for tests only)
+def pairwise_sq_dists_slow(X, C):
+    out = np.zeros((X.shape[0], C.shape[0]), dtype=np.float64)
+    for i in range(X.shape[0]):
+        for k in range(C.shape[0]):
+            diff = X[i] - C[k]
+            out[i, k] = float(np.dot(diff, diff))
+    return out
+
+# tests
+X = RNG.normal(size=(10, 3))
+C = RNG.normal(size=(4, 3))
+D2 = pairwise_sq_dists(X, C)
+assert_shape(D2, (10, 4))
+assert_allclose(D2, pairwise_sq_dists_slow(X, C), tol=1e-10)
+assert (D2 >= 0).all()
+print("✅ Exercise 2.05.1 passed")
+
+import math
+import numpy as np
+
+# Ustalmy powtarzalność
+RNG = np.random.default_rng(0)
+
+def assert_allclose(a, b, tol=1e-8):
+    a = np.asarray(a)
+    b = np.asarray(b)
+    assert a.shape == b.shape, f"Shape mismatch: {a.shape} vs {b.shape}"
+    assert np.allclose(a, b, atol=tol, rtol=tol), f"Values not close (tol={tol})"
+
+def assert_shape(x, shape):
+    x = np.asarray(x)
+    assert x.shape == tuple(shape), f"Expected shape {shape}, got {x.shape}"
+
+print("NumPy version:", np.__version__)
+
+def pairwise_sq_dists(X: np.ndarray, C: np.ndarray) -> np.ndarray:
+    X = np.asarray(X, dtype=np.float64)
+    C = np.asarray(C, dtype=np.float64)
+    diff = X[:, None, :] - C[None, :, :]
+    return np.sum(diff * diff, axis=2)
+
+# reference slow version (for tests only)
+def pairwise_sq_dists_slow(X, C):
+    out = np.zeros((X.shape[0], C.shape[0]), dtype=np.float64)
+    for i in range(X.shape[0]):
+        for k in range(C.shape[0]):
+            diff = X[i] - C[k]
+            out[i, k] = float(np.dot(diff, diff))
+    return out
+
+# tests
+X = RNG.normal(size=(10, 3))
+C = RNG.normal(size=(4, 3))
+D2 = pairwise_sq_dists(X, C)
+assert_shape(D2, (10, 4))
+assert_allclose(D2, pairwise_sq_dists_slow(X, C), tol=1e-10)
+assert (D2 >= 0).all()
+print("✅ Exercise 2.05.1 passed")
+X
+C
+D2
+%timeit D2 = pairwise_sq_dists(X, C)
+%timeit pairwise_sq_dists_slow(X, C)
+M
+M[0,0]
+v = M+a
+M + a[:, np.newaxis]
+v=M + a[:, np.newaxis]
+v
+v [0,0]
+v [1,0]
+v [2,0]
+v.shape
+v.shape + [0,0]
+v.shape + [0,0,0]
+v.shape + a
+v.shape + M
+a.shape
+a[:,newaxis]
+a[:,np.newaxis]
+a[:,np.newaxis].shape
+a.shape
+M+a[:,np.newaxis]
+v+a[:,np.newaxis]
+a[:,np.newaxis]
+a
+a[0]
+a[:,np.newaxis][0]
+a[:,np.newaxis][0,0]
+a[:,np.newaxis][1,0]
+a[:,np.newaxis][2,0]
+a[:,np.newaxis][2,1]
+[None]
+[5,None]
+[5,0]
+[5,0].shape
+np.array([5,0]).shape
+np.array([[5],[0]]).shape
+np.array([[5,0],[0]]).shape
+np.array([[5,0],[0,1]]).shape
+import numpy as np
+import pandas as pd
+
+# use pandas to extract rainfall inches as a NumPy array
+rainfall = pd.read_csv('2_numpy_wyklad/data/Seattle2014.csv')['PRCP'].values
+inches = rainfall / 254.0  # 1/10mm -> inches
+inches.shape
+%matplotlib inline
+import matplotlib.pyplot as plt
+import seaborn; seaborn.set()  # set plot styles
+plt.hist(inches, 40);
+x = np.array([1, 2, 3, 4, 5])
+x < 3  # less than
+x>3
+x>=3
+x<=3
+x != 3  # not equal
+x == 3  # equal
+(2 * x) == (x ** 2)
+rng = np.random.RandomState(0)
+x = rng.randint(10, size=(3, 4))
+x
+x < 6
+print(x)
+# how many values less than 6?
+np.count_nonzero(x < 6)
+x<6
+np.sum(x < 6)
+# how many values less than 6 in each row?
+np.sum(x < 6, axis=1)
+# are there any values greater than 8?
+np.any(x > 8)
+# are there any values less than zero?
+np.any(x < 0)
+# are all values less than 10?
+np.all(x < 10)
+# are all values equal to 6?
+np.all(x == 6)
+# are all values less than 10?
+np.all(x < 5)
+# are all values in each row less than 8?
+np.all(x < 8, axis=1)
+# are all values in each row less than 8?
+np.all(x < 8, axis=0)
+x
+np.sum((inches > 0.5) & (inches < 1))
+np.sum( (inches < 1))
+np.sum( (inches > 1))
+np.sum( (inches > 0.5))
+np.sum( (inches > 0.4))
+np.sum( (inches > 0.3))
+np.sum( (inches > 0.2))
+np.sum( (inches > 0.1))
+bool(42), bool(0)
+bool(42 and 0)
+bool(42 or 0)
+bin(42)
+bin(59)
+bin(42 & 59)
+42&49
+42&59
+42|59
+8|59
+7|59
+import numpy as np
+rand = np.random.RandomState(42)
+
+x = rand.randint(100, size=10)
+print(x)
+[x[3], x[7], x[2]]
+ind = [3, 7, 4]
+x[ind]
+ind = np.array([[3, 7],
+                [4, 5]])
+x[ind]
+X = np.arange(12).reshape((3, 4))
+X
+row = np.array([0, 1, 2])
+col = np.array([2, 1, 3])
+X[row, col]
+X[row[:,np.newaxis],col]
+row[:, np.newaxis] * col
+col
+row
+print(X)
+X[2, [2, 0, 1]]
+X[1:, [2, 0, 1]]
+mask = np.array([1, 0, 1, 0], dtype=bool)
+X[row[:, np.newaxis], mask]
+mask
+row
+mean = [0, 0]
+cov = [[1, 2],
+       [2, 5]]
+X = rand.multivariate_normal(mean, cov, 100)
+X.shape
+mean = [0, 0]
+cov = [[1, 2],
+       [2, 5]]
+X = rand.multivariate_normal(mean, cov, 100)
+X.shape
+cov
+%matplotlib inline
+import matplotlib.pyplot as plt
+import seaborn; seaborn.set()  # for plot styling
+
+plt.scatter(X[:, 0], X[:, 1]);
+indices = np.random.choice(X.shape[0], 20, replace=False)
+indices
+selection = X[indices]  # fancy indexing here
+selection.shape
+indices
+plt.scatter(X[:, 0], X[:, 1], alpha=0.3)
+plt.scatter(selection[:, 0], selection[:, 1],
+            facecolor='none', s=200);
+x = np.arange(10)
+i = np.array([2, 1, 8, 4])
+x[i] = 99
+print(x)
+x = np.arange(10)
+i = np.array([2, 1, 8, 4])
+x[i] = 99
+print(x)
+x[i] -= 10
+print(x)
+x = np.zeros(10)
+x[[0, 0]] = [4, 6]
+print(x)
+i = [2, 3, 3, 4, 4, 4]
+x[i] += 1
+x
+x = np.zeros(10)
+np.add.at(x, i, 1)
+print(x)
+x = np.zeros(10)
+np.add.reduceat(x, i, 1)
+print(x)
+x = np.zeros(10)
+np.reduceat(x,add, i, 1)
+print(x)
+np.random.seed(42)
+x = np.random.randn(100)
+
+# compute a histogram by hand
+bins = np.linspace(-5, 5, 20)
+counts = np.zeros_like(bins)
+
+# find the appropriate bin for each x
+i = np.searchsorted(bins, x)
+
+# add 1 to each of these bins
+np.add.at(counts, i, 1)
+bins
+counts
+i
+x
+counts
+np.add.at(counts, i, 1)
+counts
+np.add.at(counts, i, 1)
+counts
+# plot the results
+plt.plot(bins, counts, linestyle='steps');
+print("NumPy routine:")
+%timeit counts, edges = np.histogram(x, bins)
+
+print("Custom routine:")
+%timeit np.add.at(counts, np.searchsorted(bins, x), 1)
+x = np.random.randn(1000000)
+print("NumPy routine:")
+%timeit counts, edges = np.histogram(x, bins)
+
+print("Custom routine:")
+%timeit np.add.at(counts, np.searchsorted(bins, x), 1)
+x = np.random.randn(100)
+print("NumPy routine:")
+%timeit counts, edges = np.histogram(x, bins)
+
+print("Custom routine:")
+%timeit np.add.at(counts, np.searchsorted(bins, x), 1)
+import numpy as np
+
+def selection_sort(x):
+    for i in range(len(x)):
+        swap = i + np.argmin(x[i:])
+        (x[i], x[swap]) = (x[swap], x[i])
+    return x
+x = np.array([2, 1, 4, 3, 5])
+selection_sort(x)
+def bogosort(x):
+    while np.any(x[:-1] > x[1:]):
+        np.random.shuffle(x)
+    return x
+x = np.array([2, 1, 4, 3, 5])
+bogosort(x)
+%timeit selection_sort(x)
+x = np.array([2, 1, 4, 3, 5])
+%timeit selection_sort(x)
+x = np.array([2, 1, 4, 3, 5])
+%timeit bogosort(x)
+x = np.array([2, 1, 4, 3, 5])
+%timeit bogosort(x)
+x = np.array([2, 1, 4, 3, 5])
+%time bogosort(x)
+x = np.array([2, 1, 4, 3, 5])
+%time selection_sort(x)
+x = np.array([2, 1, 4, 3, 5])
+np.sort(x)
+x = np.array([2, 1, 4, 3, 5])
+%timeit np.sort(x)
+x.sort()
+print(x)
+x.sort()
+%timeit print(x)
+x = np.array([2, 1, 4, 3, 5])
+i = np.argsort(x)
+print(i)
+rand = np.random.RandomState(42)
+X = rand.randint(0, 10, (4, 6))
+print(X)
+# sort each column of X
+np.sort(X, axis=0)
+# sort each column of X
+np.sort(X, axis=1)
+# sort each column of X
+np.sort(X, axis=0)
+# sort each column of X
+np.sort(X, axis=1)
+# sort each column of X
+al=np.sort(X, axis=1)
+# sort each column of X
+al=np.sort(al, axis=0)
+al
+# sort each row of X
+np.sort(X, axis=1)
+x = np.array([7, 2, 3, 1, 6, 5, 4])
+np.partition(x, 3)
+np.partition(X, 2, axis=1)
+np.partition(X, 2, axis=0)
+X
+X = rand.rand(10, 2)
+%matplotlib inline
+import matplotlib.pyplot as plt
+import seaborn; seaborn.set() # Plot styling
+plt.scatter(X[:, 0], X[:, 1], s=100);
+dist_sq = np.sum((X[:, np.newaxis, :] - X[np.newaxis, :, :]) ** 2, axis=-1)
+X[:, np.newaxis, :]
+X[ np.newaxis,;, :]
+X[ np.newaxis,;, :]
+X[ np.newaxis,:, :]
+# for each pair of points, compute differences in their coordinates
+differences = X[:, np.newaxis, :] - X[np.newaxis, :, :]
+differences.shape
+# square the coordinate differences
+sq_differences = differences ** 2
+sq_differences.shape
+# sum the coordinate differences to get the squared distance
+dist_sq = sq_differences.sum(-1)
+dist_sq.shape
+dist_sq.diagonal()
+nearest = np.argsort(dist_sq, axis=1)
+print(nearest)
+K = 2
+nearest_partition = np.argpartition(dist_sq, K + 1, axis=1)
+nearest_partition
+plt.scatter(X[:, 0], X[:, 1], s=100)
+
+# draw lines from each point to its two nearest neighbors
+K = 2
+
+for i in range(X.shape[0]):
+    for j in nearest_partition[i, :K+1]:
+        # plot a line from X[i] to X[j]
+        # use some zip magic to make it happen:
+        plt.plot(*zip(X[j], X[i]), color='black')
+K = 4
+
+nearest_partition = np.argpartition(dist_sq, K + 1, axis=1)
+nearest_partition
+import numpy as np
+name = ['Alice', 'Bob', 'Cathy', 'Doug']
+age = [25, 45, 37, 19]
+weight = [55.0, 85.5, 68.0, 61.5]
+x = np.zeros(4, dtype=int)
+# Use a compound data type for structured arrays
+data = np.zeros(4, dtype={'names':('name', 'age', 'weight'),
+                          'formats':('U10', 'i4', 'f8')})
+print(data.dtype)
+data['name'] = name
+data['age'] = age
+data['weight'] = weight
+print(data)
+# Get all names
+data['name']
+# Get first row of data
+data[0]
+# Get the name from the last row
+data[-1]['name']
+# Get names where age is under 30
+data[data['age'] < 30]['name']
+np.dtype({'names':('name', 'age', 'weight'),
+          'formats':('U10', 'i4', 'f8')})
+np.dtype({'names':('name', 'age', 'weight'),
+          'formats':((np.str_, 10), int, np.float32)})
+np.dtype([('name', 'S10'), ('age', 'i4'), ('weight', 'f8')])
+np.dtype('S10,i4,f8')
+tp = np.dtype([('id', 'i8'), ('mat', 'f8', (3, 3))])
+X = np.zeros(1, dtype=tp)
+print(X[0])
+print(X['mat'][0])
+data['age']
+data_rec = data.view(np.recarray)
+data_rec.age
+%timeit data['age']
+%timeit data_rec['age']
+%timeit data_rec.age
+%history session_input.log
+%history -f session_input.log
