@@ -13,15 +13,6 @@ Celem jest stworzenie kursów, które:
 
 ---
 
-## Materiały z 2026 roku
-
-- [Reinforcement Learning 2026](reinforcement_learning_2026/) — bandyci wieloręcy, metody tabelaryczne oraz interaktywne laboratoria i porównania algorytmów.
-- [Deep Learning / Głębokie Sieci Neuronowe 2026](deep_learning_2026/) — attention, blok Transformera i trening mini-Transformera w NumPy.
-
-[Opis nowego zestawu, uruchomienie i źródła](README_2026_UPDATE.md).
-
----
-
 ## Przykładowe ścieżki
 
 ### Deep Learning (DL)
@@ -127,3 +118,4 @@ the executable code portions are licensed under MIT, while the instructional
 and explanatory text is licensed under CC BY-NC-SA 4.0.
 
 © 2026 Piotr Kuterba
+
