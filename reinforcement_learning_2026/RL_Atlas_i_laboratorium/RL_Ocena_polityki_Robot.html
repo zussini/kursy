@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ocena polityki · Laboratorium robota</title>
+<style>:root{color-scheme:light;--paper:#f5f3ea;--white:#fffdf7;--ink:#152b2c;--quiet:#455d5a;--line:#c4d0c8;--teal:#075c54;--green:#e2eee8;--ochre:#8c4b17;--light-amber:#fff0d8}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font:1rem/1.58 system-ui,sans-serif}
+.container{width:min(100% - 3.2rem,70rem);margin-inline:auto}
+.masthead{padding:2.2rem 0 0;background:#0e3f3b;color:#fffdf5;border-bottom:.3rem solid #b67533}
+h1,h2{font-family:Georgia,serif;line-height:1.09;letter-spacing:-.025em}
+h1{font-size:clamp(2.65rem,7vw,5.1rem);margin:.12em 0 .15em}
+h2{font-size:clamp(1.95rem,4vw,3.3rem);margin:.13em 0 .3em}
+h3{font-size:1.06em;margin:.15em 0 .55em}
+p{margin:.6em 0}
+.lede{color:#d9eae2;font-size:clamp(1.01rem,2vw,1.23rem);margin-bottom:1.15em}
+.eyebrow{font-weight:700;color:var(--teal);font-size:.86rem;letter-spacing:.055em;text-transform:uppercase}
+.masthead .eyebrow{color:#c2e1d2}
+nav,.buttons,.deck-controls{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem}
+nav{margin-top:1rem;padding-bottom:.8rem}
+nav a{color:#fff8ed;border:1px solid #709690;border-radius:.35rem;padding:.35em .75em;text-decoration:none}
+nav a[aria-current]{color:#0e3f3b;background:#fff8ed;border-color:#fff8ed;font-weight:700}
+a{color:var(--teal);text-underline-offset:.17em}
+:focus-visible{outline:3px solid #b06627;outline-offset:3px}
+.masthead :focus-visible{outline-color:#ffca87}
+.skip,.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.skip:focus{width:auto;height:auto;z-index:2;clip-path:none;margin:0;padding:.6rem 1rem;background:#fff}
+main{padding-block:1.35rem 3.2rem}
+.view:not(#slajdy),.slide{padding:clamp(1rem,3vw,2.3rem);background:var(--white);border:1px solid var(--line);border-top:.24rem solid var(--teal)}
+.view:focus,.slide:focus{outline:none}
+.deck-controls{margin-bottom:1rem}
+.deck-controls #projector{margin-inline-start:auto}
+.slide>p,.view>p{max-width:77ch}
+.card,.tree-root,.branches>div,.flow>div{border:1px solid var(--line);background:#fcfcf4;padding:.95em 1em;border-radius:.27em}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:.9rem;margin:1rem 0}
+.card p:last-child{margin-bottom:.1em}
+.card strong:not(.big){color:var(--teal)}
+.tree{max-width:50rem;margin:1.2rem auto}
+.tree-root{background:var(--green);max-width:23rem;margin:auto;text-align:center}
+.tree-root span,.branches>div>span:not(.tag),.flow div span{display:block}
+.branches{position:relative;padding-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.branches::before{content:"";position:absolute;left:25%;right:25%;top:.65rem;height:.82rem;border:1px solid #6a8c84;border-bottom:0}
+.branches::after{content:"";position:absolute;left:50%;top:0;height:.65rem;border-left:1px solid #6a8c84}
+.branches>div{border-top:.21rem solid var(--teal)}
+.branches>div:last-child{border-top-color:var(--ochre)}
+.branches strong{display:block;font-size:1.12em}
+.tag{display:inline-block;font-weight:650;color:var(--quiet);margin-bottom:.3rem}
+.note,.math{padding:.65em .9em;overflow-wrap:anywhere}
+.note{background:var(--light-amber);border-left:.23rem solid #a66a2c;margin:1em 0}
+.math{font-family:Georgia,serif;background:var(--green);border-left:.23rem solid var(--teal);font-size:1.1em;font-variant-numeric:tabular-nums}
+.steps{padding-left:1.3em;margin:.3em 0 .7em}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:.65rem;margin:1.1rem 0}
+.flow>div{flex:1 1 13rem;align-self:stretch;border-top:.2rem solid var(--teal)}
+.flow>span{font-weight:bold;color:var(--teal)}
+.table-scroll{overflow:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;text-align:left;font-variant-numeric:tabular-nums}
+th,td{padding:.47em .65em;border-bottom:1px solid var(--line);vertical-align:top}
+thead{color:#fff;background:var(--teal)}
+tbody tr:nth-child(even){background:#edf3ec}
+caption{text-align:left;font-weight:700;color:var(--teal);padding-bottom:.35rem}
+details{margin-top:.8rem;border-top:1px solid var(--line);padding-top:.6rem}
+summary{color:var(--teal);font-weight:700;cursor:pointer}
+button,select{font:inherit;padding:.38em .69em;border:1px solid #5c827a;border-radius:.32em;color:inherit;background:var(--white)}
+button{cursor:pointer;background:var(--teal);color:#fff;border-color:var(--teal);font-weight:650}
+button.secondary{background:var(--white);color:var(--teal);border-color:#74968d}
+button:disabled{cursor:default;opacity:.48}
+.settings{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:.85rem;margin:.9rem 0}
+.settings label{display:block;padding:.65rem .85rem;background:var(--green);font-weight:700}
+.settings input,.settings select{display:block;width:100%;margin-top:.36em}
+.settings output{float:right}
+input[type="range"],input[type="checkbox"]{accent-color:var(--teal)}
+.check{display:flex;align-items:center;gap:.4rem}
+.muted{color:var(--quiet);font-size:.92em}
+.estimates .big{display:block;color:var(--teal);font-size:clamp(1.5rem,3vw,2.45rem);line-height:1.1;font-variant-numeric:tabular-nums}
+.lab-results{grid-template-columns:1.7fr 1fr}
+canvas{display:block;width:100%;height:auto;aspect-ratio:32/13}
+.legend{display:flex;flex-wrap:wrap;gap:.8em;font-size:.9em}
+.series-h::before,.series-l::before{content:"";display:inline-block;width:1.2em;border-top:.22em solid var(--teal);vertical-align:.18em;margin-right:.35em}
+.series-l::before{border-top-color:var(--ochre);border-top-style:dashed}
+.improve-stage{margin-top:1em;padding:1em 1.15em;border:1px solid var(--line);background:#f7faf4}
+tbody tr.better{background:#e0efdf}
+.better strong{display:inline-block;margin-left:.4em;font-size:.86em;color:#245d31}
+.inline-link{display:inline-block;margin-top:.35em;font-weight:700}
+.projector .masthead{padding-top:.6rem}
+.projector .masthead h1,.projector .masthead .lede,.projector .masthead .eyebrow{display:none}
+.projector main{width:min(100% - 3.2rem,78rem)}
+.projector .slide{font-size:clamp(1rem,1.95vw,1.57rem);min-height:64vh}
+.projector h2{font-size:clamp(2.2rem,5vw,4.22rem)}
+@media(max-width:700px){
+ .container,.projector main{width:calc(100% - 1.4rem)}
+ .masthead{padding-top:1.2rem}
+ .lab-results,.settings{grid-template-columns:1fr}
+ .deck-controls #projector{margin-inline-start:0}
+ .flow>div{flex-basis:100%}
+ .flow>span{display:none}
+}
+@media(max-width:420px){.branches{gap:.5rem}.branches>div{padding:.55em}.tag{font-size:.82em}th,td{padding:.4em .5em}}
+@media print{
+ body,.masthead{color:#000;background:#fff}
+ .container{width:100%}
+ .masthead :is(.lede,.eyebrow){color:#000}
+ nav,.buttons,.deck-controls,.skip{display:none!important}
+ .slide[hidden],#slajdy[hidden],#rachunek[hidden],#cwiczenia[hidden]{display:block!important}
+ #laboratorium,#poprawa{display:none!important}
+ .slide,.view{margin:.6rem 0;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Przejdź do treści</a>
+<header class="masthead">
+  <div class="container">
+    <p class="eyebrow">Uczenie ze wzmocnieniem · Robot z akumulatorem</p>
+    <h1>Ocena polityki</h1>
+    <p class="lede">Ile warte jest rozpoczęcie w danym stanie, gdy robot postępuje według ustalonej reguły?</p>
+    <nav aria-label="Sposób prezentacji">
+      <a href="#slajdy" data-view="slajdy">Slajdy</a>
+      <a href="#rachunek" data-view="rachunek">Rachunek</a>
+      <a href="#laboratorium" data-view="laboratorium">Laboratorium</a>
+      <a href="#poprawa" data-view="poprawa">Poprawa polityki</a>
+      <a href="#cwiczenia" data-view="cwiczenia">Ćwiczenia</a>
+    </nav>
+  </div>
+</header>
+<main class="container" id="main">
+  <noscript><p class="note">Włącz JavaScript, aby zmieniać ustawienia i wykonywać kolejne kroki. Rachunek i ćwiczenia możesz przeczytać poniżej.</p></noscript>
+  <section class="view" id="slajdy" aria-label="Slajdy">
+    <div class="deck-controls">
+      <button id="prev" type="button" class="secondary">← Wstecz</button>
+      <span id="slide-count" role="status"></span>
+      <button id="next" type="button">Dalej →</button>
+      <button id="projector" type="button" class="secondary" aria-pressed="false">Tryb projektora</button>
+    </div>
+    <article class="slide" id="slajd-1">
+      <p class="eyebrow">Model i reguła robota</p>
+      <h2>Kto wybiera akcję, a co jest losowane?</h2>
+      <p>Polityka π to przepis „w H szukaj, w L ładuj”. Po komendzie <strong>szukaj</strong> środowisko rozstrzyga, ile energii pozostało. W obu przypadkach robot znajduje przedmiot i dostaje +2.</p>
+      <div class="tree" role="group" aria-label="Dwie gałęzie po szukaniu przy wysokiej energii">
+        <div class="tree-root"><strong>H · wysoka energia</strong><span>Polityka wybiera: szukaj</span></div>
+        <div class="branches">
+          <div><span class="tag">50% · nagroda +2</span><strong>Następny stan H</strong><span>W kolejnym ruchu robot szuka.</span></div>
+          <div><span class="tag">50% · nagroda +2</span><strong>Następny stan L</strong><span>W kolejnym ruchu robot ładuje się za 0 i wraca do H.</span></div>
+        </div>
+      </div>
+      <p class="note"><strong>Pytanie do grupy.</strong> Którą decyzję podejmuje robot, a w którym momencie potrzebne jest losowanie?</p>
+    </article>
+    <article class="slide" id="slajd-2">
+      <p class="eyebrow">Próbka i średnia</p>
+      <h2>Dwie trajektorie, ta sama polityka</h2>
+      <p>Obie trajektorie startują w H. Liczymy dwie pierwsze nagrody z dyskontem γ = 0,8.</p>
+      <div class="cards">
+        <div class="card"><h3>Robot zostaje w H</h3><ol class="steps"><li>H → H · szukanie, +2</li><li>H → H lub L · szukanie, +2</li></ol><div class="math">2 + 0,8 × 2 = <strong>3,6</strong></div></div>
+        <div class="card"><h3>Robot schodzi do L</h3><ol class="steps"><li>H → L · szukanie, +2</li><li>L → H · ładowanie, 0</li></ol><div class="math">2 + 0,8 × 0 = <strong>2</strong></div></div>
+      </div>
+      <p class="note"><strong>Zwrot i wartość.</strong> G<sub>t</sub> to zdyskontowany zwrot z jednej trajektorii. V<sup>π</sup>(s) to jego wartość oczekiwana po starcie w s. Po dwóch ruchach średnia z obu gałęzi wynosi 2,8.</p>
+    <button type="button" id="sample">Wylosuj cztery ruchy od H</button>
+      <p id="sample-result" class="muted" aria-live="polite">Po losowaniu zobaczysz trajektorię oraz wkład czterech nagród.</p>
+    </article>
+    <article class="slide" id="slajd-3">
+      <p class="eyebrow">Jedna aktualizacja Bellmana</p>
+      <h2>Każdy wiersz daje jeden składnik</h2>
+      <div class="math">wkład gałęzi = p × [nagroda teraz + γ × wartość stanu po ruchu]</div>
+      <div class="cards">
+        <div class="card"><h3>Start w H · szukaj</h3><p>Po ruchu robot ma wysoką albo niską energię.</p><div class="math">V(H) = 0,5[2 + 0,8V(H)] + 0,5[2 + 0,8V(L)]</div></div>
+        <div class="card"><h3>Start w L · ładuj</h3><p>Ładowanie daje 0 i zawsze prowadzi do H.</p><div class="math">V(L) = 1[0 + 0,8V(H)]</div></div>
+      </div>
+      <p>Szansa <em>p</em> waży cały nawias. Dyskonto γ waży dalszy zwrot, który zacznie się po ruchu.</p>
+      <a class="inline-link" href="#rachunek">Rozpisz wkłady w tabeli →</a>
+    </article>
+    <article class="slide" id="slajd-4">
+      <p class="eyebrow">Iteracyjna ocena polityki</p>
+      <h2>Dlaczego ładowanie nabiera wartości?</h2>
+      <div class="table-scroll"><table>
+        <thead><tr><th scope="col">Przebieg</th><th scope="col">V(H)</th><th scope="col">V(L)</th></tr></thead>
+        <tbody><tr><th scope="row">0 · start</th><td>0</td><td>0</td></tr><tr><th scope="row">1 · jeden ruch</th><td>2</td><td>0</td></tr><tr><th scope="row">2 · dwa ruchy</th><td>2,8</td><td>1,6</td></tr></tbody>
+      </table></div>
+      <p>W przebiegu 2 do równania dla L wstawiamy <strong>starą wartość H równą 2</strong>. Ładowanie nadal daje 0, lecz po nim robot może zacząć szukać. Stąd 0 + 0,8 × 2 = 1,6.</p>
+      <p class="note">Gdy zaczynamy od zer, mapa po <em>k</em> synchronicznych przebiegach obejmuje średni zwrot z pierwszych <em>k</em> ruchów. Rozwiązanie dla pełnego horyzontu to V(H) ≈ 7,14 i V(L) ≈ 5,71.</p>
+      <a class="inline-link" href="#laboratorium">Uruchom przebiegi i zobacz wykres →</a>
+    </article>
+    <article class="slide" id="slajd-5">
+      <p class="eyebrow">Następny temat</p>
+      <h2>Co dałaby zmiana jednej decyzji?</h2>
+      <p>Wybierzmy na początek politykę „czekaj w H i czekaj w L”. Po jej ocenie wiemy, ile jest wart start w każdym stanie, gdy robot dalej czeka.</p>
+      <div class="flow" aria-label="Pętla iteracji polityki">
+        <div><strong>Oceń regułę</strong><span>Wyznacz V<sup>π</sup>.</span></div>
+        <span aria-hidden="true">→</span>
+        <div><strong>Porównaj pierwsze ruchy</strong><span>Po każdym z nich załóż dalszą grę według π.</span></div>
+        <span aria-hidden="true">→</span>
+        <div><strong>Zmień regułę</strong><span>Wybierz lepsze akcje i przelicz mapę.</span></div>
+      </div>
+      <p class="note"><strong>Przewidź kolejność zmian.</strong> Czy od razu opłaci się i szukać w H, i ładować w L?</p>
+      <a class="inline-link" href="#poprawa">Przeprowadź iterację polityki →</a>
+    </article>
+  </section>
+
+  <section class="view" id="rachunek" aria-labelledby="rachunek-title">
+    <p class="eyebrow">Model, równania, rozwiązanie</p>
+    <h2 id="rachunek-title">Z tabeli przejść do dwóch liczb</h2>
+    <p>W tej części γ = 0,8, a robot szuka w H i ładuje się w L. H oznacza wysoką, a L niską energię. Wiersze poniżej zawierają akcje wybrane przez tę politykę.</p>
+    <div class="table-scroll"><table id="branch-table">
+      <caption>Gałęzie przejść i wkład do równania</caption>
+      <thead><tr><th scope="col">Stan</th><th scope="col">Akcja</th><th scope="col">Następny stan</th><th scope="col">Szansa p</th><th scope="col">Nagroda r</th><th scope="col">p × [r + γV(s′)]</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">H</th><td>szukaj</td><td>H</td><td>0,5</td><td>2</td><td>0,5[2 + 0,8V(H)]</td></tr>
+        <tr><th scope="row">H</th><td>szukaj</td><td>L</td><td>0,5</td><td>2</td><td>0,5[2 + 0,8V(L)]</td></tr>
+        <tr><th scope="row">L</th><td>ładuj</td><td>H</td><td>1</td><td>0</td><td>0 + 0,8V(H)</td></tr>
+      </tbody>
+    </table></div>
+    <div class="cards">
+      <div class="card"><h3>Równania Bellmana</h3><div class="math">V(H) = 2 + 0,4V(H) + 0,4V(L)<br>V(L) = 0,8V(H)</div><p>Każde równanie łączy nagrodę w następnym ruchu i oczekiwany zwrot od stanu po ruchu.</p></div>
+      <div class="card"><h3>Podstawienie</h3><div class="math">V(H) = 2 + 0,72V(H)<br>0,28V(H) = 2<br>V(H) = 50/7, V(L) = 40/7</div><p>Ładowanie opóźnia przyszłe nagrody o jeden krok. Dlatego V(L) stanowi dokładnie 80% V(H).</p></div>
+    </div>
+    <details><summary>Gdy polityka sama losuje akcję</summary>
+      <p>Najpierw liczysz średnią po skutkach każdej akcji. Następnie ważysz otrzymane oceny prawdopodobieństwami wybrania akcji.</p>
+      <div class="math">q<sub>V</sub>(s,a) = Σ<sub>skutki</sub> p[r + γV(s′)]<br>V<sub>nowe</sub>(s) = Σ<sub>akcje</sub> π(a | s) q<sub>V</sub>(s,a)</div>
+      <p>Dla roboczej mapy V(H) = 2 i V(L) = 0 szukanie w H daje q<sub>V</sub> = 2,8. Czekanie w H daje 0,5 + 0,8 × 2 = 2,1. Gdy robot wybiera szukanie z szansą 75%, nowa wartość H to 0,75 × 2,8 + 0,25 × 2,1 = <strong>2,625</strong>.</p>
+    </details>
+  </section>
+
+  <section class="view" id="laboratorium" aria-labelledby="lab-title">
+    <p class="eyebrow">Eksperyment z ustaloną polityką</p>
+    <h2 id="lab-title">Policz po jednym przebiegu</h2>
+    <p>Zacznij od dwóch przebiegów przy γ = 0,8. Możesz potem zmienić dyskonto lub regułę wyboru akcji. Zmiana ustawień rozpoczyna obliczenia od mapy zerowej.</p>
+    <div class="settings">
+      <label for="gamma">Dyskontowanie γ <output id="gamma-value" for="gamma">0,8</output><input id="gamma" type="range" min="0" max="0.99" step="0.01" value="0.8"></label>
+      <label for="policy-h">Akcja w H<select id="policy-h"><option value="szukaj">Szukaj</option><option value="czekaj">Czekaj</option></select></label>
+      <label for="policy-l">Akcja w L<select id="policy-l"><option value="ładuj">Ładuj</option><option value="czekaj">Czekaj</option></select></label>
+    </div>
+    <p class="muted">W tym modelu uproszczonym po czekaniu robot zostaje w tym samym stanie i dostaje +0,5. Dostępne akcje to szukanie i czekanie w H oraz ładowanie i czekanie w L.</p>
+    <div class="buttons">
+      <button id="step" type="button">Następny przebieg</button>
+      <button id="batch" type="button" class="secondary">Wykonaj 5 przebiegów</button>
+      <button id="reset" type="button" class="secondary">Zacznij od zera</button>
+      <label class="check"><input id="show-exact" type="checkbox"> Pokaż rozwiązanie dokładne</label>
+    </div>
+    <div class="cards estimates" aria-live="polite" aria-atomic="true">
+      <div class="card"><span>Wysoka energia · przebieg <strong id="iteration">0</strong></span><strong class="big" id="value-h">H = 0</strong></div>
+      <div class="card"><span>Niska energia</span><strong class="big" id="value-l">L = 0</strong></div>
+    </div>
+    <p class="note" id="exact-line" hidden></p>
+    <div class="table-scroll"><table>
+      <caption id="lab-caption">Gałęzie gotowe do pierwszej aktualizacji</caption>
+      <thead><tr><th scope="col">Stan i akcja</th><th scope="col">Po ruchu</th><th scope="col">Szansa</th><th scope="col">Nagroda</th><th scope="col">Stare V(s′)</th><th scope="col">Ważony wkład</th></tr></thead>
+      <tbody id="lab-branches"></tbody>
+    </table></div>
+    <div class="cards lab-results">
+      <div class="card"><h3>Jak zmieniają się wartości?</h3><p class="legend"><span class="series-h">Wysoka energia H</span><span class="series-l">Niska energia L</span></p><canvas id="chart" width="640" height="260" role="img" aria-label="Wykres wartości H i L po kolejnych przebiegach"></canvas><p class="muted" id="chart-note"></p></div>
+      <div class="card"><h3>Ostatnie przebiegi</h3><div class="table-scroll"><table><thead><tr><th scope="col">k</th><th scope="col">V(H)</th><th scope="col">V(L)</th></tr></thead><tbody id="lab-history"></tbody></table></div></div>
+    </div>
+  </section>
+
+  <section class="view" id="poprawa" aria-labelledby="improve-title">
+    <p class="eyebrow">Od oceny do iteracji polityki</p>
+    <h2 id="improve-title">Jedna zmiana może odblokować drugą</h2>
+    <p>Ustaliliśmy γ = 0,8. Robot zaczyna od czekania w obu stanach. Dla każdej ocenionej polityki porównujemy wszystkie dostępne pierwsze ruchy. Potem oceniamy regułę uzyskaną po zmianie.</p>
+    <div class="improve-stage">
+      <h3 id="policy-label">Startowa polityka · czekaj w H i w L</h3>
+      <p class="math" id="improve-values"></p>
+      <div class="table-scroll" id="compare-wrap" hidden><table>
+        <caption>Po pierwszym ruchu robot wraca do aktualnie ocenianej reguły</caption>
+        <thead><tr><th scope="col">Stan</th><th scope="col">Pierwszy ruch</th><th scope="col">Wartość Q<sup>π</sup></th><th scope="col">Różnica względem V<sup>π</sup></th></tr></thead>
+        <tbody id="improve-rows"></tbody>
+      </table></div>
+      <p id="improve-note" class="note">Przewidź, w którym stanie warto zmienić decyzję jako pierwszą.</p>
+      <div class="buttons">
+        <button type="button" id="show-actions">Porównaj pierwsze ruchy</button>
+        <button type="button" id="improve-next" hidden>Zmień decyzję i przelicz V</button>
+        <button type="button" id="improve-reset" class="secondary">Wróć do polityki czekania</button>
+      </div>
+      <p id="improve-announcement" class="visually-hidden" aria-live="polite"></p>
+    </div>
+    <details><summary>Co pokazać po tym przykładzie?</summary>
+      <ol>
+        <li><strong>Iterację polityki na planszy.</strong> Oceniamy mapę, porównujemy ruchy w każdym stanie i aktualizujemy strzałki. Ten sam cykl można powtórzyć w GridWorld.</li>
+        <li><strong>Iterację wartości.</strong> Na tej samej planszy w każdym przebiegu wpisujemy najlepszą wartość akcji, obliczoną ze starej mapy. Po zbieżności odczytujemy najlepsze akcje.</li>
+        <li><strong>Ocenę z doświadczenia.</strong> Gdy dostępne są trajektorie, Monte Carlo uśrednia pełne zwroty, a TD(0) aktualizuje ocenę na podstawie jednego zaobserwowanego ruchu i wartości następnego stanu.</li>
+      </ol>
+    </details>
+  </section>
+  <section class="view" id="cwiczenia" aria-labelledby="tytul-cwiczen">
+  <h2 id="tytul-cwiczen">Trzy pytania do samodzielnego rachunku</h2>
+  <div class="cards">
+    <article class="card">
+      <h3>1. Co zmienia losowy skutek?</h3>
+      <p>Startujesz w H. Polityka każe szukać w H i ładować w L. Policz zwrot z pierwszych dwóch ruchów, jeśli po pierwszym szukaniu robot zostanie w H. Powtórz dla przejścia do L. Przyjmij γ = 0,8.</p>
+      <details>
+        <summary>Odsłoń rachunek</summary>
+        <p>Po pozostaniu w H robot znów szuka, więc dostaje 2 i 2. Po przejściu do L ładuje się, więc dostaje 2 i 0.</p>
+        <p class="math">G z dwóch ruchów: 2 + 0,8 · 2 = 3,6 albo 2 + 0,8 · 0 = 2.</p>
+        <p>Każdy z dwóch skutków pierwszego ruchu ma szansę ½. Średni zwrot z pierwszych dwóch ruchów wynosi ½ · 3,6 + ½ · 2 = 2,8.</p>
+      </details>
+    </article>
+    <article class="card">
+      <h3>2. Którą mapę czyta przebieg?</h3>
+      <p>Po pierwszym przebiegu masz V<sub>1</sub>(H) = 2 i V<sub>1</sub>(L) = 0. Z tej pary policz V<sub>2</sub>(H) i V<sub>2</sub>(L). Polityka wciąż szuka w H i ładuje w L.</p>
+      <details>
+        <summary>Odsłoń rachunek</summary>
+        <p class="math">V<sub>2</sub>(H) = 2 + 0,4 · 2 + 0,4 · 0 = 2,8<br>
+          V<sub>2</sub>(L) = 0 + 0,8 · 2 = 1,6</p>
+        <p>Podczas aktualizacji L odczytujesz 2 ze starej mapy V<sub>1</sub>. Po obliczeniu obu stanów zapisujesz całą mapę V<sub>2</sub>.</p>
+      </details>
+    </article>
+    <article class="card">
+      <h3>3. Czy zmienić decyzję w L?</h3>
+      <p>Rozważ inną politykę π. Robot szuka w H, a w L czeka. Czekanie w L daje 0,5 i pozostawia robota w tym stanie. Dla tej polityki V<sup>π</sup>(H) = 5 i V<sup>π</sup>(L) = 2,5. Policz, ile warta jest każda pierwsza akcja w L, jeśli po tym ruchu robot wraca do π. Ładowanie daje 0 i prowadzi do H.</p>
+      <details>
+        <summary>Odsłoń porównanie i decyzję</summary>
+        <p class="math">Q<sup>π</sup>(L, ładuj) = 0 + 0,8 · 5 = 4<br>
+          Q<sup>π</sup>(L, czekaj) = 0,5 + 0,8 · 2,5 = 2,5</p>
+        <p>Wybierz ładowanie w L. Liczba 4 opisuje jednorazową zmianę akcji i powrót do π. Gdy robot od teraz ładuje się przy każdej wizycie w L, ponowna ocena daje V<sup>nowa</sup>(L) = 40/7 ≈ 5,71.</p>
+      </details>
+    </article>
+  </div>
+</section>
+
+</main>
+<script>const Robot = (() => {
+    const states = ["H", "L"];
+    const model = {
+        H: {
+            szukaj: [
+                { p: 0.5, next: "H", reward: 2 },
+                { p: 0.5, next: "L", reward: 2 },
+            ],
+            czekaj: [{ p: 1, next: "H", reward: 0.5 }],
+        },
+        L: {
+            ładuj: [{ p: 1, next: "H", reward: 0 }],
+            czekaj: [{ p: 1, next: "L", reward: 0.5 }],
+        },
+    };
+    const defaultPolicy = { H: "szukaj", L: "ładuj" };
+
+    function terms(state, action, values, gamma) {
+        return model[state][action].map(branch => {
+            const future = gamma * values[branch.next];
+            const total = branch.reward + future;
+            return { ...branch, future, total, contribution: branch.p * total };
+        });
+    }
+
+    function valueOfAction(state, action, values, gamma) {
+        return terms(state, action, values, gamma).reduce((sum, term) => sum + term.contribution, 0);
+    }
+
+    function actionValues(state, values, gamma) {
+        return Object.fromEntries(Object.keys(model[state]).map(action => [
+            action, valueOfAction(state, action, values, gamma),
+        ]));
+    }
+
+    function sweep(values, policy, gamma) {
+        return Object.fromEntries(states.map(state => [
+            state, valueOfAction(state, policy[state], values, gamma),
+        ]));
+    }
+
+    function exact(policy, gamma) {
+        const matrix = states.map(state => {
+            const row = states.map(next => Number(state === next));
+            let reward = 0;
+            for (const branch of model[state][policy[state]]) {
+                row[states.indexOf(branch.next)] -= gamma * branch.p;
+                reward += branch.p * branch.reward;
+            }
+            return [...row, reward];
+        });
+        const [[a, b, u], [c, d, v]] = matrix;
+        const determinant = a * d - b * c;
+        if (determinant === 0) throw new RangeError("Wybierz dyskonto γ mniejsze od 1.");
+        return { H: (u * d - b * v) / determinant, L: (a * v - u * c) / determinant };
+    }
+
+    function episode(start, policy, steps, draws = []) {
+        const trace = [];
+        let state = start;
+        for (let step = 0; step < steps; step += 1) {
+            const action = policy[state];
+            const branches = model[state][action];
+            let draw = draws[step] ?? Math.random();
+            const outcome = branches.find(branch => {
+                draw -= branch.p;
+                return draw < 0;
+            }) ?? branches.at(-1);
+            trace.push({ state, action, ...outcome });
+            state = outcome.next;
+        }
+        return trace;
+    }
+
+    function greedy(values, policy, gamma) {
+        return Object.fromEntries(states.map(state => {
+            const estimates = actionValues(state, values, gamma);
+            let choice = policy[state];
+            for (const [action, value] of Object.entries(estimates)) {
+                const tolerance = 1e-12 * Math.max(1, Math.abs(value), Math.abs(estimates[choice]));
+                if (value > estimates[choice] + tolerance) choice = action;
+            }
+            return [state, choice];
+        }));
+    }
+
+    return { model, defaultPolicy, terms, actionValues, sweep, exact, episode, greedy };
+})();
+</script>
+<script>const element = id => document.getElementById(id);
+const formatNumber = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 4 });
+const number = value => formatNumber.format(Math.abs(value) < 1e-10 ? 0 : value);
+const states = ["H", "L"];
+const views = Array.from(document.querySelectorAll(".view"));
+const slides = Array.from(document.querySelectorAll(".slide"));
+let activeView = "slajdy";
+let slideIndex = 0;
+
+function showSlide() {
+    slides.forEach((slide, index) => { slide.hidden = index !== slideIndex; });
+    element("slide-count").textContent = (slideIndex + 1) + " / " + slides.length;
+    element("prev").disabled = slideIndex === 0;
+    element("next").disabled = slideIndex === slides.length - 1;
+}
+
+function updateRoute() {
+    const hash = location.hash.slice(1);
+    const slide = slides.findIndex(item => item.id === hash);
+    if (slide >= 0) {
+        activeView = "slajdy";
+        slideIndex = slide;
+    } else if (views.some(view => view.id === hash)) {
+        activeView = hash;
+    } else if (hash) {
+        return;
+    } else {
+        activeView = "slajdy";
+        slideIndex = 0;
+    }
+    views.forEach(view => { view.hidden = view.id !== activeView; });
+    document.querySelectorAll("[data-view]").forEach(link => {
+        if (link.dataset.view === activeView) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+    });
+    if (activeView !== "slajdy") setProjector(false);
+    showSlide();
+    if (activeView === "laboratorium") drawChart();
+    window.scrollTo(0, 0);
+}
+
+function moveSlide(delta) {
+    const next = slideIndex + delta;
+    if (next < 0 || next >= slides.length) return;
+    slideIndex = next;
+    history.replaceState(null, "", "#" + slides[slideIndex].id);
+    showSlide();
+    window.scrollTo(0, 0);
+}
+
+function setProjector(enabled) {
+    document.body.classList.toggle("projector", enabled);
+    const button = element("projector");
+    button.textContent = enabled ? "Wyłącz tryb projektora" : "Tryb projektora";
+    button.setAttribute("aria-pressed", String(enabled));
+}
+
+element("prev").addEventListener("click", () => moveSlide(-1));
+element("next").addEventListener("click", () => moveSlide(1));
+element("projector").addEventListener("click", () => {
+    setProjector(!document.body.classList.contains("projector"));
+});
+window.addEventListener("hashchange", updateRoute);
+document.addEventListener("keydown", event => {
+    if (activeView !== "slajdy" || event.altKey || event.ctrlKey || event.metaKey ||
+        event.target.closest("input, select, textarea, button, summary, a")) return;
+    if (event.key === "Escape") setProjector(false);
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        moveSlide(event.key === "ArrowLeft" ? -1 : 1);
+    }
+});
+
+element("sample").addEventListener("click", () => {
+    const trace = Robot.episode("H", Robot.defaultPolicy, 4);
+    const path = ["H", ...trace.map(step => step.next)].join(" → ");
+    const rewards = trace.map(step => number(step.reward)).join(", ");
+    const total = trace.reduce((sum, step, index) => sum + 0.8 ** index * step.reward, 0);
+    element("sample-result").textContent = path + " · nagrody (" + rewards +
+        ") · zdyskontowana suma czterech nagród " + number(total) + ".";
+});
+
+let gamma = 0.8;
+let policy = Robot.defaultPolicy;
+let estimates = [];
+let referenceValues;
+
+function makeRow(values, header = false) {
+    const row = document.createElement("tr");
+    values.forEach((value, index) => {
+        const cell = document.createElement(index === 0 && header ? "th" : "td");
+        if (index === 0 && header) cell.scope = "row";
+        cell.textContent = value;
+        row.append(cell);
+    });
+    return row;
+}
+
+function resetLab() {
+    gamma = Number(element("gamma").value);
+    policy = { H: element("policy-h").value, L: element("policy-l").value };
+    estimates = [{ H: 0, L: 0 }];
+    referenceValues = Robot.exact(policy, gamma);
+    element("gamma-value").value = number(gamma);
+    renderLab();
+}
+
+function advanceLab(count) {
+    for (let index = 0; index < count; index += 1) {
+        estimates.push(Robot.sweep(estimates.at(-1), policy, gamma));
+    }
+    renderLab();
+}
+
+function renderLab() {
+    const k = estimates.length - 1;
+    const latest = estimates[k];
+    const old = estimates[Math.max(0, k - 1)];
+    element("iteration").textContent = k;
+    states.forEach(state => {
+        element("value-" + state.toLowerCase()).textContent = state + " = " + number(latest[state]);
+    });
+    const exact = element("exact-line");
+    exact.hidden = !element("show-exact").checked;
+    const gap = Math.max(...states.map(state => Math.abs(referenceValues[state] - latest[state])));
+    if (!exact.hidden) {
+        exact.textContent = "Rozwiązanie równań Bellmana (tu zaokrąglone): H = " + number(referenceValues.H) +
+            " · L = " + number(referenceValues.L) + " · największy błąd bieżącej mapy: " + number(gap);
+    }
+    element("lab-caption").textContent = k === 0 ? "Gałęzie gotowe do pierwszej aktualizacji" :
+        "Składniki przebiegu " + k + " odczytane z mapy V" + (k - 1);
+    element("lab-branches").replaceChildren(...states.flatMap(state =>
+        Robot.terms(state, policy[state], old, gamma).map(branch => makeRow([
+            state + " · " + policy[state], branch.next, number(branch.p), number(branch.reward),
+            number(old[branch.next]), number(branch.contribution)
+        ], true))
+    ));
+    const begin = Math.max(0, estimates.length - 6);
+    element("lab-history").replaceChildren(...estimates.slice(begin).map((point, index) =>
+        makeRow([begin + index, number(point.H), number(point.L)], true)
+    ));
+    element("chart-note").textContent = "Na osi poziomej jest numer przebiegu k. " +
+        (exact.hidden ? "Odczyty są też w tabeli." : "Poziome linie pokazują rozwiązanie równań Bellmana.");
+    if (activeView === "laboratorium") drawChart();
+}
+
+function drawChart() {
+    if (!estimates.length) return;
+    const chart = element("chart");
+    const context = chart.getContext("2d");
+    if (!context) return;
+    const width = chart.width;
+    const height = chart.height;
+    const left = 54;
+    const top = 16;
+    const right = width - 24;
+    const bottom = height - 34;
+    const last = estimates.at(-1);
+    const showReference = element("show-exact").checked;
+    const scaleFrom = showReference ? referenceValues : last;
+    const maximum = Math.max(1, scaleFrom.H, scaleFrom.L) * 1.05;
+    const n = estimates.length - 1;
+    const posX = index => left + index * (right - left) / Math.max(1, n);
+    const posY = value => bottom - value * (bottom - top) / maximum;
+    context.clearRect(0, 0, width, height);
+    context.font = "15px system-ui";
+    context.fillStyle = "#455d5a";
+    context.strokeStyle = "#c4d0c8";
+    context.lineWidth = 1;
+    context.textAlign = "right";
+    for (let index = 0; index <= 4; index += 1) {
+        const value = maximum * index / 4;
+        const y = posY(value);
+        context.beginPath();
+        context.moveTo(left, y);
+        context.lineTo(right, y);
+        context.stroke();
+        context.fillText(number(Math.round(value * 100) / 100), left - 7, y + 5);
+    }
+    context.textAlign = "center";
+    const ticks = [...new Set(Array.from({ length: 5 }, (_, index) => Math.round(n * index / 4)))];
+    ticks.forEach(index => context.fillText(index, posX(index), bottom + 22));
+    const colors = { H: "#075c54", L: "#995014" };
+    for (const state of states) {
+        context.strokeStyle = context.fillStyle = colors[state];
+        context.lineWidth = 3;
+        context.setLineDash(state === "L" ? [8, 5] : []);
+        context.beginPath();
+        estimates.forEach((point, index) => {
+            if (index === 0) context.moveTo(posX(index), posY(point[state]));
+            else context.lineTo(posX(index), posY(point[state]));
+        });
+        context.stroke();
+        context.setLineDash([]);
+        context.beginPath();
+        context.arc(posX(n), posY(last[state]), 4, 0, 2 * Math.PI);
+        context.fill();
+        if (showReference) {
+            context.lineWidth = 1.4;
+            context.setLineDash([2, 5]);
+            const y = posY(referenceValues[state]);
+            context.beginPath();
+            context.moveTo(left, y);
+            context.lineTo(right, y);
+            context.stroke();
+            context.setLineDash([]);
+        }
+    }
+}
+
+["gamma", "policy-h", "policy-l"].forEach(id => {
+    element(id).addEventListener(id === "gamma" ? "input" : "change", resetLab);
+});
+element("step").addEventListener("click", () => advanceLab(1));
+element("batch").addEventListener("click", () => advanceLab(5));
+element("reset").addEventListener("click", resetLab);
+element("show-exact").addEventListener("change", renderLab);
+
+const waitPolicy = { H: "czekaj", L: "czekaj" };
+let currentPolicy = waitPolicy;
+let round = 0;
+let actionsVisible = false;
+
+function renderImprovement() {
+    const values = Robot.exact(currentPolicy, 0.8);
+    const better = Robot.greedy(values, currentPolicy, 0.8);
+    const changed = states.filter(state => better[state] !== currentPolicy[state]);
+    const label = round === 0 ? "Polityka startowa" : "Po " + round + " " + (round === 1 ? "zmianie" : "zmianach");
+    element("policy-label").textContent = label + " · w H " + currentPolicy.H + ", w L " + currentPolicy.L;
+    element("improve-values").textContent = "V(H) = " + number(values.H) + " · V(L) = " + number(values.L);
+    element("compare-wrap").hidden = !actionsVisible;
+    element("show-actions").hidden = actionsVisible;
+    element("improve-next").hidden = !actionsVisible || changed.length === 0;
+
+    if (!actionsVisible) {
+        element("improve-note").textContent = round === 0 ?
+            "Przewidź, w którym stanie warto zmienić decyzję jako pierwszą." :
+            "To wartości po ponownej ocenie. Jak zmiana w jednym stanie wpływa teraz na decyzję w drugim?";
+        return;
+    }
+    const rows = states.flatMap(state => Object.entries(Robot.actionValues(state, values, 0.8)).map(([action, value]) => {
+        const increase = value - values[state];
+        const text = (increase > 1e-10 ? "+" : "") + number(increase);
+        const row = makeRow([state, action, number(value), text], true);
+        if (better[state] === action && changed.includes(state)) {
+            row.classList.add("better");
+            const badge = document.createElement("strong");
+            badge.textContent = "lepsza decyzja";
+            row.children[1].append(badge);
+        }
+        return row;
+    }));
+    element("improve-rows").replaceChildren(...rows);
+    const notes = [
+        "Na razie poprawa jest w H. Przy starej mapie ładowanie w L daje 0,8 × 2,5 = 2, a dalsze czekanie w L daje 2,5.",
+        "Po przejściu na szukanie w H wartość startu z H wzrosła do 5. Teraz ładowanie w L daje 0,8 × 5 = 4, więc warto je wybrać.",
+        "W obu stanach aktualna akcja ma najwyższą wartość w tym modelu. Polityka jest stabilna."
+    ];
+    element("improve-note").textContent = notes[round];
+}
+
+element("show-actions").addEventListener("click", () => {
+    actionsVisible = true;
+    renderImprovement();
+    element("improve-announcement").textContent = element("improve-note").textContent;
+    if (!element("improve-next").hidden) element("improve-next").focus();
+    else element("improve-reset").focus();
+});
+element("improve-next").addEventListener("click", () => {
+    currentPolicy = Robot.greedy(Robot.exact(currentPolicy, 0.8), currentPolicy, 0.8);
+    round += 1;
+    actionsVisible = false;
+    renderImprovement();
+    element("improve-announcement").textContent = element("policy-label").textContent +
+        " · " + element("improve-values").textContent;
+    element("show-actions").focus();
+});
+element("improve-reset").addEventListener("click", () => {
+    currentPolicy = waitPolicy;
+    round = 0;
+    actionsVisible = false;
+    renderImprovement();
+    element("show-actions").focus();
+});
+
+resetLab();
+renderImprovement();
+updateRoute();
+</script>
+</body>
+</html>

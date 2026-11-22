@@ -7,6 +7,7 @@ Materiały do kursu uczenia ze wzmocnieniem, przygotowane w 2026 r. dla roku aka
 - **[RL_01_Student](RL_01_Student/START.txt)** — bandyci wieloręcy, porównanie strategii wyboru akcji, gra w monety i robot zbierający puszki. Pełny zestaw studencki obejmuje slajdy i teorię w PDF, karty pracy w PDF i DOCX, interaktywne laboratorium, skrypty Python oraz szablony notebooków.
 - **[RL_02_Student](RL_02_Student/START.html)** — programowanie dynamiczne, predykcja Monte Carlo i TD, SARSA, Expected SARSA i Q-learning, metody wielokrokowe i ślady, Double Q-learning oraz Dyna-Q.
 - **[RL_Atlas_i_laboratorium](RL_Atlas_i_laboratorium/Atlas_metod_tabelarycznych.html)** — interaktywny atlas metod oraz laboratoria i notebooki porównujące algorytmy na wspólnych środowiskach.
+- **[Ocena polityki robota](RL_Atlas_i_laboratorium/RL_Ocena_polityki_Robot.html)** — interaktywne laboratorium oceny i poprawy polityki dwustanowego robota: trajektorie, równania Bellmana, synchroniczne aktualizacje wartości i iteracja polityki.
 - **[Prezentacje_Prowadzacego](Prezentacje_Prowadzacego/README.md)** — prezentacje do wprowadzenia, bandytów, monet i robota oraz do bloku metod tabelarycznych; pliki PDF i dostępne wersje PPTX.
 
 ## Jak korzystać
