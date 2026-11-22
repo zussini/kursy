@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas metod tabelarycznych RL</title><style>
+:root{color-scheme:light;--paper:#f7f3e9;--ink:#142833;--muted:#4c6065;--rule:#b9cdc8;--teal:#095855;--water:#e7f0e9;--warm:#f1e4c9;--panel:#fffdf8}
+*{box-sizing:border-box}[hidden]{display:none!important}html{scroll-padding-top:1em}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.58 system-ui,sans-serif}
+main{width:min(1170px,100%);margin:auto;padding:clamp(20px,5vw,62px)}
+h1,h2{font-family:Georgia,serif;line-height:1.04;letter-spacing:-.025em}h1{font-size:clamp(2.6rem,6vw,5rem);margin:.25em 0}h2{font-size:clamp(1.8rem,4.4vw,2.65rem);margin:.25em 0 .55em}
+h3{font-size:1.05rem;margin:1.1em 0 .4em}p{margin:.6em 0}code{font-size:.95em}
+a{color:#075451;text-underline-offset:.17em}a:hover{color:#844622}
+a:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #8f5016;outline-offset:3px}
+button,select{font:inherit;color:var(--ink);padding:.4rem .7rem;background:var(--panel);border:1px solid #708d89;border-radius:.3rem}
+button{cursor:pointer}button:disabled{cursor:default;opacity:.45}.primary{background:var(--teal);color:white;border-color:var(--teal);font-weight:700}
+.hero{padding-bottom:1.45rem;border-bottom:1px solid var(--rule)}.hero .lead{font-size:1.2rem;max-width:51rem}
+.topic{color:var(--teal);font-weight:800;font-size:.9em}.links,.controls{display:flex;align-items:center;gap:.65rem 1rem;flex-wrap:wrap}
+.controls{background:var(--water);padding:.8rem 1rem;margin:1.45rem 0 1.2rem;border:1px solid var(--rule)}.controls select{max-width:100%}
+.section{margin:2.2rem 0}.section p{max-width:75ch}
+.diagram{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem;list-style:none;padding:0}
+.diagram li{min-height:6rem;background:var(--water);border-top:3px solid var(--teal);padding:.8rem .92rem}
+.diagram strong{display:block;color:var(--teal)}
+.note{background:var(--warm);border-left:4px solid #9a6a2d;padding:.75rem 1rem}
+.table-wrap{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table{width:100%;border-collapse:collapse;text-align:left;min-width:680px}
+td,th{padding:.65rem .8rem;vertical-align:top;border-bottom:1px solid var(--rule)}
+thead{background:var(--teal);color:white}tbody th{width:20%;font-weight:700}tbody tr:nth-child(even){background:#edf3eb}
+.method{padding:clamp(16px,3.1vw,38px);margin:1.15rem 0;background:var(--panel);border:1px solid var(--rule);border-top:4px solid var(--teal)}
+.method:focus-visible{outline:3px solid var(--teal)}.method h2{margin-top:.12em}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin:1.2rem 0}
+.facts div{background:var(--water);padding:.8rem .95rem}
+dt{font-weight:750;color:var(--teal)}dd{margin:.35rem 0 0}.method .facts div:nth-child(2) dd{font-weight:750}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;padding:0;list-style:none;counter-reset:step}
+.steps li{counter-increment:step;border:1px solid var(--rule);padding:.8rem .95rem}
+.steps li::before{content:counter(step);font-weight:800;color:var(--teal);display:block;margin-bottom:.25rem}
+.delta{margin:1.15rem 0;color:#264f51}.method details{padding:.38rem 0;border-top:1px solid var(--rule)}
+.method details details{margin:.5rem 0 .3rem;padding-left:.65rem;border:0}
+summary{cursor:pointer;font-weight:700;color:var(--teal)}.related{margin:.65rem 0 .1rem}
+.deck-only{display:none}.present .read-only{display:none}.present .deck-only{display:block}
+.present main{width:min(1360px,100%)}.present .method{font-size:clamp(16px,1.65vw,24px);min-height:58vh}
+.present .method h2{font-size:clamp(2.3rem,4.6vw,4.1rem)}.present .method h3{font-size:1.1em}
+kbd{font:inherit;border:1px solid var(--rule);padding:.1em .25em;border-radius:.25rem}
+@media(max-width:760px){.diagram{grid-template-columns:repeat(2,1fr)}.facts,.steps{grid-template-columns:1fr}.links{align-items:flex-start;flex-direction:column}}
+@page{size:A4 landscape;margin:11mm}
+@media print{
+  body{background:#fff;font-size:12pt}main,.present main{width:auto;padding:0}.controls,.deck-only,.screen-only,.method details{display:none!important}
+  .present .read-only{display:block}.method[hidden]{display:block!important}.method{break-before:page;break-inside:avoid;padding:8mm;min-height:0!important;margin:0}
+  h1{font-size:31pt}h2,.present .method h2{font-size:26pt}
+  .method,.present .method{font-size:13pt}.facts,.steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+  table{min-width:0;font-size:10pt}thead{display:table-header-group}tr{break-inside:avoid}
+}
+.family { background:var(--water); }
+.family-grid, .probabilities { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:.8rem; }
+.family-grid > div, .probabilities > div { border:1px solid var(--rule); padding:.65rem .85rem; background:var(--panel); }
+.family-grid h3 { margin:.1em 0 .25em; }
+.family-grid p { margin:.25em 0; }
+.roles { display:flex; gap:.5rem; flex-wrap:wrap; margin:.85rem 0; }
+.roles span { background:#eef2f2; border:1px solid var(--rule); padding:.24rem .6rem; border-radius:.3rem; }
+.roles b { color:var(--teal); margin-right:.28rem; }
+.formula { padding:.65em .85em; background:#edf5ef; border-left:.25rem solid var(--teal); line-height:1.55; font-size:1.12em; overflow-wrap:anywhere; }
+.formula div + div, .formula p + p { margin-top:.35em; }
+.formula p { margin:.15em 0; }
+.main-formula { margin:.85rem 0; }
+.family-formula { margin:1rem 0; }
+.visual { margin:1rem 0; }
+.visual p { margin:.55em 0; }
+.visual table { min-width:0; margin:.6rem 0; font-size:.94em; }
+.visual th, .visual td { padding:.42em .65em; }
+.visual caption { text-align:left; font-weight:700; color:var(--teal); margin:.35em 0; }
+.flow, .timeline { display:flex; align-items:stretch; flex-wrap:wrap; gap:.5rem; margin:.55rem 0; }
+.flow-node, .timeline .step { flex:1 1 9rem; min-width:0; padding:.62em .72em; border:1px solid var(--rule); background:#f9fbf8; border-top:3px solid #679990; }
+.flow-node b, .timeline .step b, .timeline .step strong { display:block; margin-bottom:.18em; }
+.flow-arrow { align-self:center; color:var(--teal); font-weight:700; }
+.timeline .step { border-top-color:#b57725; background:#fdf6e9; position:relative; }
+.timeline .step + .step::before { content:""; position:absolute; width:.55rem; left:-.55rem; top:1.15rem; border-top:2px solid #b57725; }
+.changed { background:#f6e8ca; color:#633e0d; padding:.05em .22em; box-decoration-break:clone; }
+.return-role { border-top:1px solid var(--rule); padding-top:.65em; }
+.mini-model { margin:.85em 0; padding:.55em .78em; background:#f9f4e6; border:1px solid #dccaad; }
+.mini-model p { margin:.2em 0; }
+.mini-model code { white-space:normal; }
+.bandit-lab { background:#f3f7f2; border:1px solid var(--rule); padding:.65em .85em; margin:.65em 0; }
+.bandit-lab h3 { margin:.1em 0 .45em; }
+.input-row, .comparison-controls, .pairs { display:flex; align-items:center; gap:.65rem; flex-wrap:wrap; }
+.input-row input { accent-color:var(--teal); }
+.probabilities { grid-template-columns:repeat(4, minmax(0,1fr)); }
+.probabilities small { display:block; }
+.prob-bar { height:.45em; border-radius:1rem; display:flex; overflow:hidden; background:#e8ece8; margin:.35em 0; }
+.prob-bar .explore { background:#267b71; }
+.prob-bar .exploit { background:#b57931; }
+.comparison-controls label { display:grid; gap:.3rem; flex:1 1 15rem; }
+.comparison-controls select { width:100%; }
+.pairs { margin:.85em 0; }
+.pairs button, .compare-method { background:#e7f0e9; }
+#compare-table th, #compare-table td { vertical-align:top; }
+#compare-table .different > * { background:#fbefd6; }
+.diff { display:block; color:#70430b; margin-top:.25em; font-size:.8em; font-weight:600; }
+.steps-detail .steps { margin:.6em 0; }
+@media(max-width:650px) {
+  .family-grid, .probabilities { grid-template-columns:1fr 1fr; }
+  .flow-node, .timeline .step { flex-basis:100%; }
+  .flow-arrow { display:none; }
+  .timeline .step + .step::before { display:none; }
+  .visual { overflow-x:auto; }
+  .visual table { min-width:360px; }
+}
+@media print {
+  .slide[hidden] { display:block!important; }
+  .bandit-lab, .compare-method, .comparison-controls, .pairs { display:none!important; }
+  .flow-node, .timeline .step, .mini-model, .formula { break-inside:avoid; }
+}
+.family { padding:clamp(16px,3.1vw,38px); border:1px solid var(--rule); border-top:4px solid var(--teal); margin:1.15rem 0; }
+.present .family { font-size:clamp(16px,1.65vw,24px); }
+.present .family h2 { font-size:clamp(2.3rem,4.6vw,4.1rem); }
+.routes { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(14rem,100%),1fr)); gap:.65rem; list-style:none; padding:0; }
+.routes a { display:block; height:100%; border:1px solid var(--rule); background:var(--panel); padding:.65rem .75rem; }
+.routes span { display:block; color:var(--muted); font-size:.9em; }
+.decision-flow { max-width:63rem; margin:.8rem auto; }
+.decision-question, .decision-result { background:#e7f0e9; padding:.55em 1em; border:1px solid var(--rule); text-align:center; }
+.decision-options { display:grid; grid-template-columns:1fr 1fr; gap:.65rem; position:relative; padding:.94em 0; }
+.decision-options::before, .decision-options::after { content:""; position:absolute; left:25%; right:25%; height:.45em; border-inline:1px solid #679990; }
+.decision-options::before { top:.45em; border-top:1px solid #679990; }
+.decision-options::after { bottom:.45em; border-bottom:1px solid #679990; }
+.decision-result { border-color:#dccaad; background:#f9f4e6; }
+.decision-options .flow-node:last-child { border-top-color:#b57725; }
+@media print { .family { break-before:page; } }
+</style></head>
+<body><main>
+<header class="hero read-only">
+  <p class="topic">Uczenie ze wzmocnieniem</p>
+  <h1>Atlas metod tabelarycznych</h1>
+  <p class="lead">Porównaj, co agent wie, skąd bierze cel aktualizacji i co zmienia w swojej tablicy.</p>
+  <p class="links screen-only"><a href="#zmiana-metody">Porównaj dwie metody</a><a href="#porownanie">Tabela porównawcza</a><a href="#z-kursu">Przegląd starszego kursu</a><a href="Laboratorium_Gridworld_AB.html">Laboratorium Gridworld +10/+5</a><a href="Laboratorium_Jedno_przejscie.html">Laboratorium celów aktualizacji</a><a href="RL_00_Porownanie_metod.ipynb" download>Notebook porównawczy</a></p>
+</header>
+<div class="controls" aria-label="Nawigacja metod">
+  <label for="method-picker">Grupa lub metoda</label><select id="method-picker"><option value="schemat">Wspólny schemat</option><optgroup label="Bandyci"><option value="grupa-01">Wprowadzenie · Bandyci</option><option value="bandyta">Bandyta ε-zachłanny</option></optgroup><optgroup label="Planowanie z modelem"><option value="grupa-02">Wprowadzenie · Planowanie z modelem</option><option value="ocena">Iteracyjna ocena polityki</option><option value="pi">Iteracja polityki</option><option value="vi">Iteracja wartości</option></optgroup><optgroup label="Predykcja i Monte Carlo"><option value="grupa-03">Wprowadzenie · Predykcja i Monte Carlo</option><option value="mc">Monte Carlo pierwszej wizyty</option><option value="mc-control">Sterowanie Monte Carlo</option><option value="mc-off">Monte Carlo off-policy</option><option value="td0">TD(0) · predykcja</option></optgroup><optgroup label="Sterowanie z próbek"><option value="grupa-04">Wprowadzenie · Sterowanie z próbek</option><option value="sarsa">SARSA</option><option value="expected-sarsa">Expected SARSA</option><option value="q">Q-learning</option></optgroup><optgroup label="Wiele kroków"><option value="grupa-05">Wprowadzenie · Wiele kroków</option><option value="nstep">n-krokowe TD</option><option value="td-lambda">TD(λ) ze śladami</option><option value="n-sarsa">n-krokowe SARSA</option></optgroup><optgroup label="Rozszerzenia"><option value="grupa-06">Wprowadzenie · Rozszerzenia</option><option value="double-q">Double Q-learning</option><option value="dyna">Dyna-Q</option></optgroup></select>
+  <button id="toggle-mode" class="primary" type="button" aria-pressed="false">Tryb prezentacji</button>
+  <a class="deck-only" href="#zmiana-metody">Porównaj metody</a>
+  <button id="previous" type="button" hidden>Wstecz</button>
+  <button id="next" type="button" hidden>Dalej</button>
+  <span id="slide-count" class="deck-only" aria-live="polite"></span>
+</div>
+<section class="slide family" id="schemat" aria-labelledby="wspolny" tabindex="-1" data-title="Wspólny schemat">
+  <h2 id="wspolny">Wspólny schemat</h2>
+  <ol class="diagram">
+    <li><strong>1. Akcja</strong>Polityka wybiera komendę a w stanie s.</li>
+    <li><strong>2. Skutek</strong>Model podaje gałęzie P[s][a]. Z doświadczenia widzimy pojedynczy skutek.</li>
+    <li><strong>3. Cel</strong>Metoda wybiera dane do rachunku. Może użyć znanych szans, nagród z próbki lub obecnej oceny.</li>
+    <li><strong>4. Aktualizacja</strong>Zapisujemy nową wartość albo przesuwamy bieżącą ocenę w stronę celu.</li>
+  </ol>
+  <h3>Przejdź do obliczeń</h3>
+  <ul class="routes"><li><a href="#grupa-01"><b>Jedna wypłata</b><span>Q(a) i eksploracja</span></a></li><li><a href="#grupa-02"><b>Stan i pełny model</b><span>P[s][a], dwie średnie i maksimum</span></a></li><li><a href="#grupa-03"><b>Epizod albo jeden krok</b><span>Monte Carlo i TD(0)</span></a></li><li><a href="#grupa-04"><b>Następna akcja</b><span>Próbka, średnia albo maksimum</span></a></li><li><a href="#grupa-05"><b>Kilka kroków</b><span>Okno n lub ślady λ</span></a></li><li><a href="#grupa-06"><b>Rozszerzenia Q-learningu</b><span>Dwie tablice lub uczony model</span></a></li></ul>
+  <p><strong>Skróty.</strong> DP oznacza programowanie dynamiczne, MC to Monte Carlo, TD to różnice czasowe. Nazwa SARSA odpowiada kolejności: stan, akcja, nagroda, następny stan, następna akcja.</p>
+  <div class="formula family-formula">G<sub>t</sub> = r<sub>t+1</sub> + γr<sub>t+2</sub> + γ<sup>2</sup>r<sub>t+3</sub> + ···</div>
+  <p><strong>Jedna notacja.</strong> Interakcja daje (s<sub>t</sub>, a<sub>t</sub>, r<sub>t+1</sub>, s<sub>t+1</sub>, d<sub>t+1</sub>). E oznacza wartość oczekiwaną. Zapis E[X | warunek] czytamy jako średnią X po wynikach zgodnych z warunkiem, ważoną ich szansami. Wielkie R oznacza zmienną losową, małe r jej zaobserwowaną wartość. G<sub>t</sub> to zrealizowany zwrot od chwili t. Symbol y oznacza cel konkretnej aktualizacji. γ to dyskonto, α to krok uczenia, ε to szansa wejścia w gałąź eksploracji. W przykładach d = 1 oznacza terminal i zeruje dalszy wkład. Limit kroków symulatora jest osobnym znacznikiem.</p>
+  <p><strong>Co przechowujemy.</strong> V(s) ocenia oczekiwany zwrot od stanu. Q(s,a) ocenia zwrot po konkretnej pierwszej akcji. P[s][a] zwraca listę możliwych skutków tej akcji. Indeksy stanu i akcji są wspólne dla P i Q, więc można patrzeć na ten sam wybór w obu tabelach.</p>
+  <p><strong>Początek ścieżki.</strong> Gdy modelujemy próbę bandyty jako zadanie kończące się po jednym kroku, G<sub>t</sub> = r<sub>t+1</sub> i wystarczy Q(a). W MDP stan opisuje przyszłe możliwości, a działanie może je zmienić. Do nagrody dochodzi wtedy ocena dalszego zwrotu. Przy aktualizacjach z próbek stale wraca schemat przesunięcia oceny w stronę celu, ale cel i wpis mogą się zmienić.</p>
+  <p class="note"><strong>Jak czytać qᵥ(s,a).</strong> Dla każdej gałęzi z <code>P[s][a] = [(p, s′, r, koniec), …]</code> pomnóż <strong>r + γV(s′)</strong> przez p i dodaj składniki. Gdy epizod się kończy, w tej gałęzi zostaje p × r. π(a | s) waży wybór komendy, a p waży skutek tej komendy.</p>
+</section>
+
+<section class="section read-only" id="zmiana-metody" aria-labelledby="zmiana-tytul" tabindex="-1">
+  <h2 id="zmiana-tytul">Co zmienia się po przełączeniu metody?</h2>
+  <p>Wybierz dwie metody. Tabela zestawia ich dane, aktualizację i rolę G. Z nazw w nagłówku możesz przejść do wzorów. Wyróżnione wiersze wskazują różnice.</p>
+  <div class="comparison-controls">
+    <label>Pierwsza metoda<select id="compare-a"><option value="bandyta">Bandyta ε-zachłanny</option><option value="ocena">Iteracyjna ocena polityki</option><option value="pi">Iteracja polityki</option><option value="vi">Iteracja wartości</option><option value="mc">Monte Carlo pierwszej wizyty</option><option value="mc-control">Sterowanie Monte Carlo</option><option value="mc-off">Monte Carlo off-policy</option><option value="td0">TD(0) · predykcja</option><option value="sarsa">SARSA</option><option value="expected-sarsa">Expected SARSA</option><option value="q">Q-learning</option><option value="nstep">n-krokowe TD</option><option value="td-lambda">TD(λ) ze śladami</option><option value="n-sarsa">n-krokowe SARSA</option><option value="double-q">Double Q-learning</option><option value="dyna">Dyna-Q</option></select></label>
+    <label>Druga metoda<select id="compare-b"><option value="bandyta">Bandyta ε-zachłanny</option><option value="ocena">Iteracyjna ocena polityki</option><option value="pi">Iteracja polityki</option><option value="vi">Iteracja wartości</option><option value="mc">Monte Carlo pierwszej wizyty</option><option value="mc-control">Sterowanie Monte Carlo</option><option value="mc-off">Monte Carlo off-policy</option><option value="td0">TD(0) · predykcja</option><option value="sarsa">SARSA</option><option value="expected-sarsa">Expected SARSA</option><option value="q">Q-learning</option><option value="nstep">n-krokowe TD</option><option value="td-lambda">TD(λ) ze śladami</option><option value="n-sarsa">n-krokowe SARSA</option><option value="double-q">Double Q-learning</option><option value="dyna">Dyna-Q</option></select></label>
+  </div>
+  <div class="links pairs">
+    <button type="button" data-a="bandyta" data-b="mc-control">Bandyta → sterowanie MC</button>
+    <button type="button" data-a="pi" data-b="vi">Iteracja polityki ↔ wartości</button>
+    <button type="button" data-a="mc" data-b="td0">Monte Carlo → TD(0)</button>
+    <button type="button" data-a="sarsa" data-b="expected-sarsa">SARSA → Expected SARSA</button>
+    <button type="button" data-a="expected-sarsa" data-b="q">Expected SARSA → Q-learning</button>
+    <button type="button" data-a="td0" data-b="td-lambda">TD(0) → TD(λ)</button>
+    <button type="button" data-a="q" data-b="double-q">Q-learning → Double Q</button>
+    <button type="button" data-a="q" data-b="dyna">Q-learning → Dyna-Q</button>
+  </div>
+  <div class="table-wrap" tabindex="0"><table id="compare-table">
+    <thead><tr><th scope="col">Aspekt</th><th scope="col"><a id="compare-link-a" href="#bandyta">Pierwsza metoda</a></th><th scope="col"><a id="compare-link-b" href="#mc-control">Druga metoda</a></th></tr></thead>
+    <tbody id="compare-body"></tbody>
+  </table></div>
+  <p id="compare-status" aria-live="polite" class="small"></p>
+</section>
+
+<section class="section read-only" aria-labelledby="porownanie">
+  <h2 id="porownanie">Porównanie metod</h2>
+  <p>Przy aktualizacjach z próbek wspólny krok to <strong>ocena ← ocena + α × (cel − ocena)</strong>. W ocenie polityki i iteracji wartości pełny rachunek z modelu daje nową wartość w mapie. Wiersz tabeli prowadzi do krótkiej prezentacji metody.</p>
+  <div class="table-wrap" tabindex="0" aria-label="Przewijana tabela porównawcza"><table><thead>
+    <tr><th scope="col">Metoda</th><th scope="col">Dostępne dane</th><th scope="col">Cel albo operacja</th><th scope="col">Co dochodzi</th></tr>
+  </thead><tbody><tr><th scope="row"><a href="#bandyta">Bandyta ε-zachłanny</a></th>
+    <td>Wypłata r po wybraniu ramienia a</td><td>r</td><td>Reguła eksploracji ε i licznik wizyt N(a)</td></tr>
+<tr><th scope="row"><a href="#ocena">Iteracyjna ocena polityki</a></th>
+    <td>Pełne P[s][a], ustalona polityka π i poprzednia mapa V</td><td>Σₐ π(a | s) · q<sub>V</sub>(s,a)</td><td>Średnia po akcjach polityki i po skutkach każdej akcji</td></tr>
+<tr><th scope="row"><a href="#pi">Iteracja polityki</a></th>
+    <td>Pełne P[s][a] i startowa polityka π</td><td>Oceń V<sup>π</sup>, następnie wybierz argmaxₐ q<sub>V</sub>(s,a)</td><td>Po pełnej ocenie zmiana polityki we wszystkich stanach</td></tr>
+<tr><th scope="row"><a href="#vi">Iteracja wartości</a></th>
+    <td>Pełne P[s][a] i poprzednia mapa V</td><td>maxₐ q<sub>V</sub>(s,a)</td><td>Maksimum po akcjach przy każdym pełnym przebiegu</td></tr>
+<tr><th scope="row"><a href="#mc">Monte Carlo pierwszej wizyty</a></th>
+    <td>Zakończone epizody ustalonej polityki</td><td>Gₜ · pełny dalszy zwrot epizodu</td><td>Średnia zwrotów od pierwszych wizyt w kolejnych epizodach</td></tr>
+<tr><th scope="row"><a href="#mc-control">Sterowanie Monte Carlo</a></th>
+    <td>Epizody zbierane przez politykę ε-zachłanną względem Q</td><td>Gₜ · pełny dalszy zwrot dla pary (s,a)</td><td>Pierwsza wizyta w parze stan–akcja i poprawa reguły wyboru</td></tr>
+<tr><th scope="row"><a href="#mc-off">Monte Carlo off-policy</a></th>
+    <td>Epizody polityki zachowania b oraz znane szanse w b i w polityce docelowej π</td><td>Gₜ ważony iloczynem ilorazów π(a | s)/b(a | s)</td><td>Inna polityka zbiera dane, inną oceniamy. Potrzebne pokrycie akcji</td></tr>
+<tr><th scope="row"><a href="#td0">TD(0) · predykcja</a></th>
+    <td>Jedno przejście (s,a,r,s′), ustalona polityka i bieżące V</td><td>r + γ V(s′)</td><td>Bootstrapping. Wykorzystanie bieżącego oszacowania dalszego zwrotu</td></tr>
+<tr><th scope="row"><a href="#sarsa">SARSA</a></th>
+    <td>Przejście (s,a,r,s′) i rzeczywiście wybrana następna akcja a′</td><td>r + γ Q(s′,a′)</td><td>Cel używa następnej akcji polityki zbierającej dane</td></tr>
+<tr><th scope="row"><a href="#expected-sarsa">Expected SARSA</a></th>
+    <td>Jedno przejście i rozkład docelowej polityki π w następnym stanie</td><td>r + γ Σₐ′ π(a′ | s′) Q(s′,a′)</td><td>Średnia po następnych akcjach zamiast pojedynczej próbki akcji</td></tr>
+<tr><th scope="row"><a href="#q">Q-learning</a></th>
+    <td>Pojedyncze przejście (s,a,r,s′) i bieżące Q</td><td>r + γ maxₐ′ Q(s′,a′)</td><td>Cel zachłanny może różnić się od polityki zbierającej dane</td></tr>
+<tr><th scope="row"><a href="#nstep">n-krokowe TD</a></th>
+    <td>Odcinek n ruchów tej samej polityki albo wcześniejszy terminal</td><td>Suma nagród od t+1 do t+n z dyskontem, potem γⁿV(sₜ₊ₙ)</td><td>Kilka rzeczywistych nagród przed bieżącym oszacowaniem</td></tr>
+<tr><th scope="row"><a href="#td-lambda">TD(λ) ze śladami</a></th>
+    <td>Przejście, błąd TD δ i wektor śladów e ostatnich stanów</td><td>δ = r + γV(s′) − V(s), następnie V ← V + αδe</td><td>Jeden błąd TD aktualizuje kilka niedawno odwiedzonych stanów</td></tr>
+<tr><th scope="row"><a href="#n-sarsa">n-krokowe SARSA</a></th>
+    <td>n ruchów polityki zachowania i wybrana akcja aₜ₊ₙ, jeśli epizod trwa</td><td>Suma n zdyskontowanych nagród + γⁿ Q(sₜ₊ₙ,aₜ₊ₙ)</td><td>Wielokrokowy zwrot dla par stan–akcja</td></tr>
+<tr><th scope="row"><a href="#double-q">Double Q-learning</a></th>
+    <td>Jedno przejście oraz dwie tablice Qᴬ i Qᴮ</td><td>r + γ Qᴮ(s′, argmaxₐ′ Qᴬ(s′,a′)) przy aktualizacji A</td><td>Osobna tablica wybiera akcję, osobna ją ocenia</td></tr>
+<tr><th scope="row"><a href="#dyna">Dyna-Q</a></th>
+    <td>Rzeczywiste przejścia i model zapamiętany na ich podstawie</td><td>Cel Q-learningu dla przejścia rzeczywistego lub z modelu</td><td>Dodatkowe aktualizacje planujące bez ruchu w środowisku</td></tr></tbody></table></div>
+  <h3>Co zmienia się między sąsiednimi metodami?</h3>
+  <div class="table-wrap" tabindex="0" aria-label="Porównanie parami"><table><thead>
+    <tr><th scope="col">Przejście</th><th scope="col">Co trzymamy stałe</th><th scope="col">Co się zmienia</th></tr>
+  </thead><tbody>
+    <tr><th scope="row"><a href="#ocena">Ocena</a> i <a href="#vi">iteracja wartości</a></th><td>P, stara mapa V i wartości pierwszych akcji</td><td>Średnia po akcjach pod π albo maksimum po akcjach</td></tr>
+    <tr><th scope="row"><a href="#pi">Iteracja polityki</a> i <a href="#vi">iteracja wartości</a></th><td>Model i końcowe wartości optymalne</td><td>Pełna ocena przed zmianą strzałek albo maksimum w każdym przebiegu po stanach</td></tr>
+    <tr><th scope="row"><a href="#mc">MC</a> i <a href="#td0">TD(0)</a></th><td>Ustalona polityka i oceniany stan</td><td>Pełny dalszy zwrot albo jedna nagroda z bieżącym V następnego stanu</td></tr>
+    <tr><th scope="row"><a href="#sarsa">SARSA</a>, <a href="#expected-sarsa">Expected SARSA</a>, <a href="#q">Q-learning</a></th><td>Ta sama obserwacja i ta sama stara tablica Q</td><td>Odczyt po wybranej akcji, średnia pod polityką docelową albo maksimum</td></tr>
+    <tr><th scope="row"><a href="#td0">TD(0)</a>, <a href="#nstep">n-krokowe TD</a>, <a href="#td-lambda">TD(λ)</a></th><td>Trajektoria, ustalona polityka i punkt odniesienia</td><td>Liczba nagród przed dołączeniem oszacowania oraz sposób rozdzielania błędu na wcześniejsze stany</td></tr>
+    <tr><th scope="row"><a href="#q">Q-learning</a>, <a href="#double-q">Double Q</a>, <a href="#dyna">Dyna-Q</a></th><td>Rzeczywiste ruchy liczone osobno od aktualizacji tablicy</td><td>Double Q zmienia sposób oceny maksimum. Dyna-Q zmienia źródło dodatkowych próbek.</td></tr>
+  </tbody></table></div>
+  <p class="note"><strong>Dwie różne osie.</strong> On-policy i off-policy mówią, czy oceniamy tę samą politykę, która zbiera dane. Online i offline mówią, czy w trakcie uczenia zbiór danych nadal rośnie. Politykę off-policy można uczyć z danych przyrastających na bieżąco, jak w Q-learningu.</p>
+</section>
+<section class="section read-only" aria-labelledby="z-kursu">
+  <h2 id="z-kursu">Co warto odzyskać ze starszego kursu?</h2>
+  <dl class="facts">
+    <div><dt>Jawne P i mapy wartości</dt><dd>Własny model i próbnik FrozenLake z tego samego P. Przywróć podgląd wpisu P[s][a], mapę V i strzałki polityki. Zacznij od odzyskanej planszy 5 × 5 z przejściami A → A′ (+10) i B → B′ (+5).</dd></div>
+    <div><dt>Wspólny wzorzec dla MC i TD</dt><dd>Te same trajektorie i jedna ustalona polityka. Do porównania dodaj wizyty w stanach, rozrzut między ziarnami i dokładny wynik DP jako punkt odniesienia.</dd></div>
+    <div><dt>Losowy spacer i zmiana reprezentacji</dt><dd>Na końcu części tabelarycznej wróć do tego samego TD(0). Tablica → wektor one-hot → wspólne cechy. Po tym przykładzie przejdź do aproksymacji Q.</dd></div>
+  </dl>
+  <p><strong>Oryginalna plansza +10/+5.</strong> W notebookach Ch03 i Ch04 nagrodę dostajesz wychodząc z A lub B, a po przeniesieniu gra trwa. Dlatego model daje <code>P[1][prawo] = [(1, 21, 10, False)]</code>. Na normalnej krawędzi próba wyjścia daje −1. Większy wariant 10 × 10 w Ch04 ma trzecie pole specjalne z +7. Na nim można zrobić mini-projekt, zmieniając jedno ustawienie i mierząc wartość startu.</p>
+  <p class="links screen-only"><a href="Laboratorium_Gridworld_AB.html">Porównaj mapy A/B</a><a href="RL_02_Gridworld_AB.ipynb" download>Notebook A/B</a><a href="https://github.com/zussini/kursy/blob/170b201b2fe8fd1300d2ceb3afffab7cb823c020/reinforcement_learning/notebooks/Ch03_Finite_MDPs_full.ipynb">Oryginalny Ch03</a><a href="https://github.com/zussini/kursy/blob/170b201b2fe8fd1300d2ceb3afffab7cb823c020/reinforcement_learning/notebooks/Ch04_Dynamic_Programming_full.ipynb">Oryginalny Ch04</a></p>
+  <p>Starsze pokazy w pełnej paczce mają bezpośrednie zakładki <code>#planning</code> (iteracja polityki i wartości), <code>#lab</code> (urwisko), <code>#temporal</code> (wiele kroków i ślady), <code>#doubleq</code> (szum) i <code>#dyna</code> (dodatkowe kroki z modelu). Plansza 5 × 5 ze starszego HTML-u ma inne nagrody. W nowym laboratorium odtworzono zasady A/B z oryginalnego notebooka.</p>
+  <p>W starym kodzie DP mapa była aktualizowana w miejscu. Gdy demonstrujesz rozchodzenie się wartości przy ruchu do sąsiada, użyj tej samej poprzedniej kopii mapy dla wszystkich stanów w danym przebiegu. Przy przenoszeniu kodu uczącego rozróżnij rzeczywisty terminal i limit kroków symulatora.</p>
+  <p class="screen-only"><a href="https://github.com/zussini/kursy/tree/main/reinforcement_learning">Oryginalny kurs zussini/kursy</a> · <a href="https://github.com/zussini/kursy/tree/a8dc975f01fc67470003dd9bf8bb9b97f00153fc/reinforcement_learning">Wersja źródłowa adaptacji v5</a> · Starsza pełna paczka</p>
+</section>
+<section class="section read-only" aria-labelledby="zrodla">
+  <h2 id="zrodla">Źródła i konwencje</h2>
+  <p>Sutton i Barto w rozdziale 2 pokazują wybór akcji, odbiór wypłaty, zwiększenie licznika i przyrostową średnią. David Silver w wykładzie 9 oddziela estymację nagrody od reguły eksploracji. Schemat atlasu przenosi ten podział na dwie gałęzie i wspólną aktualizację.</p>
+  <p><a href="https://web.stanford.edu/class/psych209/Readings/SuttonBartoRL.pdf">Sutton i Barto · rozdział 2, sekcje 2.1–2.3</a> · <a href="https://web.stanford.edu/class/cme241/lecture_slides/david_silver_slides/XX.pdf">David Silver · wykład 9</a></p>
+  <p>W atlasie stosujemy nowszą konwencję indeksowania, z akcją a<sub>t</sub> i nagrodą r<sub>t+1</sub>. U Silvera prawdziwą średnią zapisano jako Q(a), a estymatę z daszkiem. Tutaj używamy q<sub>*</sub>(a) i Q<sub>t</sub>(a).</p>
+</section>
+<p class="read-only screen-only">Tryb prezentacji zaczyna się od wspólnego schematu. Dalej są wprowadzenia do grup i pojedyncze metody. Użyj przycisków lub <kbd>←</kbd> i <kbd>→</kbd> poza kontrolkami.</p>
+
+<section class="slide family" id="grupa-01" aria-labelledby="grupa-01-title" tabindex="-1" data-title="Jedna decyzja, jedna wypłata">
+  <p class="topic">Moduł 01 / Bandyci</p>
+  <h2 id="grupa-01-title">Jedna decyzja, jedna wypłata</h2>
+  <p class="lead">Każda próba bandyty ma ten sam zestaw ramion. Polityka ε-greedy wybiera ramię. Średnia próbkowa aktualizuje jego ocenę.</p>
+  <div class="formula family-formula">q<sub>*</sub>(a) = E[R<sub>t+1</sub> | A<sub>t</sub> = a] · Q<sub>t</sub>(a) = bieżące oszacowanie</div>
+  <div class="family-grid">
+    <div><h3>Co zmienia się w tej grupie</h3><p>W MDP akcja może zmienić przyszły stan. Wartość akcji zależy wtedy również od dalszych nagród i dalszej polityki.</p></div>
+    <div><h3>Pytanie do pokazu</h3><p>Zacznij od pytania, które ramię wybiera agent, kiedy prawdziwe średnie wypłat w symulatorze są ukryte.</p></div>
+  </div>
+  
+  <p class="links"> <a href="#bandyta">Bandyta ε-zachłanny</a> </p>
+</section>
+<section class="slide method" id="bandyta" aria-labelledby="bandyta-title" tabindex="-1" data-title="Bandyta ε-zachłanny">
+  <p class="topic">Moduł 01 / Bandyci</p>
+  <h2 id="bandyta-title">Bandyta ε-zachłanny</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Wypłata r po wybraniu ramienia a</dd></div><div><dt>Cel albo operacja</dt><dd>r</dd></div><div><dt>Wynik</dt><dd>Q(a) · średnia wypłata ramienia</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Brak modelu przejść</span><span><b>Wpis</b> Q(a)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji">q<sub>*</sub>(a) = E[R<sub>t+1</sub> | A<sub>t</sub>=a], y<sub>t</sub> = r<sub>t+1</sub><br>N(a<sub>t</sub>) ← N(a<sub>t</sub>)+1, α<sub>t</sub> = 1/N(a<sub>t</sub>)<br>Q(a<sub>t</sub>) ← Q(a<sub>t</sub>) + α<sub>t</sub>[y<sub>t</sub> − Q(a<sub>t</sub>)]</div>
+  
+  <div class="visual"><div class="decision-flow" role="group" aria-label="Dwie gałęzie wyboru i wspólna aktualizacja">
+  <div class="decision-question"><strong>Wylosuj U z [0, 1). Czy U &lt; ε?</strong></div>
+  <div class="decision-options">
+    <div class="flow-node"><strong>Tak · z szansą ε</strong><span>Eksploracja. Losuj równomiernie ze wszystkich K ramion.</span></div>
+    <div class="flow-node"><strong>Nie · z szansą 1−ε</strong><span>Eksploatacja. Wybierz spośród ramion o największym Q. Remis rozstrzygnij losowo.</span></div>
+  </div>
+  <div class="decision-result"><strong>Wybrane aₜ → wypłata rₜ₊₁ → zwiększ N(aₜ) i popraw Q(aₜ)</strong></div>
+</div>
+<table>
+  <caption>Dwie rozłączne gałęzie wyboru ramienia</caption>
+  <thead><tr><th scope="col">Warunek</th><th scope="col">Wybór</th><th scope="col">Przykład dla ε = 0,20</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">U &lt; ε</th><td>Losuj równo spośród wszystkich K ramion, również najlepszych.</td><td>0,20 × 1/4 = 0,05 dla każdego ramienia.</td></tr>
+    <tr><th scope="row">U ≥ ε</th><td>Wybierz ramię z największym Q. Remis rozstrzygnij losowo.</td><td>Przy Q = (4, 4, 2, 0) dwa najlepsze ramiona otrzymują po 0,80 × 1/2 = 0,40.</td></tr>
+  </tbody>
+</table>
+<p>Łączne szanse wyboru w tym przykładzie wynoszą (0,45; 0,45; 0,05; 0,05).</p></div>
+  
+<div class="bandit-lab" aria-label="Prawdopodobieństwa wyboru w bandycie">
+  <h3>Sprawdź gałęzie wyboru</h3>
+  <div class="input-row">
+    <label for="eps-bandit">ε <output id="eps-bandit-value" for="eps-bandit">0,20</output></label>
+    <input type="range" id="eps-bandit" min="0" max="1" step=".05" value=".2">
+    <label><input type="checkbox" id="tie-bandit" checked> Remis dwóch najwyższych ocen</label>
+  </div>
+  <p class="small" id="bandit-q">Q: ramię 1 = 4, ramię 2 = 4, ramię 3 = 2, ramię 4 = 0.</p>
+  <div class="probabilities" id="bandit-probabilities" aria-live="polite"></div>
+</div>
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> W próbie traktowanej jako epizod jednego kroku Gₜ = rₜ₊₁. Każdą ocenę Q(a) budują wypłaty uzyskane bezpośrednio po wyborze ramienia a.</p>
+  <p>q* to prawdziwa średnia wypłata ramienia w świecie stacjonarnym. Q to jej aktualne oszacowanie. R oznacza losową wypłatę, a r jedną uzyskaną liczbę. Przy remisie wśród m najlepszych ramion każde z nich ma szansę (1−ε)/m + ε/K, gdzie K to liczba wszystkich ramion. Pozostałe mają szansę ε/K. Krok 1/N daje zwykłą średnią próbek, ponieważ N liczymy po doliczeniu bieżącej wypłaty. To ten sam sposób liczenia średniej co w predykcji Monte Carlo, gdzie próbką jest cały zwrot Gₜ.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Z szansą ε losuj ramię. W pozostałych przypadkach wybierz najlepsze znane ramię.</li><li>Odbierz wypłatę i zwiększ N(a).</li><li>Przesuń Q(a) o 1/N(a) różnicy między wypłatą a bieżącą oceną.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Reguła eksploracji ε i licznik wizyt N(a)</p>
+  <details><summary>Sprawdź się</summary><p>Gdy oszacowanie Q ramienia wynosi 4, licznik po nowej wizycie to 5, a wypłata wynosi 9, jaki będzie nowy Q?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Q ← 4 + (9 − 4)/5 = 5.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-01">Wprowadzenie do grupy</a> · <a href="#mc">Monte Carlo pierwszej wizyty</a> · <a href="#sarsa">SARSA</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="bandyta" data-reference="mc">Porównaj z Monte Carlo pierwszej wizyty</button></p><p class="small"><a href="#zrodla">Źródła zapisu ε-greedy</a></p>
+</section>
+<section class="slide family" id="grupa-02" aria-labelledby="grupa-02-title" tabindex="-1" data-title="Planowanie na znanym modelu">
+  <p class="topic">Moduł 02 / Planowanie z modelem</p>
+  <h2 id="grupa-02-title">Planowanie na znanym modelu</h2>
+  <p class="lead">Robot i Gridworld A/B dają jawny model skutków. Po stanie wybierz akcję, po akcji odczytaj jej możliwe skutki.</p>
+  <div class="formula family-formula">q<sub>V</sub>(s,a) = Σ<sub>P[s][a]</sub> p [r + γ(1−d)V(s′)]</div>
+  <div class="family-grid">
+    <div><h3>Co zmienia się w tej grupie</h3><p>Ocena waży akcje polityką. Iteracja polityki powtarza ocenę i poprawę. Iteracja wartości wykonuje maksimum w każdym przebiegu.</p></div>
+    <div><h3>Pytanie do pokazu</h3><p>U robota zamień wiersz na składnik równania. Na planszy A/B porównaj całą mapę dla polityki losowej z mapą optymalną.</p></div>
+  </div>
+  
+<aside class="mini-model" aria-label="Wspólny wiersz modelu">
+  <p><strong>Ten sam wiersz P na kartach DP · robot</strong></p>
+  <p><code>P[H]["szukaj"] = [(0,5; H; 2; 0), (0,5; L; 2; 0)]</code></p>
+  <p>Wpis (p, następny stan, nagroda, koniec). H oznacza wysoką energię, L niską. Dwie gałęzie po jednej decyzji. Przy γ = 0,8, V(H) = 5 i V(L) = 1 ich suma ważona wynosi 0,5 × (2 + 0,8 × 5) + 0,5 × (2 + 0,8 × 1) = 4,4.</p>
+</aside>
+  <p class="links"> <a href="#ocena">Iteracyjna ocena polityki</a> · <a href="#pi">Iteracja polityki</a> · <a href="#vi">Iteracja wartości</a> </p>
+</section>
+<section class="slide method" id="ocena" aria-labelledby="ocena-title" tabindex="-1" data-title="Iteracyjna ocena polityki">
+  <p class="topic">Moduł 02 / Planowanie z modelem</p>
+  <h2 id="ocena-title">Iteracyjna ocena polityki</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Pełne P[s][a], ustalona polityka π i poprzednia mapa V</dd></div><div><dt>Cel albo operacja</dt><dd>Σₐ π(a | s) · q<sub>V</sub>(s,a)</dd></div><div><dt>Wynik</dt><dd>V<sup>π</sup> · wartość zadanej polityki</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Pełne P[s][a]</span><span><b>Wpis</b> V(s)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji">q<sub>V<sub>k</sub></sub>(s,a) = ∑<sub>(p,s′,r,d) ∈ P[s][a]</sub> p · [r + γ(1−d)V<sub>k</sub>(s′)]<br>V<sub>k+1</sub>(s) = ∑<sub>a</sub> π(a | s) · q<sub>V<sub>k</sub></sub>(s,a)</div>
+  
+<aside class="mini-model" aria-label="Wspólny wiersz modelu">
+  <p><strong>Ten sam wiersz P na kartach DP · robot</strong></p>
+  <p><code>P[H]["szukaj"] = [(0,5; H; 2; 0), (0,5; L; 2; 0)]</code></p>
+  <p>Wpis (p, następny stan, nagroda, koniec). H oznacza wysoką energię, L niską. Dwie gałęzie po jednej decyzji. Przy γ = 0,8, V(H) = 5 i V(L) = 1 ich suma ważona wynosi 0,5 × (2 + 0,8 × 5) + 0,5 × (2 + 0,8 × 1) = 4,4.</p>
+</aside>
+  <div class="visual"><div class="flow" role="group" aria-label="Krok oceny ustalonej polityki">
+  <div class="flow-node"><strong>Model i stara mapa</strong><br>Odczytaj P[s][a] oraz Vₖ(s′).</div>
+  <span class="flow-arrow" aria-hidden="true">→</span>
+  <div class="flow-node"><strong>Średnia po skutkach</strong><br>Dla ustalonej akcji oblicz qᵥ(s,a).</div>
+  <span class="flow-arrow" aria-hidden="true">→</span>
+  <div class="flow-node"><strong>Średnia po akcjach</strong><br>Zważ qᵥ przez π(a | s). Zapisz Vₖ₊₁(s).</div>
+</div>
+<table>
+  <caption>Robot, P[H][„szukaj”] przy γ = 0,8</caption>
+  <thead><tr><th scope="col">Gałąź (p, s′, r, d)</th><th scope="col">Wkład w qᵥ(H, „szukaj”)</th></tr></thead>
+  <tbody>
+    <tr><td>(0,5; H; 2; 0)</td><td>0,5 · [2 + 0,8 Vₖ(H)]</td></tr>
+    <tr><td>(0,5; L; 2; 0)</td><td>0,5 · [2 + 0,8 Vₖ(L)]</td></tr>
+  </tbody>
+</table>
+<p>Jeśli π(„szukaj” | H) = 1, cała suma z powyższych dwóch wierszy wchodzi do Vₖ₊₁(H). Ocenę wszystkich stanów czytamy z tej samej starej mapy Vₖ.</p></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Vπ(s) jest oczekiwanym Gₜ przy starcie w s i ustalonej polityce π. W pojedynczej aktualizacji liczymy średnią z możliwych pierwszych wyników i wykorzystujemy bieżące V do oszacowania dalszego zwrotu.</p>
+  <p>P[s][a] przechowuje gałęzie modelu, a qᵥ(s,a) jest jedną liczbą policzoną z tych gałęzi oraz z podanej mapy V. Dla V = Vπ otrzymujemy Qπ. Dwie znormalizowane średnie przypominają sumę ważoną w mechanice statystycznej. Funkcja podziału Z = Σ exp(−βE) sumuje nieznormalizowane wagi. W równaniu Bellmana wagi p oraz π już sumują się do 1 w odpowiednich rozkładach. Najpierw p waży skutki już wybranej akcji. Potem π(a | s) waży możliwości wyboru akcji. Gdy polityka w H zawsze szuka, druga średnia ma jeden składnik. Gdy w L zawsze ładuje, po nagrodzie 0 i pewnym przejściu do H dostajemy 0,8V(H). TD(0) aktualizuje to samo oszacowanie na podstawie pojedynczego obserwowanego przejścia i kroku uczenia.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Dla każdej akcji odczytaj gałęzie z P[s][a] i oblicz q<sub>V</sub>(s,a).</li><li>Dla każdego pola zważ wyniki akcji przez π(a | s) i zapisz je do nowej mapy.</li><li>Zastąp mapę i powtarzaj, aż różnica między mapami będzie mniejsza od tolerancji.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Średnia po akcjach polityki i po skutkach każdej akcji</p>
+  <details><summary>Sprawdź się</summary><p>Gdy polityka w L zawsze ładuje, ile składników pozostaje w sumie po akcjach?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Jeden. Z modelu ładowania jest też jedna gałąź, więc V(L) = 0 + 0,8 V(H).</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-02">Wprowadzenie do grupy</a> · <a href="#pi">Iteracja polityki</a> · <a href="#vi">Iteracja wartości</a> · <a href="#td0">TD(0) · predykcja</a> · <a href="Laboratorium_Gridworld_AB.html">Otwórz Gridworld A/B</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="ocena" data-reference="pi">Porównaj z Iteracja polityki</button></p>
+</section>
+<section class="slide method" id="pi" aria-labelledby="pi-title" tabindex="-1" data-title="Iteracja polityki">
+  <p class="topic">Moduł 02 / Planowanie z modelem</p>
+  <h2 id="pi-title">Iteracja polityki</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Pełne P[s][a] i startowa polityka π</dd></div><div><dt>Cel albo operacja</dt><dd>Oceń V<sup>π</sup>, następnie wybierz argmaxₐ q<sub>V</sub>(s,a)</dd></div><div><dt>Wynik</dt><dd>Polityka optymalna π* i jej wartości</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Pełne P[s][a]</span><span><b>Wpis</b> V(s) i π(·|s)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji">1. Oceń π<sub>j</sub>, aż uzyskasz V<sup>π<sub>j</sub></sup>.<br>2. π<sub>j+1</sub>(s) ∈ arg max<sub>a</sub> q<sub>V<sup>π<sub>j</sub></sup></sub>(s,a).</div>
+  
+<aside class="mini-model" aria-label="Wspólny wiersz modelu">
+  <p><strong>Ten sam wiersz P na kartach DP · robot</strong></p>
+  <p><code>P[H]["szukaj"] = [(0,5; H; 2; 0), (0,5; L; 2; 0)]</code></p>
+  <p>Wpis (p, następny stan, nagroda, koniec). H oznacza wysoką energię, L niską. Dwie gałęzie po jednej decyzji. Przy γ = 0,8, V(H) = 5 i V(L) = 1 ich suma ważona wynosi 0,5 × (2 + 0,8 × 5) + 0,5 × (2 + 0,8 × 1) = 4,4.</p>
+</aside>
+  <div class="visual"><div class="flow" role="group" aria-label="Iteracja polityki jako cykl oceny i zachłannej poprawy">
+  <div class="flow-node"><strong>1. Oceń π</strong><br>Utrzymuj stare strzałki i oblicz wartości z pełnego P.</div>
+  <span class="flow-arrow" aria-hidden="true">→</span>
+  <div class="flow-node"><strong>2. Popraw π</strong><br>Oblicz q z ocenionego V. Wybierz akcje przez argmax.</div>
+  <span class="flow-arrow" aria-hidden="true">→</span>
+  <div class="flow-node"><strong>3. Sprawdź wynik</strong><br>Gdy strzałki się zmieniły, wróć do oceny. Gdy są stabilne, zakończ.</div>
+</div>
+<table>
+  <caption>Suchy FrozenLake, pole 14 i startowa polityka „zawsze w górę”</caption>
+  <thead><tr><th scope="col">Fragment P i wartości</th><th scope="col">Wybór po ocenie</th></tr></thead>
+  <tbody>
+    <tr><td><code>P[14]["prawo"] = [(1, 15, +1, True)]</code></td><td>Wejście do celu kończy epizod. qᵥ(14, „prawo”) = 1.</td></tr>
+    <tr><td>Pod starą polityką Vπ na polach nieterminalnych wynosi 0.</td><td>Po innych pierwszych ruchach ze stanu 14 qᵥ = 0. Nowa strzałka na polu 14 to „prawo”.</td></tr>
+  </tbody>
+</table></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Ocena wyznacza oczekiwany Gₜ dla bieżącej polityki z pełnego modelu. Do poprawy polityki wystarczą obliczone wartości. Nie trzeba czekać na zakończony epizod.</p>
+  <p>Argmax wskazuje akcję osiągającą największą wartość, a max zwraca tę wartość liczbową. Po poprawie strzałki oznaczają nową politykę, ale liczby nadal należą do oceny poprzedniej. Ponownie oceń wartości i sprawdź, czy akcje jeszcze się zmieniają. W deterministycznej polityce zachowaj dotychczasową akcję, jeśli nadal należy do zbioru najlepszych. To ułatwia zatrzymanie pętli przy remisach. Iteracja wartości bierze maksimum już w każdym przebiegu po stanach.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Ustal politykę i oceń ją aż do zbieżności.</li><li>Na podstawie tej oceny wybierz zachłannie akcje. Przy remisie zachowaj poprzednią akcję, jeśli nadal jest najlepsza.</li><li>Jeśli jakaś akcja się zmieniła, wróć do oceny nowej polityki.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Po pełnej ocenie zmiana polityki we wszystkich stanach</p>
+  <details><summary>Sprawdź się</summary><p>Co pokazać po naciśnięciu „Popraw politykę”, zanim znowu ocenimy wartości?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Nowe strzałki na planszy. Mapa wartości wciąż pochodzi z oceny poprzedniej polityki.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-02">Wprowadzenie do grupy</a> · <a href="#ocena">Iteracyjna ocena polityki</a> · <a href="#vi">Iteracja wartości</a> · <a href="#mc-control">Sterowanie Monte Carlo</a> · <a href="Laboratorium_Gridworld_AB.html">Otwórz Gridworld A/B</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="pi" data-reference="ocena">Porównaj z Iteracyjna ocena polityki</button></p>
+</section>
+<section class="slide method" id="vi" aria-labelledby="vi-title" tabindex="-1" data-title="Iteracja wartości">
+  <p class="topic">Moduł 02 / Planowanie z modelem</p>
+  <h2 id="vi-title">Iteracja wartości</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Pełne P[s][a] i poprzednia mapa V</dd></div><div><dt>Cel albo operacja</dt><dd>maxₐ q<sub>V</sub>(s,a)</dd></div><div><dt>Wynik</dt><dd>V* i najlepsze akcje odczytane z końcowej mapy</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Pełne P[s][a]</span><span><b>Wpis</b> V(s)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji">q<sub>V<sub>k</sub></sub>(s,a) = ∑<sub>(p,s′,r,d) ∈ P[s][a]</sub> p · [r + γ(1−d)V<sub>k</sub>(s′)]<br>V<sub>k+1</sub>(s) = max<sub>a</sub> q<sub>V<sub>k</sub></sub>(s,a), π<sub>zachłanna</sub>(s) ∈ arg max<sub>a</sub> q<sub>V</sub>(s,a)</div>
+  
+<aside class="mini-model" aria-label="Wspólny wiersz modelu">
+  <p><strong>Ten sam wiersz P na kartach DP · robot</strong></p>
+  <p><code>P[H]["szukaj"] = [(0,5; H; 2; 0), (0,5; L; 2; 0)]</code></p>
+  <p>Wpis (p, następny stan, nagroda, koniec). H oznacza wysoką energię, L niską. Dwie gałęzie po jednej decyzji. Przy γ = 0,8, V(H) = 5 i V(L) = 1 ich suma ważona wynosi 0,5 × (2 + 0,8 × 5) + 0,5 × (2 + 0,8 × 1) = 4,4.</p>
+</aside>
+  <div class="visual"><div class="flow" role="group" aria-label="Synchroniczny przebieg iteracji wartości">
+  <div class="flow-node"><strong>Stara mapa</strong><br>Ustal Vₖ na cały przebieg.</div>
+  <span class="flow-arrow" aria-hidden="true">→</span>
+  <div class="flow-node"><strong>Policz q dla każdej akcji</strong><br>Zsumuj wkłady gałęzi z P[s][a].</div>
+  <span class="flow-arrow" aria-hidden="true">→</span>
+  <div class="flow-node"><strong>Wybierz maksimum</strong><br>Zapisz Vₖ₊₁. Po zbieżności odczytaj strzałki przez argmax.</div>
+</div>
+<table>
+  <caption>Śliski FrozenLake, P[14][„prawo”], γ = 0,95</caption>
+  <thead><tr><th scope="col">Gałąź (p, s′, r, d)</th><th scope="col">Wkład dla Vₖ(10) = 0,40 i Vₖ(14) = 0,60</th></tr></thead>
+  <tbody>
+    <tr><td>(1/3; 10; 0; 0)</td><td>(0 + 0,95 · 0,40)/3 = 0,38/3</td></tr>
+    <tr><td>(1/3; 14; 0; 0)</td><td>(0 + 0,95 · 0,60)/3 = 0,57/3</td></tr>
+    <tr><td>(1/3; 15; 1; 1)</td><td>(1 + 0)/3 = 1/3</td></tr>
+  </tbody>
+</table>
+<p>Wychodzi qᵥ(14, „prawo”) = 0,65. Dopiero teraz porównaj tę liczbę z qᵥ pozostałych komend, żeby wyznaczyć Vₖ₊₁(14).</p></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Punkt stały V* to największy możliwy oczekiwany Gₜ od każdego stanu. Każdy przebieg oblicza krok z użyciem modelu i bieżącego oszacowania V. Uruchomienie epizodu może potem pokazać, jak wyznaczona polityka zachowuje się w środowisku.</p>
+  <p>Maksimum wybiera największy qᵥ spośród komend. Każde qᵥ już uśrednia losowe wyniki swojej komendy. Poślizg pozostaje częścią modelu. Zapisujemy nową liczbę do mapy V, a polecenie do wykonania uzyskujemy przez argmax. W synchronicznym przebiegu czytamy tylko mapę Vₖ i zapisujemy wszystkie wyniki do Vₖ₊₁. Przy ustalonej polityce ten sam qᵥ waży π, a w Q-learningu model gałęzi zastępuje próbka przejścia.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Dla wszystkich pól i akcji oblicz q<sub>V</sub> z tej samej starej mapy.</li><li>W każdym polu wpisz największe q<sub>V</sub> do nowej mapy.</li><li>Po zbieżności odczytaj najlepsze akcje, zachowując informację o remisach.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Maksimum po akcjach przy każdym pełnym przebiegu</p>
+  <details><summary>Sprawdź się</summary><p>Czy wykonując maksimum po akcjach na śliskim lodzie, wybieramy też najbardziej korzystny skutek poślizgu?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Maksimum dotyczy komend agenta. Środowisko wybiera skutek według modelu, więc skutki danej komendy są uśredniane.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-02">Wprowadzenie do grupy</a> · <a href="#ocena">Iteracyjna ocena polityki</a> · <a href="#pi">Iteracja polityki</a> · <a href="#q">Q-learning</a> · <a href="Laboratorium_Gridworld_AB.html">Otwórz Gridworld A/B</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="vi" data-reference="ocena">Porównaj z Iteracyjna ocena polityki</button></p>
+</section>
+<section class="slide family" id="grupa-03" aria-labelledby="grupa-03-title" tabindex="-1" data-title="Ocena i poprawa z doświadczenia">
+  <p class="topic">Moduł 03 / Predykcja i Monte Carlo</p>
+  <h2 id="grupa-03-title">Ocena i poprawa z doświadczenia</h2>
+  <p class="lead">Środowisko dostarcza próbki. Dla ustalonej polityki jako wzorzec możemy zachować wartość obliczoną z modelu.</p>
+  <div class="formula family-formula">G<sub>t</sub> = r<sub>t+1</sub> + γr<sub>t+2</sub> + ··· · TD(0) używa r<sub>t+1</sub> + γ(1−d)V(s<sub>t+1</sub>)</div>
+  <div class="family-grid">
+    <div><h3>Co zmienia się w tej grupie</h3><p>Monte Carlo po epizodzie używa zwrotu G. TD(0) po ruchu dołącza bieżące V. Sterowanie MC ocenia parę (s,a), a off-policy MC koryguje dobór prób.</p></div>
+    <div><h3>Pytanie do pokazu</h3><p>Na tym samym epizodzie 14 → 10 → 14 → 15 wskaż, kiedy każda metoda ma już potrzebne dane.</p></div>
+  </div>
+  
+  <p class="links"> <a href="#mc">Monte Carlo pierwszej wizyty</a> · <a href="#mc-control">Sterowanie Monte Carlo</a> · <a href="#mc-off">Monte Carlo off-policy</a> · <a href="#td0">TD(0) · predykcja</a> </p>
+</section>
+<section class="slide method" id="mc" aria-labelledby="mc-title" tabindex="-1" data-title="Monte Carlo pierwszej wizyty">
+  <p class="topic">Moduł 03 / Predykcja i Monte Carlo</p>
+  <h2 id="mc-title">Monte Carlo pierwszej wizyty</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Zakończone epizody ustalonej polityki</dd></div><div><dt>Cel albo operacja</dt><dd>Gₜ · pełny dalszy zwrot epizodu</dd></div><div><dt>Wynik</dt><dd>V<sup>π</sup> · wartość zadanej polityki</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Bez jawnego P</span><span><b>Wpis</b> V(s)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji">G<sub>t</sub> = ∑<sub>k=t</sub><sup>T−1</sup> γ<sup>k−t</sup>r<sub>k+1</sub>, y<sub>t</sub> = G<sub>t</sub><br>V(s<sub>t</sub>) ← V(s<sub>t</sub>) + α[y<sub>t</sub> − V(s<sub>t</sub>)] przy pierwszej wizycie w s<sub>t</sub> w epizodzie</div>
+  
+  <div class="visual"><div class="flow"><div class="flow-node">Zapisz cały epizod zgodny z ustaloną π</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Od końca oblicz <strong class="changed">G<sub>t</sub> = r<sub>t+1</sub> + γG<sub>t+1</sub></strong> z G<sub>T</sub> = 0</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">W porządku od początku wybierz pierwszą wizytę w każdym stanie</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Uaktualnij wartość V(s<sub>t</sub>)</div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Gₜ to zdyskontowana suma nagród zaobserwowanych od chwili t aż do końca epizodu. Tutaj cały Gₜ jest próbką celu yₜ.</p>
+  <p>Średnią próbek zwrotu można aktualizować krokiem α = 1/N(s), gdzie N(s) liczy epizody z pierwszą wizytą w tym stanie. Dla 14 → 10 → 14 → 15, nagród (0, 0, 1) i γ = 0,95 pierwsza wizyta w 14 daje 0,9025. Druga daje 1. W wariancie każdej wizyty do wspólnej średniej trafią obie próbki, a w wariancie pierwszej wizyty tylko 0,9025.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Zapisz epizod do końca.</li><li>Idąc od końca, oblicz Gₜ = rₜ₊₁ + γ Gₜ₊₁.</li><li>Idąc od początku, zaktualizuj wartość tylko przy pierwszej wizycie w danym stanie w tym epizodzie.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Średnia zwrotów od pierwszych wizyt w kolejnych epizodach</p>
+  <details><summary>Sprawdź się</summary><p>W epizodzie 14 → 10 → 14 → 15 z trzema nagrodami 0, 0 i 1 który zwrot ze stanu 14 zapisujemy?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Zwrot od pierwszej wizyty, 0,95² = 0,9025. Zwrot od drugiej wizyty wynosi 1.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-03">Wprowadzenie do grupy</a> · <a href="#bandyta">Bandyta ε-zachłanny</a> · <a href="#td0">TD(0) · predykcja</a> · <a href="#mc-control">Sterowanie Monte Carlo</a> · <a href="#mc-off">Monte Carlo off-policy</a> · <a href="Laboratorium_Jedno_przejscie.html#predykcja">Policz na FrozenLake</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="mc" data-reference="bandyta">Porównaj z Bandyta ε-zachłanny</button></p>
+</section>
+<section class="slide method" id="mc-control" aria-labelledby="mc-control-title" tabindex="-1" data-title="Sterowanie Monte Carlo">
+  <p class="topic">Moduł 03 / Predykcja i Monte Carlo</p>
+  <h2 id="mc-control-title">Sterowanie Monte Carlo</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Epizody zbierane przez politykę ε-zachłanną względem Q</dd></div><div><dt>Cel albo operacja</dt><dd>Gₜ · pełny dalszy zwrot dla pary (s,a)</dd></div><div><dt>Wynik</dt><dd>Q(s,a) i polityka poprawiana po epizodach</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Bez jawnego P</span><span><b>Wpis</b> Q(s,a)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji">G<sub>t</sub> = ∑<sub>k=t</sub><sup>T−1</sup> γ<sup>k−t</sup>r<sub>k+1</sub>, y<sub>t</sub> = G<sub>t</sub><br>Q<sub>t+1</sub>(s<sub>t</sub>,a<sub>t</sub>) = Q<sub>t</sub>(s<sub>t</sub>,a<sub>t</sub>) + α[y<sub>t</sub> − Q<sub>t</sub>(s<sub>t</sub>,a<sub>t</sub>)]<br>Pierwsza wizyta w (s<sub>t</sub>,a<sub>t</sub>), potem π<sub>nowa</sub> ← ε-zachłanna względem Q</div>
+  
+  <div class="visual"><div class="flow"><div class="flow-node">Rozegraj epizod polityką π ε-zachłanną względem Q</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong class="changed">G<sub>t</sub> dla pierwszej wizyty w parze (s<sub>t</sub>,a<sub>t</sub>)</strong></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Uśrednij zwroty dla Q(s<sub>t</sub>,a<sub>t</sub>)</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Na kolejny epizod wybierz politykę ε-zachłanną względem nowego Q</div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Ten sam pełny zaobserwowany Gₜ służy teraz za cel yₜ dla pary (sₜ,aₜ). Oceny akcji pozwalają poprawić politykę przed kolejnym epizodem.</p>
+  <p>Ta sama polityka eksplorująca zbiera epizod i jest oceniana. Pierwszą wizytę rozpoznajemy po stanie i akcji, więc dwie różne akcje w tym samym stanie mogą dać dwie aktualizacje. Stałe ε utrzymuje eksplorację i nie uzasadnia samo z siebie twierdzenia o zbieżności do polityki zachłannej optymalnej.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Rozegraj epizod aktualną polityką eksplorującą.</li><li>Oblicz zwroty i popraw Q dla pierwszej wizyty każdej pary (s,a).</li><li>Na następnym epizodzie wybieraj ε-zachłannie z nowego Q.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Pierwsza wizyta w parze stan–akcja i poprawa reguły wyboru</p>
+  <details><summary>Sprawdź się</summary><p>Kiedy staje się dostępny zwrot dla pierwszego ruchu?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Po zakończeniu epizodu. Następną politykę budujemy z uaktualnionej tablicy Q.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-03">Wprowadzenie do grupy</a> · <a href="#mc">Monte Carlo pierwszej wizyty</a> · <a href="#pi">Iteracja polityki</a> · <a href="#sarsa">SARSA</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="mc-control" data-reference="mc">Porównaj z Monte Carlo pierwszej wizyty</button></p>
+</section>
+<section class="slide method" id="mc-off" aria-labelledby="mc-off-title" tabindex="-1" data-title="Monte Carlo off-policy">
+  <p class="topic">Moduł 03 / Predykcja i Monte Carlo</p>
+  <h2 id="mc-off-title">Monte Carlo off-policy</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Epizody polityki zachowania b oraz znane szanse w b i w polityce docelowej π</dd></div><div><dt>Cel albo operacja</dt><dd>Gₜ ważony iloczynem ilorazów π(a | s)/b(a | s)</dd></div><div><dt>Wynik</dt><dd>Wartość polityki docelowej π</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Bez jawnego P</span><span><b>Wpis</b> V(s)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji">G<sub>t</sub> = ∑<sub>k=t</sub><sup>T−1</sup> γ<sup>k−t</sup>r<sub>k+1</sub>, ρ<sub>t:T−1</sub> = ∏<sub>k=t</sub><sup>T−1</sup> π(a<sub>k</sub> | s<sub>k</sub>)/b(a<sub>k</sub> | s<sub>k</sub>)<br>V̂<sub>zwykłe</sub>(s) = (∑<sub>i</sub> ρ<sub>i</sub>G<sub>i</sub>)/N, V̂<sub>ważone</sub>(s) = (∑<sub>i</sub> ρ<sub>i</sub>G<sub>i</sub>)/(∑<sub>i</sub> ρ<sub>i</sub>) dla ∑<sub>i</sub> ρ<sub>i</sub> &gt; 0</div>
+  
+  <div class="visual"><div class="flow"><div class="flow-node">Epizod z b i prawdopodobieństwa wykonanych akcji</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Oblicz G<sub>t</sub> od wizyty w s do terminala</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong class="changed">Pomnóż przez ρ<sub>t:T−1</sub></strong> z prawdopodobieństw π i b</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Dla V̂ zwykłego podziel sumę przez N. Dla ważonego podziel przez sumę wag, jeśli jest dodatnia.</div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Gₜ pozostaje pełnym zwrotem zaobserwowanym pod polityką zachowania b. Waga ρ koryguje udział tej próbki przy ocenie docelowej polityki π.</p>
+  <p>Dla V(s) iloczyn zaczyna się od t, bo uwzględnia już wybór akcji w ocenianym stanie. Pokrycie wymaga b(a|s) &gt; 0 wszędzie, gdzie π(a|s) &gt; 0. W zwykłym estymatorze N liczy również próbki z wagą 0. Przy N &gt; 0 i samych wagach zerowych estymator zwykły daje 0, a ważony jest niezdefiniowany.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Zbierz epizody i zapisz prawdopodobieństwa wylosowanych akcji.</li><li>Dla ocenianego odcinka wylicz wagę z kolejnych ilorazów prawdopodobieństw.</li><li>Oblicz ważoną sumę zwrotów. W wersji samonormalizowanej podziel przez sumę wag.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Inna polityka zbiera dane, inną oceniamy. Potrzebne pokrycie akcji</p>
+  <details><summary>Sprawdź się</summary><p>Co gdy π wybiera prawo, a b nigdy nie wykonała tej akcji, bo ma tam prawdopodobieństwo 0?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Brakuje pokrycia. Zwrotu tej polityki nie da się w ten sposób oszacować z danych b.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-03">Wprowadzenie do grupy</a> · <a href="#mc">Monte Carlo pierwszej wizyty</a> · <a href="#expected-sarsa">Expected SARSA</a> · <a href="#q">Q-learning</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="mc-off" data-reference="mc">Porównaj z Monte Carlo pierwszej wizyty</button></p>
+</section>
+<section class="slide method" id="td0" aria-labelledby="td0-title" tabindex="-1" data-title="TD(0) · predykcja">
+  <p class="topic">Moduł 03 / Predykcja i Monte Carlo</p>
+  <h2 id="td0-title">TD(0) · predykcja</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Jedno przejście (s,a,r,s′), ustalona polityka i bieżące V</dd></div><div><dt>Cel albo operacja</dt><dd>r + γ V(s′)</dd></div><div><dt>Wynik</dt><dd>V<sup>π</sup> · wartość zadanej polityki</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Bez jawnego P</span><span><b>Wpis</b> V(s)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji">y<sub>t</sub> = r<sub>t+1</sub> + γ(1−d<sub>t+1</sub>)V<sub>t</sub>(s<sub>t+1</sub>)<br>V<sub>t+1</sub>(s<sub>t</sub>) = V<sub>t</sub>(s<sub>t</sub>) + α[y<sub>t</sub> − V<sub>t</sub>(s<sub>t</sub>)]</div>
+  
+  <div class="visual"><div class="flow"><div class="flow-node">Przejście (s<sub>t</sub>, a<sub>t</sub>, r<sub>t+1</sub>, s<sub>t+1</sub>, d<sub>t+1</sub>) przy ustalonej π</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong class="changed">Jeśli epizod trwa, odczytaj V<sub>t</sub>(s<sub>t+1</sub>)</strong></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">y<sub>t</sub> = r<sub>t+1</sub> + γ(1−d<sub>t+1</sub>)V<sub>t</sub>(s<sub>t+1</sub>)</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Zmień wyłącznie V(s<sub>t</sub>) o α[y<sub>t</sub> − V(s<sub>t</sub>)]</div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Gₜ oznacza pełny zaobserwowany zwrot. Cel yₜ można tu policzyć wcześniej z jednej nagrody i bieżącej wartości dalszego stanu.</p>
+  <p>Dla 14 → 10, rₜ₊₁ = 0, Vₜ(10) = 0,40 i γ = 0,95 cel wynosi 0,38. Przy wejściu do celu z nagrodą 1, dₜ₊₁ = 1, cel to 1. Po końcu epizodu pomijamy odczyt V dalszego stanu.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Wykonaj akcję wskazaną przez ustaloną politykę.</li><li>Po ruchu zbuduj cel z r i V(s′). Po terminalu użyj samego r.</li><li>Od razu przesuń V(s) o α razy różnicę między celem i V(s).</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Bootstrapping. Wykorzystanie bieżącego oszacowania dalszego zwrotu</p>
+  <details><summary>Sprawdź się</summary><p>Przy r = 0, γ = 0,95 i V(10) = 0,40 jaki jest cel dla przejścia 14 → 10?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>0 + 0,95 × 0,40 = 0,38.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-03">Wprowadzenie do grupy</a> · <a href="#ocena">Iteracyjna ocena polityki</a> · <a href="#mc">Monte Carlo pierwszej wizyty</a> · <a href="#sarsa">SARSA</a> · <a href="#nstep">n-krokowe TD</a> · <a href="Laboratorium_Jedno_przejscie.html#predykcja">Policz na FrozenLake</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="td0" data-reference="ocena">Porównaj z Iteracyjna ocena polityki</button></p>
+</section>
+<section class="slide family" id="grupa-04" aria-labelledby="grupa-04-title" tabindex="-1" data-title="Trzy reguły dla następnej akcji">
+  <p class="topic">Moduł 04 / Sterowanie z próbek</p>
+  <h2 id="grupa-04-title">Trzy reguły dla następnej akcji</h2>
+  <p class="lead">Każda metoda dostaje to samo przejście i aktualizuje tę samą parę. Różnicę widać w jednym fragmencie celu.</p>
+  <div class="formula family-formula">y<sub>t</sub> = r<sub>t+1</sub> + γ(1−d<sub>t+1</sub>) C<sub>t+1</sub> · Q ← Q + α(y<sub>t</sub> − Q)</div>
+  <div class="family-grid">
+    <div><h3>Co zmienia się w tej grupie</h3><p>SARSA bierze jedną wybraną akcję. Expected SARSA waży wszystkie następne akcje. Q-learning bierze maksimum.</p></div>
+    <div><h3>Pytanie do pokazu</h3><p>Ustal identyczne nagrodę r, następny stan s′ oraz tablicę Q w laboratorium. Zmień tylko kolejną wybraną akcję albo ε.</p></div>
+  </div>
+  
+  <p class="links"> <a href="#sarsa">SARSA</a> · <a href="#expected-sarsa">Expected SARSA</a> · <a href="#q">Q-learning</a> </p>
+</section>
+<section class="slide method" id="sarsa" aria-labelledby="sarsa-title" tabindex="-1" data-title="SARSA">
+  <p class="topic">Moduł 04 / Sterowanie z próbek</p>
+  <h2 id="sarsa-title">SARSA</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Przejście (s,a,r,s′) i rzeczywiście wybrana następna akcja a′</dd></div><div><dt>Cel albo operacja</dt><dd>r + γ Q(s′,a′)</dd></div><div><dt>Wynik</dt><dd>Q i polityka zachowania, która korzysta z Q</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Bez jawnego P</span><span><b>Wpis</b> Q(s,a)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji">y<sub>t</sub> = r<sub>t+1</sub> + γ(1−d<sub>t+1</sub>)Q<sub>t</sub>(s<sub>t+1</sub>,a<sub>t+1</sub>)<br>Q<sub>t+1</sub>(s<sub>t</sub>,a<sub>t</sub>) = Q<sub>t</sub>(s<sub>t</sub>,a<sub>t</sub>) + α[y<sub>t</sub> − Q<sub>t</sub>(s<sub>t</sub>,a<sub>t</sub>)]</div>
+  
+  <div class="visual"><div class="flow"><div class="flow-node">Przejście (s<sub>t</sub>, a<sub>t</sub>, r<sub>t+1</sub>, s<sub>t+1</sub>, d<sub>t+1</sub>)</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong class="changed">Wylosuj faktyczną następną akcję a<sub>t+1</sub> z polityki zachowania</strong>, jeśli epizod trwa</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Odczytaj Q<sub>t</sub>(s<sub>t+1</sub>,a<sub>t+1</sub>) i zbuduj y<sub>t</sub></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Aktualizuj bieżące Q(s<sub>t</sub>,a<sub>t</sub>) przez α[y<sub>t</sub> − Q(s<sub>t</sub>,a<sub>t</sub>)]</div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Gₜ oznacza pełny zaobserwowany zwrot. Cel yₜ powstaje od razu z rₜ₊₁ i odczytu Q, więc nie trzeba czekać na Gₜ.</p>
+  <p>W Urwisku dla rₜ₊₁ = −1, γ = 0,9 i wylosowanej następnej komendy „prawo” o wartości 2 cel wynosi 0,8. Następna komenda pochodzi z tej samej polityki, która zbiera dane. Po końcu epizodu cel to rₜ₊₁.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Wykonaj a i zobacz r oraz s′.</li><li>Jeżeli epizod trwa, wybierz a′ tą samą polityką, np. ε-zachłanną.</li><li>Zaktualizuj Q(s,a) i wykonaj już wybrane a′ w kolejnym kroku.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Cel używa następnej akcji polityki zbierającej dane</p>
+  <details><summary>Sprawdź się</summary><p>Po ruchu agent wybrał w prawo, choć Q dla lewo jest większe. Która ocena wchodzi do celu SARSA?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Q dla prawo, bo taka jest faktycznie wybrana akcja kolejnego kroku.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-04">Wprowadzenie do grupy</a> · <a href="#td0">TD(0) · predykcja</a> · <a href="#expected-sarsa">Expected SARSA</a> · <a href="#q">Q-learning</a> · <a href="#n-sarsa">n-krokowe SARSA</a> · <a href="Laboratorium_Jedno_przejscie.html#sterowanie">Porównaj cele w Urwisku</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="sarsa" data-reference="td0">Porównaj z TD(0) · predykcja</button></p>
+</section>
+<section class="slide method" id="expected-sarsa" aria-labelledby="expected-sarsa-title" tabindex="-1" data-title="Expected SARSA">
+  <p class="topic">Moduł 04 / Sterowanie z próbek</p>
+  <h2 id="expected-sarsa-title">Expected SARSA</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Jedno przejście i rozkład docelowej polityki π w następnym stanie</dd></div><div><dt>Cel albo operacja</dt><dd>r + γ Σₐ′ π(a′ | s′) Q(s′,a′)</dd></div><div><dt>Wynik</dt><dd>Q(s,a) dla ocenianej polityki</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Bez jawnego P</span><span><b>Wpis</b> Q(s,a)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji">y<sub>t</sub> = r<sub>t+1</sub> + γ(1−d<sub>t+1</sub>)∑<sub>a′</sub> π(a′ | s<sub>t+1</sub>) Q<sub>t</sub>(s<sub>t+1</sub>,a′)<br>Q<sub>t+1</sub>(s<sub>t</sub>,a<sub>t</sub>) = Q<sub>t</sub>(s<sub>t</sub>,a<sub>t</sub>) + α[y<sub>t</sub> − Q<sub>t</sub>(s<sub>t</sub>,a<sub>t</sub>)]</div>
+  
+  <div class="visual"><div class="flow"><div class="flow-node">Przejście (s<sub>t</sub>, a<sub>t</sub>, r<sub>t+1</sub>, s<sub>t+1</sub>, d<sub>t+1</sub>)</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Jeśli epizod trwa, odczytaj Q dla akcji w zaobserwowanym s<sub>t+1</sub></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong class="changed">Zważ następne akcje przez π(a′ | s<sub>t+1</sub>)</strong> i zbuduj y<sub>t</sub></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Aktualizuj bieżące Q(s<sub>t</sub>,a<sub>t</sub>) przez α[y<sub>t</sub> − Q(s<sub>t</sub>,a<sub>t</sub>)]</div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Gₜ oznacza pełny zaobserwowany zwrot. Cel yₜ powstaje od razu z rₜ₊₁ i odczytu Q, więc nie trzeba czekać na Gₜ.</p>
+  <p>Przy ocenie komend (4, 1, 2, 0) i ε = 0,2 szanse wynoszą (0,85; 0,05; 0,05; 0,05). Średnia to 3,55, więc yₜ = −1 + 0,9 × 3,55 = 2,195. Uśrednianie dotyczy akcji w jednym zaobserwowanym sₜ₊₁. W pokazie π jest polityką zachowania. W wariancie off-policy π może być inną polityką.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Wykonaj a i zobacz r oraz s′.</li><li>W s′ oblicz szanse następnych akcji polityki docelowej.</li><li>Zważ wartości akcji tymi szansami i użyj wyniku w aktualizacji Q(s,a).</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Średnia po następnych akcjach zamiast pojedynczej próbki akcji</p>
+  <details><summary>Sprawdź się</summary><p>Którą część losowości uśredniamy w Expected SARSA?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Wybór następnej akcji, po zaobserwowaniu jednego s′. Środowisko wciąż dostarcza próbkę przejścia.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-04">Wprowadzenie do grupy</a> · <a href="#sarsa">SARSA</a> · <a href="#q">Q-learning</a> · <a href="#ocena">Iteracyjna ocena polityki</a> · <a href="Laboratorium_Jedno_przejscie.html#sterowanie">Porównaj cele w Urwisku</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="expected-sarsa" data-reference="sarsa">Porównaj z SARSA</button></p>
+</section>
+<section class="slide method" id="q" aria-labelledby="q-title" tabindex="-1" data-title="Q-learning">
+  <p class="topic">Moduł 04 / Sterowanie z próbek</p>
+  <h2 id="q-title">Q-learning</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Pojedyncze przejście (s,a,r,s′) i bieżące Q</dd></div><div><dt>Cel albo operacja</dt><dd>r + γ maxₐ′ Q(s′,a′)</dd></div><div><dt>Wynik</dt><dd>Q* w warunkach zbieżności i polityka zachłanna</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Bez jawnego P</span><span><b>Wpis</b> Q(s,a)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji">y<sub>t</sub> = r<sub>t+1</sub> + γ(1−d<sub>t+1</sub>)max<sub>a′</sub> Q<sub>t</sub>(s<sub>t+1</sub>,a′)<br>Q<sub>t+1</sub>(s<sub>t</sub>,a<sub>t</sub>) = Q<sub>t</sub>(s<sub>t</sub>,a<sub>t</sub>) + α[y<sub>t</sub> − Q<sub>t</sub>(s<sub>t</sub>,a<sub>t</sub>)]<br>Q<sup>*</sup>(s,a) = max<sub>π</sub> E<sub>π</sub>[G<sub>t</sub> | S<sub>t</sub>=s, A<sub>t</sub>=a]</div>
+  
+  <div class="visual"><div class="flow"><div class="flow-node">Przejście (s<sub>t</sub>, a<sub>t</sub>, r<sub>t+1</sub>, s<sub>t+1</sub>, d<sub>t+1</sub>)</div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Jeśli epizod trwa, odczytaj Q dla akcji w zaobserwowanym s<sub>t+1</sub></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong class="changed">Weź największe z tych Q</strong> i zbuduj y<sub>t</sub></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node">Aktualizuj bieżące Q(s<sub>t</sub>,a<sub>t</sub>) przez α[y<sub>t</sub> − Q(s<sub>t</sub>,a<sub>t</sub>)]</div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Gₜ oznacza pełny zaobserwowany zwrot. Cel yₜ powstaje od razu z rₜ₊₁ i odczytu Q, więc nie trzeba czekać na Gₜ.</p>
+  <p>Dla komend (4, 1, 2, 0) cel w Urwisku to −1 + 0,9 × 4 = 2,6. Maksimum pochodzi z bieżącego przybliżenia Qₜ. Q* oznacza najlepszy oczekiwany zwrot po zadanej pierwszej akcji a i optymalnych dalszych decyzjach. Zachłanną akcję odczytujemy przez argmax, wartość do celu przez max. Polityka zachowania może zbierać próbki ε-zachłannie, a cel wykorzystuje wybór zachłanny.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Zbierz przejście, np. wybierając akcję ε-zachłannie.</li><li>W s′ znajdź największą wartość Q po akcjach.</li><li>Zaktualizuj Q dla faktycznie wykonanej pary (s,a). Po terminalu cel to r.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Cel zachłanny może różnić się od polityki zbierającej dane</p>
+  <details><summary>Sprawdź się</summary><p>Czy agent podczas zbierania danych musi wyłączyć eksplorację, żeby w celu używać maksimum?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Może eksplorować przy zbieraniu danych i jednocześnie wyznaczać cel z maksymalnej oceny.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-04">Wprowadzenie do grupy</a> · <a href="#vi">Iteracja wartości</a> · <a href="#expected-sarsa">Expected SARSA</a> · <a href="#double-q">Double Q-learning</a> · <a href="#dyna">Dyna-Q</a> · <a href="Laboratorium_Jedno_przejscie.html#sterowanie">Porównaj cele w Urwisku</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="q" data-reference="vi">Porównaj z Iteracja wartości</button></p>
+</section>
+<section class="slide family" id="grupa-05" aria-labelledby="grupa-05-title" tabindex="-1" data-title="Ile nagród wykorzystać i kiedy aktualizować">
+  <p class="topic">Moduł 05 / Wiele kroków</p>
+  <h2 id="grupa-05-title">Ile nagród wykorzystać i kiedy aktualizować</h2>
+  <p class="lead">Od punktu aktualizacji liczymy nagrody z faktycznej trajektorii. Gdy okno kończy się przed terminalem, dochodzi oszacowanie dalszego zwrotu.</p>
+  <div class="formula family-formula">G<sub>t</sub><sup>(n)</sup> = Σ<sub>j=0</sub><sup>n−1</sup> γ<sup>j</sup>r<sub>t+j+1</sub> + γ<sup>n</sup>V(s<sub>t+n</sub>)</div>
+  <div class="family-grid">
+    <div><h3>Co zmienia się w tej grupie</h3><p>W n-krokowym SARSA końcowy V zastępuje Q dla wybranej dalszej akcji. W TD(λ) jeden błąd TD aktualizuje stany ze śladami, które zanikają.</p></div>
+    <div><h3>Pytanie do pokazu</h3><p>Na osi czasu oddziel zaobserwowane nagrody od oszacowania i zaznacz, do którego wpisu wraca aktualizacja.</p></div>
+  </div>
+  
+  <p class="links"> <a href="#nstep">n-krokowe TD</a> · <a href="#td-lambda">TD(λ) ze śladami</a> · <a href="#n-sarsa">n-krokowe SARSA</a> </p>
+</section>
+<section class="slide method" id="nstep" aria-labelledby="nstep-title" tabindex="-1" data-title="n-krokowe TD">
+  <p class="topic">Moduł 05 / Wiele kroków</p>
+  <h2 id="nstep-title">n-krokowe TD</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Odcinek n ruchów tej samej polityki albo wcześniejszy terminal</dd></div><div><dt>Cel albo operacja</dt><dd>Suma nagród od t+1 do t+n z dyskontem, potem γⁿV(sₜ₊ₙ)</dd></div><div><dt>Wynik</dt><dd>V<sup>π</sup> dla ustalonej polityki</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Bez jawnego P</span><span><b>Wpis</b> V(s)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji"><var>m</var> = min(<var>n</var>, <var>T</var> − <var>t</var>)<br><var>y</var><sub>t</sub> = ∑<sub>j=0</sub><sup>m−1</sup> γ<sup>j</sup> <var>r</var><sub>t+j+1</sub> + γ<sup>n</sup> <var>V</var>(<var>s</var><sub>t+n</sub>) &nbsp; (ostatni składnik tylko gdy <var>t</var>+<var>n</var>&lt;<var>T</var>)<br><var>V</var>(<var>s</var><sub>t</sub>) ← <var>V</var>(<var>s</var><sub>t</sub>) + α[<var>y</var><sub>t</sub> − <var>V</var>(<var>s</var><sub>t</sub>)]</div>
+  
+  <div class="visual"><div class="timeline" role="group" aria-label="Trzy możliwe horyzonty w epizodzie FrozenLake"><div class="step"><strong><var>s</var><sub>t</sub> = 14</strong><br><small>Stan, którego wartość aktualizujemy</small></div><div class="step"><strong><var>s</var><sub>t+1</sub> = 10</strong><br><small><var>r</var><sub>t+1</sub> = 0<br>1 krok · dołącz γ<var>V</var>(10)</small></div><div class="step"><strong><var>s</var><sub>t+2</sub> = 14</strong><br><small><var>r</var><sub>t+2</sub> = 0<br>2 kroki · dołącz γ²<var>V</var>(14)</small></div><div class="step"><strong><var>s</var><sub>t+3</sub> = 15</strong><br><small><var>r</var><sub>t+3</sub> = 1, <var>d</var><sub>t+3</sub> = 1<br>Terminal · pełny <var>G</var><sub>t</sub></small></div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Gₜ sumuje nagrody aż do końca epizodu. Przy n ruchach bez terminala do celu yₜ wstawiamy n nagród i bieżącą wartość stanu po tych ruchach. Jeśli do terminala dojdziemy w ciągu n ruchów, cel yₜ jest pełnym Gₜ.</p>
+  <p>T to indeks stanu terminalnego, a m to liczba dostępnych nagród do horyzontu n. Przy n = 1 otrzymujemy TD(0). W epizodzie 14 → 10 → 14 → 15 i przy γ = 0,95 zatrzymujemy tablicę V(10) = 0,40 i V(14) = 0,60 na czas porównania. Po jednym ruchu cel wynosi 0 + 0,95 × 0,40 = 0,38. Po dwóch wynosi 0 + 0,95 × 0 + 0,95² × 0,60 = 0,5415. Po trzecim dochodzimy do terminala i otrzymujemy pełny zwrot Gₜ = 0,95² × 1 = 0,9025.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Zapisuj kolejne nagrody i stany w buforze.</li><li>Zsumuj zdyskontowane nagrody do n kroków albo do końca epizodu.</li><li>Dolicz oszacowanie z kroku n, jeśli epizod w tym miejscu nadal trwa. Zaktualizuj wartość stanu sprzed n kroków.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Kilka rzeczywistych nagród przed bieżącym oszacowaniem</p>
+  <details><summary>Sprawdź się</summary><p>Jeśli przy n = 5 do celu dochodzimy po trzech ruchach, co składa się na cel pierwszej aktualizacji?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Trzy zdyskontowane nagrody. Terminal kończy zwrot i nie daje składnika V.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-05">Wprowadzenie do grupy</a> · <a href="#td0">TD(0) · predykcja</a> · <a href="#mc">Monte Carlo pierwszej wizyty</a> · <a href="#td-lambda">TD(λ) ze śladami</a> · <a href="#n-sarsa">n-krokowe SARSA</a> · <a href="Laboratorium_Jedno_przejscie.html#predykcja">Policz na FrozenLake</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="nstep" data-reference="td0">Porównaj z TD(0) · predykcja</button></p>
+</section>
+<section class="slide method" id="td-lambda" aria-labelledby="td-lambda-title" tabindex="-1" data-title="TD(λ) ze śladami">
+  <p class="topic">Moduł 05 / Wiele kroków</p>
+  <h2 id="td-lambda-title">TD(λ) ze śladami</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Przejście, błąd TD δ i wektor śladów e ostatnich stanów</dd></div><div><dt>Cel albo operacja</dt><dd>δ = r + γV(s′) − V(s), następnie V ← V + αδe</dd></div><div><dt>Wynik</dt><dd>V<sup>π</sup> dla ustalonej polityki</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Bez jawnego P</span><span><b>Wpis</b> V(x) dla stanów ze śladem</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji"><var>δ</var><sub>t</sub> = <var>r</var><sub>t+1</sub> + γ(1−<var>d</var><sub>t+1</sub>)<var>V</var>(<var>s</var><sub>t+1</sub>) − <var>V</var>(<var>s</var><sub>t</sub>)<br><var>e</var><sub>t</sub>(<var>s</var>) = γλ<var>e</var><sub>t−1</sub>(<var>s</var>) + 𝟙[<var>s</var>=<var>s</var><sub>t</sub>]<br><var>V</var>(<var>s</var>) ← <var>V</var>(<var>s</var>) + α<var>δ</var><sub>t</sub><var>e</var><sub>t</sub>(<var>s</var>)<br><var>G</var><sub>t</sub><sup>λ</sup> = (1−λ)∑<sub>n=1</sub><sup>m−1</sup>λ<sup>n−1</sup><var>G</var><sub>t</sub><sup>(n)</sup> + λ<sup>m−1</sup><var>G</var><sub>t</sub> &nbsp; (<var>m</var>=<var>T</var>−<var>t</var>, zamrożone <var>V</var>)</div>
+  
+  <div class="visual"><div class="timeline" role="group" aria-label="Jak w epizodzie powstają ślady stanów 14 i 10"><div class="step"><strong><var>s</var><sub>t</sub> = 14</strong><br><small>Po pierwszym ruchu ślad 14 wynosi 1</small></div><div class="step"><strong><var>s</var><sub>t+1</sub> = 10</strong><br><small><var>r</var><sub>t+1</sub> = 0<br>Po ruchu z 10 ślady wynoszą γλ dla 14 i 1 dla 10</small></div><div class="step"><strong><var>s</var><sub>t+2</sub> = 14</strong><br><small><var>r</var><sub>t+2</sub> = 0<br>Po kolejnym ruchu ślady wynoszą 1+(γλ)² dla 14 i γλ dla 10</small></div><div class="step"><strong><var>s</var><sub>t+3</sub> = 15</strong><br><small><var>r</var><sub>t+3</sub> = 1, <var>d</var><sub>t+3</sub> = 1<br>Błąd δ<sub>t+2</sub> poprawia obie wartości</small></div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> W zwrocie λ pełny Gₜ dostaje wagę λ do potęgi m−1, gdzie m to liczba pozostałych ruchów. Pozostałe składniki Gₜ⁽ⁿ⁾ to cele n-krokowe. Gdy λ = 1 w rachunku zostaje pełny Gₜ. Ślady w wersji aktualizowanej po każdym ruchu wykorzystują błąd δₜ.</p>
+  <p>Na początku epizodu ślady e mają wartość zero. Na każdym kroku maleją przez γλ, a bieżący stan dostaje dodatkową jedynkę. Wskaźnik 𝟙 ma wartość 1 dla bieżącego stanu i 0 dla pozostałych. Ten sam δₜ trafia do wcześniejszych stanów w proporcji do ich śladów. Przy końcowym ruchu 14 → 15 ślad dla 14 zawiera obie wizyty, a ślad dla 10 jeszcze wynosi γλ. Po terminalu resetujemy ślady przed następnym epizodem. W osobnym rachunku zamrażamy V i mieszamy cele z jednego, dwóch oraz trzech ruchów. Dla λ = 0,5 ich wagi to 0,5, 0,25 i 0,25, więc zwrot λ wynosi 0,5 × 0,38 + 0,25 × 0,5415 + 0,25 × 0,9025 = 0,551. Aktualizacje online mogą zmieniać V w trakcie epizodu, więc kolejne δₜ korzystają z aktualnej tablicy.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Na początku epizodu wyzeruj ślady.</li><li>Po ruchu policz δ. Zmniejsz ślady przez γλ i zwiększ e(s) o 1.</li><li>Zaktualizuj wartości proporcjonalnie do śladów. W osobnym rachunku przy zamrożonym V porównaj zwrot λ.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Jeden błąd TD aktualizuje kilka niedawno odwiedzonych stanów</p>
+  <details><summary>Sprawdź się</summary><p>Co stanie się ze śladami poprzednich stanów, gdy λ = 0?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Znikną przed aktualizacją. Zostanie ślad bieżącego stanu i reguła TD(0).</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-05">Wprowadzenie do grupy</a> · <a href="#td0">TD(0) · predykcja</a> · <a href="#nstep">n-krokowe TD</a> · <a href="#n-sarsa">n-krokowe SARSA</a> · <a href="Laboratorium_Jedno_przejscie.html#predykcja">Policz na FrozenLake</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="td-lambda" data-reference="td0">Porównaj z TD(0) · predykcja</button></p>
+</section>
+<section class="slide method" id="n-sarsa" aria-labelledby="n-sarsa-title" tabindex="-1" data-title="n-krokowe SARSA">
+  <p class="topic">Moduł 05 / Wiele kroków</p>
+  <h2 id="n-sarsa-title">n-krokowe SARSA</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>n ruchów polityki zachowania i wybrana akcja aₜ₊ₙ, jeśli epizod trwa</dd></div><div><dt>Cel albo operacja</dt><dd>Suma n zdyskontowanych nagród + γⁿ Q(sₜ₊ₙ,aₜ₊ₙ)</dd></div><div><dt>Wynik</dt><dd>Q(s,a) przy sterowaniu polityką zachowania</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Bez jawnego P</span><span><b>Wpis</b> Q(s,a)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji"><var>m</var> = min(<var>n</var>, <var>T</var>−<var>t</var>)<br><var>y</var><sub>t</sub> = ∑<sub>j=0</sub><sup>m−1</sup> γ<sup>j</sup> <var>r</var><sub>t+j+1</sub> + γ<sup>n</sup><var>Q</var>(<var>s</var><sub>t+n</sub>, <var>a</var><sub>t+n</sub>) &nbsp; (ostatni składnik tylko gdy <var>t</var>+<var>n</var>&lt;<var>T</var>)<br><var>Q</var>(<var>s</var><sub>t</sub>, <var>a</var><sub>t</sub>) ← <var>Q</var>(<var>s</var><sub>t</sub>, <var>a</var><sub>t</sub>) + α[<var>y</var><sub>t</sub> − <var>Q</var>(<var>s</var><sub>t</sub>, <var>a</var><sub>t</sub>)]</div>
+  
+  <div class="visual"><div class="timeline" role="group" aria-label="Dwukrokowa SARSA wybiera następną akcję po drugim przejściu"><div class="step"><strong>(<var>s</var><sub>t</sub>, <var>a</var><sub>t</sub>)</strong><br><small>14, prawo · aktualizowana para</small></div><div class="step"><strong>(<var>s</var><sub>t+1</sub>, <var>a</var><sub>t+1</sub>)</strong><br><small>10, dół · <var>r</var><sub>t+1</sub> = 0</small></div><div class="step"><strong>(<var>s</var><sub>t+2</sub>, <var>a</var><sub>t+2</sub>)</strong><br><small>14, prawo · <var>r</var><sub>t+2</sub> = 0<br>2 kroki · dołącz γ²<var>Q</var>(14, prawo)</small></div><div class="step"><strong><var>s</var><sub>t+3</sub> = 15</strong><br><small><var>r</var><sub>t+3</sub> = 1, <var>d</var><sub>t+3</sub> = 1<br>Terminal · brak następnej akcji</small></div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Pełny zwrot Gₜ pochodzi z nagród aż do terminala. Przed terminalem wielokrokowy cel łączy fragment tego zwrotu z tabelą Q dla wybranej dalszej pary stan–akcja.</p>
+  <p>Po n ruchach odczytujemy Q dla akcji aₜ₊ₙ wybranej przez politykę, która zbiera dane. Przykład korzysta z tego samego epizodu FrozenLake. W chwili t+2 po powrocie do 14 agent wybrał „prawo”. Przy n = 2 i przyjętym do rachunku Q(14, prawo) = 0,60 celem dla pierwszego Q(14, prawo) jest 0 + 0,95 × 0 + 0,95² × 0,60 = 0,5415. Jeśli po dwóch ruchach polityka wybrałaby „dół” o wartości 0,20, celem byłoby 0,1805. Po dojściu do terminala kończymy pozostałe aktualizacje na podstawie zapisanych nagród.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Zbieraj w buforze stany, akcje i nagrody.</li><li>Po n ruchach zbuduj cel z nagród i wartości faktycznie wybranej dalszej akcji.</li><li>Zaktualizuj Q najstarszej pary. Po terminalu dokończ aktualizacje bez dalszego Q.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Wielokrokowy zwrot dla par stan–akcja</p>
+  <details><summary>Sprawdź się</summary><p>Czym zastępujemy V w n-krokowym TD, aby móc poprawiać decyzje metodą SARSA?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Q dla rzeczywiście wybranej dalszej pary stan–akcja.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-05">Wprowadzenie do grupy</a> · <a href="#sarsa">SARSA</a> · <a href="#nstep">n-krokowe TD</a> · <a href="#td-lambda">TD(λ) ze śladami</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="n-sarsa" data-reference="sarsa">Porównaj z SARSA</button></p>
+</section>
+<section class="slide family" id="grupa-06" aria-labelledby="grupa-06-title" tabindex="-1" data-title="Dwie modyfikacje Q-learningu">
+  <p class="topic">Moduł 06 / Rozszerzenia</p>
+  <h2 id="grupa-06-title">Dwie modyfikacje Q-learningu</h2>
+  <p class="lead">Obie metody zaczynają od aktualizacji wartości pary stan–akcja, ale odpowiadają na różne pytania.</p>
+  <div class="formula family-formula">Q(s<sub>t</sub>,a<sub>t</sub>) ← Q(s<sub>t</sub>,a<sub>t</sub>) + α[y<sub>t</sub> − Q(s<sub>t</sub>,a<sub>t</sub>)]</div>
+  <div class="family-grid">
+    <div><h3>Co zmienia się w tej grupie</h3><p>Double Q rozdziela wybór i ocenę między tablice. Dyna-Q tworzy dodatkowe cele z przejść wygenerowanych przez poznany model.</p></div>
+    <div><h3>Pytanie do pokazu</h3><p>W Double Q zaznacz jedną akcję w obu tablicach. W Dyna-Q policz osobno wywołania środowiska i aktualizacje z modelu.</p></div>
+  </div>
+  
+  <p class="links"> <a href="#double-q">Double Q-learning</a> · <a href="#dyna">Dyna-Q</a> </p>
+</section>
+<section class="slide method" id="double-q" aria-labelledby="double-q-title" tabindex="-1" data-title="Double Q-learning">
+  <p class="topic">Moduł 06 / Rozszerzenia</p>
+  <h2 id="double-q-title">Double Q-learning</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Jedno przejście oraz dwie tablice Qᴬ i Qᴮ</dd></div><div><dt>Cel albo operacja</dt><dd>r + γ Qᴮ(s′, argmaxₐ′ Qᴬ(s′,a′)) przy aktualizacji A</dd></div><div><dt>Wynik</dt><dd>Dwie oceny Q, zwykle łączone do wyboru zachowania</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Bez jawnego P</span><span><b>Wpis</b> Qᴬ(s,a) lub Qᴮ(s,a)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji"><var>a</var><sup>*</sup> = arg max<sub>b</sub> <var>Q</var><sup>A</sup>(<var>s</var><sub>t+1</sub>, <var>b</var>)<br><var>y</var><sub>t</sub> = <var>r</var><sub>t+1</sub> + γ(1−<var>d</var><sub>t+1</sub>)<var>Q</var><sup>B</sup>(<var>s</var><sub>t+1</sub>, <var>a</var><sup>*</sup>)<br><var>Q</var><sup>A</sup>(<var>s</var><sub>t</sub>, <var>a</var><sub>t</sub>) ← <var>Q</var><sup>A</sup>(<var>s</var><sub>t</sub>, <var>a</var><sub>t</sub>) + α[<var>y</var><sub>t</sub> − <var>Q</var><sup>A</sup>(<var>s</var><sub>t</sub>, <var>a</var><sub>t</sub>)]</div>
+  
+  <div class="visual"><div class="flow" role="group" aria-label="Dwie tablice w aktualizacji Double Q"><div class="flow-node"><strong>Obserwacja</strong><br><small><var>r</var><sub>t+1</sub>, <var>s</var><sub>t+1</sub>, <var>d</var><sub>t+1</sub></small></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong>A wybiera</strong><br><small>Lewo, bo 6 &gt; 4 w <var>Q</var><sup>A</sup></small></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong>B ocenia</strong><br><small><var>Q</var><sup>B</sup>(<var>s</var><sub>t+1</sub>, lewo) = 3</small></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong>Aktualizacja A</strong><br><small><var>Q</var><sup>A</sup>(<var>s</var><sub>t</sub>, <var>a</var><sub>t</sub>) w stronę 2,70</small></div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Gₜ opisuje zwrot z całego dalszego przebiegu. Cel yₜ opiera się na bieżącej nagrodzie i ocenie z drugiej tablicy dla akcji wybranej z pierwszej.</p>
+  <p>Losujemy, którą tablicę aktualizujemy. Przy aktualizacji A tablica A wskazuje akcję dla stanu sₜ₊₁, a tablica B dostarcza ocenę tej samej akcji. Dla B odwracamy role. W terminalu pomijamy wybór następnej akcji i podstawiamy samą nagrodę. Jeśli dla lewa i prawa A podaje (6, 4), a B podaje (3, 5), tablica A wskazuje lewo. Przy nagrodzie 0 i γ = 0,90 celem aktualizacji A jest 0 + 0,90 × 3 = 2,70.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Wylosuj, którą tablicę aktualizujesz.</li><li>Wybierz najlepszą następną akcję z tej tablicy.</li><li>Odczytaj wartość wybranej akcji z drugiej tablicy i popraw pierwszy wpis. Dla B odwróć role.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Osobna tablica wybiera akcję, osobna ją ocenia</p>
+  <details><summary>Sprawdź się</summary><p>Jeśli A wskazuje lewo, ale największa ocena w B jest dla prawo, którą wartość pobieramy z B?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>Wartość dla lewo, czyli dla akcji wskazanej przez A.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-06">Wprowadzenie do grupy</a> · <a href="#q">Q-learning</a> · <a href="#dyna">Dyna-Q</a> · <a href="RL_00_Porownanie_metod.ipynb" download>Sprawdź w notebooku</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="double-q" data-reference="q">Porównaj z Q-learning</button></p>
+</section>
+<section class="slide method" id="dyna" aria-labelledby="dyna-title" tabindex="-1" data-title="Dyna-Q">
+  <p class="topic">Moduł 06 / Rozszerzenia</p>
+  <h2 id="dyna-title">Dyna-Q</h2>
+  <dl class="facts">
+    <div><dt>Dane</dt><dd>Rzeczywiste przejścia i model zapamiętany na ich podstawie</dd></div><div><dt>Cel albo operacja</dt><dd>Cel Q-learningu dla przejścia rzeczywistego lub z modelu</dd></div><div><dt>Wynik</dt><dd>Q i model poznawanych przejść</dd></div>
+  </dl>
+  <p class="roles"><span><b>Model</b> Model uczony z obserwacji</span><span><b>Wpis</b> Q(s,a)</span></p>
+  <div class="formula main-formula" aria-label="Wzór aktualizacji"><var>y</var><sub>t</sub> = <var>r</var><sub>t+1</sub> + γ(1−<var>d</var><sub>t+1</sub>) max<sub>b</sub> <var>Q</var>(<var>s</var><sub>t+1</sub>, <var>b</var>)<br><var>Q</var>(<var>s</var><sub>t</sub>, <var>a</var><sub>t</sub>) ← <var>Q</var>(<var>s</var><sub>t</sub>, <var>a</var><sub>t</sub>) + α[<var>y</var><sub>t</sub> − <var>Q</var>(<var>s</var><sub>t</sub>, <var>a</var><sub>t</sub>)]<br>Próbkę przejścia dostarcza środowisko albo model agenta.</div>
+  
+  <div class="visual"><div class="flow" role="group" aria-label="Próbki rzeczywiste i modelowe w Dyna-Q"><div class="flow-node"><strong>Ruch środowiska</strong><br><small>Wywołaj <code>env.step(a)</code> i odczytaj wynik</small></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong>Obserwacja</strong><br><small>Zaktualizuj <var>Q</var> i zapisz skutek w modelu</small></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong>Planowanie</strong><br><small>Wybierz poznane (<var>s</var>, <var>a</var>) i odczytaj skutek z modelu</small></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-node"><strong>Aktualizacja z modelu</strong><br><small>Zastosuj ten sam rachunek <var>Q</var></small></div></div></div>
+  
+  <p class="return-role"><strong>G<sub>t</sub> · pełny zwrot.</strong> Pełny Gₜ opisuje zwrot z całej trajektorii. Każdy cel Dyna-Q korzysta z jednej próbki i bieżącej tablicy Q, tak samo jak cel w Q-learningu.</p>
+  <p>Krok środowiska to wywołanie env.step(a), również gdy środowiskiem jest symulator. Agent widzi wynik, poprawia Q i zapisuje przejście w swoim modelu. W fazie planowania losuje poznaną parę (s, a) i pobiera wynik z własnego modelu, bez wywołania env.step(a). W świecie deterministycznym wystarczy zapis ostatniego wyniku dla pary. W świecie losowym model może przechowywać częstości skutków i losować według nich. Dwanaście kroków środowiska i po pięć kroków planowania daje 12 pomiarów, 60 prób z modelu oraz 72 aktualizacje Q.</p>
+  <details class="steps-detail"><summary>Algorytm krok po kroku</summary>
+    <ol class="steps"><li>Wykonaj ruch i zaktualizuj Q z obserwacji.</li><li>Zapisz skutek w modelu. W prostym świecie deterministycznym wystarczy ostatni wynik pary.</li><li>Wylosuj poznane pary, odtwórz ich skutki z modelu i zastosuj tę samą aktualizację Q.</li></ol>
+  </details>
+  <p class="delta"><strong>Co dochodzi.</strong> Dodatkowe aktualizacje planujące bez ruchu w środowisku</p>
+  <details><summary>Sprawdź się</summary><p>Po 12 ruchach i 5 aktualizacjach planujących na każdy ruch ile było interakcji i ile aktualizacji Q?</p>
+    <details><summary>Odsłoń odpowiedź</summary><p>12 interakcji. 12 aktualizacji z ruchów i 60 z modelu, razem 72 aktualizacje Q.</p></details>
+  </details>
+  <p class="related"><strong>Powiązania</strong> <a href="#grupa-06">Wprowadzenie do grupy</a> · <a href="#q">Q-learning</a> · <a href="#vi">Iteracja wartości</a> · <a href="#double-q">Double Q-learning</a> · <a href="RL_00_Porownanie_metod.ipynb" download>Sprawdź w notebooku</a></p>
+  <p class="links screen-only"><button type="button" class="compare-method" data-method="dyna" data-reference="q">Porównaj z Q-learning</button></p>
+</section>
+</main><script>const comparisonData = {"bandyta": {"name": "Bandyta ε-zachłanny", "details": ["Brak modelu przejść", "Jedna wypłata", "Q(a)", "Brak kontynuacji w celu", "ε-greedy po Q(a)", "Jedna wypłata w ujęciu jednoruchowym"]}, "ocena": {"name": "Iteracyjna ocena polityki", "details": ["Pełne P[s][a]", "Pełne gałęzie każdej akcji", "V(s)", "V(s′) z poprzedniej mapy", "Ustalona π waży akcje", "Oczekiwany pełny zwrot z modelu"]}, "pi": {"name": "Iteracja polityki", "details": ["Pełne P[s][a]", "Pełne gałęzie każdej akcji", "V(s) i π(·|s)", "V(s′) z oceny polityki", "Ocena π, potem zachłanna poprawa", "Oczekiwany pełny zwrot z modelu"]}, "vi": {"name": "Iteracja wartości", "details": ["Pełne P[s][a]", "Pełne gałęzie każdej akcji", "V(s)", "V(s′) z poprzedniej mapy", "Maksimum w przebiegu, polityka z końcowego V", "Oczekiwany pełny zwrot z modelu"]}, "mc": {"name": "Monte Carlo pierwszej wizyty", "details": ["Bez jawnego P", "Zakończony epizod", "V(s)", "Pełny zwrot Gₜ", "Ustalona π zbiera dane i jest oceniana", "Pełny Gₜ z zakończonego epizodu"]}, "mc-control": {"name": "Sterowanie Monte Carlo", "details": ["Bez jawnego P", "Zakończony epizod", "Q(s,a)", "Pełny zwrot Gₜ", "ε-greedy, poprawa po epizodzie", "Pełny Gₜ z zakończonego epizodu"]}, "mc-off": {"name": "Monte Carlo off-policy", "details": ["Bez jawnego P", "Zakończony epizod", "V(s)", "Pełny zwrot Gₜ i waga ρ", "Dane z b, ocena π", "Pełny Gₜ z zakończonego epizodu"]}, "td0": {"name": "TD(0) · predykcja", "details": ["Bez jawnego P", "Jedna obserwacja przejścia", "V(s)", "V(s′)", "Ustalona π zbiera dane i jest oceniana", "Gₜ definiuje wartość, cel korzysta z jednego przejścia"]}, "sarsa": {"name": "SARSA", "details": ["Bez jawnego P", "Jedna obserwacja przejścia", "Q(s,a)", "Q(s′,a′) dla wylosowanej akcji", "Ta sama polityka wybiera a i a′", "Gₜ definiuje wartość, cel korzysta z jednego przejścia"]}, "expected-sarsa": {"name": "Expected SARSA", "details": ["Bez jawnego P", "Jedna obserwacja przejścia", "Q(s,a)", "Średnia Q(s′,a′) po akcjach π", "Docelowa π waży następne akcje", "Gₜ definiuje wartość, cel korzysta z jednego przejścia"]}, "q": {"name": "Q-learning", "details": ["Bez jawnego P", "Jedna obserwacja przejścia", "Q(s,a)", "Maksimum Q(s′,a′)", "Zachowanie może eksplorować, cel jest zachłanny", "Gₜ definiuje wartość, cel korzysta z jednego przejścia"]}, "nstep": {"name": "n-krokowe TD", "details": ["Bez jawnego P", "Okno do n przejść", "V(s)", "V(sₜ₊ₙ) po n nagrodach", "Ustalona π zbiera dane i jest oceniana", "n nagród i oszacowanie albo pełny Gₜ przy terminalu"]}, "td-lambda": {"name": "TD(λ) ze śladami", "details": ["Bez jawnego P", "Jedna obserwacja przejścia", "V(x) dla stanów ze śladem", "V(s′) w bieżącym δ", "Ustalona π zbiera dane i jest oceniana", "Mieszanka horyzontów w przód, ślady wstecz"]}, "n-sarsa": {"name": "n-krokowe SARSA", "details": ["Bez jawnego P", "Okno do n przejść", "Q(s,a)", "Q(sₜ₊ₙ,aₜ₊ₙ) po n nagrodach", "Ta sama polityka dostarcza dalszą akcję", "n nagród i oszacowanie albo pełny Gₜ przy terminalu"]}, "double-q": {"name": "Double Q-learning", "details": ["Bez jawnego P", "Jedna obserwacja przejścia", "Qᴬ(s,a) lub Qᴮ(s,a)", "Jedna tablica wybiera, druga ocenia", "Zachowanie zwykle korzysta z obu tablic", "Gₜ definiuje wartość, cel korzysta z jednego przejścia"]}, "dyna": {"name": "Dyna-Q", "details": ["Model uczony z obserwacji", "Obserwacja i przejścia z modelu", "Q(s,a)", "Maksimum Q(s′,a′)", "Zachowanie może eksplorować, cel jest zachłanny", "Gₜ definiuje wartość, cel korzysta z jednego przejścia"]}};
+const comparisonAxes = ["Model przejść", "Porcja danych", "Aktualizowany wpis", "Dalsza część celu", "Rola polityki", "Rola pełnego zwrotu Gₜ"];
+
+const cards = Array.from(document.querySelectorAll(".slide"));
+const byHash = new Map(cards.map(card => [card.id, card]));
+const picker = document.getElementById("method-picker");
+const toggle = document.getElementById("toggle-mode");
+const previous = document.getElementById("previous");
+const next = document.getElementById("next");
+const count = document.getElementById("slide-count");
+let presenting = new URLSearchParams(location.search).get("slajdy") === "1";
+let active = 0;
+
+function selectionFromHash() {
+    const id = location.hash.slice(1);
+    if (byHash.has(id)) active = cards.indexOf(byHash.get(id));
+}
+
+function render() {
+    document.body.classList.toggle("present", presenting);
+    toggle.setAttribute("aria-pressed", String(presenting));
+    toggle.textContent = presenting ? "Wróć do atlasu" : "Tryb prezentacji";
+    cards.forEach((card, i) => { card.hidden = presenting && i !== active; });
+    picker.value = cards[active].id;
+    previous.hidden = next.hidden = !presenting;
+    previous.disabled = active === 0;
+    next.disabled = active === cards.length - 1;
+    count.textContent = "Slajd " + (active + 1) + " z " + cards.length;
+}
+
+function choose(index, scroll) {
+    if (index < 0 || index >= cards.length) return;
+    active = index;
+    const card = cards[active];
+    render();
+    const url = new URL(location.href);
+    url.hash = card.id;
+    history.replaceState(null, "", url.hash);
+    if (scroll && !presenting) card.scrollIntoView({ block: "start" });
+    if (presenting) window.scrollTo(0, 0);
+}
+
+toggle.addEventListener("click", () => {
+    presenting = !presenting;
+    if (presenting) choose(active, false);
+    else render();
+    window.scrollTo(0, 0);
+});
+picker.addEventListener("change", () => choose(cards.indexOf(byHash.get(picker.value)), true));
+previous.addEventListener("click", () => choose(active - 1, false));
+next.addEventListener("click", () => choose(active + 1, false));
+window.addEventListener("hashchange", () => {
+    selectionFromHash();
+    render();
+    if (presenting) window.scrollTo(0, 0);
+});
+window.addEventListener("keydown", event => {
+    if (!presenting || event.altKey || event.ctrlKey || event.metaKey ||
+        event.target.matches("input, select, textarea, summary, button")) return;
+    if (event.key === "Escape") {
+        presenting = false;
+        render();
+    }
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        choose(active + (event.key === "ArrowLeft" ? -1 : 1), false);
+    }
+});
+selectionFromHash();
+render();
+const firstMethod = document.getElementById("compare-a");
+const secondMethod = document.getElementById("compare-b");
+const comparisonBody = document.getElementById("compare-body");
+const comparisonStatus = document.getElementById("compare-status");
+const comparisonSection = document.getElementById("zmiana-metody");
+
+function updateComparison() {
+    const methods = [firstMethod.value, secondMethod.value];
+    methods.forEach((id, index) => {
+        const link = document.getElementById(index === 0 ? "compare-link-a" : "compare-link-b");
+        link.href = "#" + id;
+        link.textContent = comparisonData[id].name;
+    });
+
+    comparisonBody.replaceChildren();
+    let differences = 0;
+    comparisonAxes.forEach((title, index) => {
+        const [a, b] = methods.map(id => comparisonData[id].details[index]);
+        const row = document.createElement("tr");
+        const label = document.createElement("th");
+        label.scope = "row";
+        label.textContent = title;
+        if (a !== b) {
+            differences += 1;
+            row.classList.add("different");
+            const signal = document.createElement("span");
+            signal.className = "diff";
+            signal.textContent = "Różnica";
+            label.append(signal);
+        }
+        row.append(label);
+        for (const value of [a, b]) {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.append(cell);
+        }
+        comparisonBody.append(row);
+    });
+    comparisonStatus.textContent = "Aspekty, które się różnią: " + differences + " z " + comparisonAxes.length + ".";
+}
+
+function compare(a, b) {
+    firstMethod.value = a;
+    secondMethod.value = b;
+    updateComparison();
+}
+
+firstMethod.addEventListener("change", updateComparison);
+secondMethod.addEventListener("change", updateComparison);
+document.querySelectorAll("[data-a][data-b]").forEach(button => {
+    button.addEventListener("click", () => compare(button.dataset.a, button.dataset.b));
+});
+document.querySelectorAll(".compare-method").forEach(button => {
+    button.addEventListener("click", () => {
+        compare(button.dataset.method, button.dataset.reference);
+        presenting = false;
+        render();
+        history.replaceState(null, "", "#zmiana-metody");
+        comparisonSection.focus({ preventScroll: true });
+        comparisonSection.scrollIntoView({ block: "start" });
+    });
+});
+window.addEventListener("hashchange", () => {
+    const id = location.hash.slice(1);
+    if (presenting && id && !byHash.has(id)) {
+        const destination = document.getElementById(id);
+        if (!destination) return;
+        presenting = false;
+        render();
+        destination.scrollIntoView({ block: "start" });
+    }
+});
+compare("bandyta", "mc-control");
+
+const epsilonSlider = document.getElementById("eps-bandit");
+const epsilonLabel = document.getElementById("eps-bandit-value");
+const tieControl = document.getElementById("tie-bandit");
+const banditScores = document.getElementById("bandit-q");
+const banditProbabilities = document.getElementById("bandit-probabilities");
+const decimal = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const percent = new Intl.NumberFormat("pl-PL", { style: "percent", maximumFractionDigits: 2 });
+
+function updateBandit() {
+    const epsilon = Number(epsilonSlider.value);
+    const scores = [4, tieControl.checked ? 4 : 3, 2, 0];
+    const best = Math.max(...scores);
+    const leaders = scores.filter(score => score === best).length;
+    epsilonLabel.value = decimal.format(epsilon);
+    banditScores.textContent = "Bieżące oceny Q: " + scores.map((score, index) => "ramię " + (index + 1) + " = " + score).join(", ") + ".";
+    banditProbabilities.replaceChildren();
+    scores.forEach((score, index) => {
+        const explore = epsilon / scores.length;
+        const exploit = score === best ? (1 - epsilon) / leaders : 0;
+        const cell = document.createElement("div");
+        const title = document.createElement("strong");
+        title.textContent = "Ramię " + (index + 1) + " · " + percent.format(explore + exploit);
+        const detail = document.createElement("small");
+        detail.textContent = "Eksploracja " + percent.format(explore) + " · eksploatacja " + percent.format(exploit);
+        const bar = document.createElement("div");
+        bar.className = "prob-bar";
+        bar.setAttribute("aria-hidden", "true");
+        for (const [className, probability] of [["explore", explore], ["exploit", exploit]]) {
+            const segment = document.createElement("span");
+            segment.className = className;
+            segment.style.width = probability * 100 + "%";
+            bar.append(segment);
+        }
+        cell.append(title, bar, detail);
+        banditProbabilities.append(cell);
+    });
+}
+
+epsilonSlider.addEventListener("input", updateBandit);
+tieControl.addEventListener("change", updateBandit);
+updateBandit();
+</script></body></html>

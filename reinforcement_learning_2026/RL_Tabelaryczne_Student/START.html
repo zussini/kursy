@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uczenie ze wzmocnieniem · Metody tabelaryczne</title>
+<style>
+:root{color-scheme:light;--paper:#f8f4eb;--ink:#172b3b;--accent:#005b5c;--rule:#c8d7d3;--surface:#fffcf6}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.58 system-ui,sans-serif}
+main{max-width:1090px;margin:auto;padding:clamp(23px,5vw,64px)}h1,h2{font-family:Georgia,serif;line-height:1.12}
+h1{font-size:clamp(2.2rem,5.4vw,4.25rem);margin:.18em 0 .28em}h2{font-size:clamp(1.5rem,3.2vw,2rem);margin:.25em 0 .5em}
+p,ul{margin:.6em 0}a{color:#064f56;text-underline-offset:.19em}a:hover{color:#713813}a:focus-visible{outline:3px solid #8d5616;outline-offset:3px}
+header{padding-bottom:1.5rem;border-bottom:1px solid var(--rule)}.audience,.number{color:var(--accent);font-weight:750}
+header p:last-child{font-size:1.19rem;max-width:59rem}.intro{margin:1.45rem 0 2rem;padding:1rem 1.35rem;border-left:4px solid var(--accent);background:#e8f0e9}
+nav ul{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.35rem 1.25rem}section{margin:1.7rem 0}
+section.module{padding:1.35rem 0 1.55rem;border-bottom:1px solid var(--rule);scroll-margin-top:1rem}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:.35rem 1.15rem}dt{font-weight:bold}dd{margin:0}
+code{font-family:ui-monospace,monospace;font-size:.93em;overflow-wrap:anywhere}.links{display:flex;gap:.35rem 1.15rem;flex-wrap:wrap}
+@media(max-width:560px){dl{grid-template-columns:1fr;gap:.15rem}dd{margin-bottom:.65rem}}
+@media print{body{background:white}main{padding:0}a{color:inherit}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <p class="audience">Materiały dla studentów</p>
+  <h1>Metody tabelaryczne</h1>
+  <p>Od równań Bellmana dla robota, przez planowanie na planszy i uczenie z prób, do wielokrokowych aktualizacji wartości.</p>
+</header>
+<nav aria-label="Moduły"><ul><li><a href="#m02">02 Planowanie przy znanym modelu</a></li><li><a href="#m03">03 Ocena polityki z doświadczenia</a></li><li><a href="#m04">04 Sterowanie tabelaryczne</a></li><li><a href="#m05">05 Cele wielokrokowe i ślady kwalifikowalności</a></li><li><a href="#m06">06 Double Q-learning i Dyna-Q</a></li></ul></nav>
+<div class="intro">
+  <p><strong>Jak zacząć.</strong> Rozpakuj cały ZIP, a następnie otwórz <code>START.html</code>. Do rachunków i pokazu wystarczy przeglądarka. Notatniki <code>.ipynb</code> otwieraj w Jupyterze lub w edytorze obsługującym Jupyter. Uruchamiaj je z folderu danego modułu. W modułach 02–05 plik <code>srodowiska.py</code> powinien leżeć obok notatnika.</p>
+  <p>Uruchamiaj komórki od góry. Uzupełniaj znaczniki TODO kolejno i sprawdzaj wynik po każdym bloku.</p>
+  <p><a href="RL_Karty_metody_tabelaryczne.html">Karty rachunkowe do druku</a></p>
+</div>
+
+<section id="m02" class="module">
+  <span class="number">Moduł 02</span>
+  <h2>Planowanie przy znanym modelu</h2>
+  <p><strong>Jak wyznaczyć wartość każdego pola i najlepszą akcję, gdy znamy model ruchu?</strong></p>
+  <p class="links"><a href="02/RL_02_DP.ipynb">Notebook do uzupełnienia</a>
+<a href="02/RL_02_Bellman_interaktywnie.html">Interaktywna plansza i epizod</a></p>
+  <dl>
+    <dt>Zadanie</dt><dd>Odczytaj przejścia na brzegu i przy wejściu do celu. Uzupełnij jeden rachunek Bellmana i zbuduj pełną iterację wartości. Porównaj dwa tryby obliczeń oraz dwie nawierzchnie.</dd>
+    <dt>Sprawdzenie</dt><dd>Pokaż test 0,535 dla oceny i 0,65 dla wartości komendy w prawo na lodzie. Wyjaśnij skąd wzięło się maksimum w aktualizacji optymalności.</dd>
+  </dl>
+</section>
+<section id="m03" class="module">
+  <span class="number">Moduł 03</span>
+  <h2>Ocena polityki z doświadczenia</h2>
+  <p><strong>Jak oszacować zwrot, jeśli agent widzi tylko ruchy oraz nagrody?</strong></p>
+  <p class="links"><a href="03/RL_03_MC_TD0.ipynb">Notebook do uzupełnienia</a></p>
+  <dl>
+    <dt>Zadanie</dt><dd>Zaimplementuj zwrot, aktualizację Monte Carlo pierwszej wizyty i aktualizację TD(0). Odczytaj błędy względem wartości referencyjnej i sprawdź, które pola były odwiedzane.</dd>
+    <dt>Sprawdzenie</dt><dd>Uzasadnij, dlaczego próbki 0,9025 i 0,38 mogą służyć do oceny tego samego stanu. Dodatkowo sprawdź sterowanie Monte Carlo oraz oszacowanie zwrotu dla innej polityki niż ta, która zebrała dane.</dd>
+  </dl>
+</section>
+<section id="m04" class="module">
+  <span class="number">Moduł 04</span>
+  <h2>Sterowanie tabelaryczne</h2>
+  <p><strong>Której akcji się nauczyć, kiedy reguła wyboru zmienia się w trakcie interakcji?</strong></p>
+  <p class="links"><a href="04/RL_04_Sterowanie_tabelaryczne.ipynb">Notebook do uzupełnienia</a></p>
+  <dl>
+    <dt>Zadanie</dt><dd>Uzupełnij reguły aktualizacji Q i porównaj wyniki na planszy z klifem. Sprawdź przejście terminalne i przejście po upadku. W obu przypadkach odczytaj nagrodę i znacznik końca.</dd>
+    <dt>Sprawdzenie</dt><dd>Wskaż, jakie dane wykorzystuje każdy z trzech celów. Oprzyj interpretację klifu na wynikach z kilku ziaren i uwzględnij sposób oceny polityki.</dd>
+  </dl>
+</section>
+<section id="m05" class="module">
+  <span class="number">Moduł 05</span>
+  <h2>Cele wielokrokowe i ślady kwalifikowalności</h2>
+  <p><strong>Jak przekazać informację z późniejszej nagrody do kilku wcześniejszych decyzji?</strong></p>
+  <p class="links"><a href="05/RL_05_Wielokrokowe.ipynb">Notebook do uzupełnienia</a></p>
+  <dl>
+    <dt>Zadanie</dt><dd>Oblicz cele jedno- i wielokrokowe, uzupełnij ślady kumulujące i porównaj błędy predykcji. Rozpoznaj, skąd n-krokowe SARSA bierze akcję do ostatniego składnika.</dd>
+    <dt>Sprawdzenie</dt><dd>Wyjaśnij wynik dla powtórzonego stanu 14 i koniec epizodu przed n-tym krokiem. Zinterpretuj różnice po zmianie n lub λ.</dd>
+  </dl>
+</section>
+<section id="m06" class="module">
+  <span class="number">Moduł 06</span>
+  <h2>Double Q-learning i Dyna-Q</h2>
+  <p><strong>Co zrobić z zawyżaniem maksimum i jak wykorzystać doświadczenie do planowania?</strong></p>
+  <p class="links"><a href="06/RL_06_Double_Q_Dyna_Q.ipynb">Notebook do uzupełnienia</a></p>
+  <dl>
+    <dt>Zadanie</dt><dd>Porównaj wyniki Q-learningu i Double Q w środowisku z zaszumionymi wypłatami. W doświadczeniu Dyna-Q zmieniaj liczbę aktualizacji planujących przy tej samej liczbie rzeczywistych kroków.</dd>
+    <dt>Sprawdzenie</dt><dd>Wskaż źródło wartości w celu Double Q. W Dyna-Q podaj obie liczby, interakcje ze środowiskiem i aktualizacje z modelu.</dd>
+  </dl>
+</section>
+<section aria-labelledby="end">
+  <h2 id="end">Sprawdzenie na koniec</h2>
+  <p>Wybierz jeden ruch z planszy. Podaj dostępne dane i zapisz cel dla aktualizacji z pełnego modelu, z jednej próbki i z całego epizodu. Następnie wyjaśnij, co zmienia się, gdy zamiast oceniać ustaloną politykę, uczysz się wybierać akcje.</p>
+  <p>Po opanowaniu tablic wartości można przejść do aproksymacji. Naturalnym pierwszym przykładem będzie liniowa reprezentacja wartości dla znanych stanów i akcji.</p>
+</section>
+</main>
+</body>
+</html>

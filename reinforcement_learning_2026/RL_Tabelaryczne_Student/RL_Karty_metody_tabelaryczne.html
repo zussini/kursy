@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karty pracy · Metody tabelaryczne RL</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #192d31; --muted: #465a5e; --teal: #005a55; --line: #b1c0bc;
+    --paper: #fffdf7; --soft: #e8f0eb;
+    font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f3f0e7; color: var(--ink); }
+  main { max-width: 880px; margin: auto; }
+  .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 18px; padding: 16px 24px 4px; }
+  .nav strong { color: var(--ink); }
+  .nav a { color: var(--teal); font-size: .9rem; }
+  .sheet {
+    margin: 12px 20px 22px; padding: 30px 35px 24px; background: var(--paper);
+    border: 1px solid var(--line); min-width: 0;
+  }
+  header { border-bottom: 2px solid var(--teal); padding-bottom: 10px; margin-bottom: 12px; }
+  h1, h2, h3, p { margin: 0; }
+  .stamp { color: var(--teal); font-size: .78rem; text-transform: uppercase; letter-spacing: .07em; font-weight: 750; }
+  h1 { font: 700 clamp(1.6rem, 4vw, 2.25rem)/1.08 Georgia, serif; margin: 4px 0 5px; }
+  h2 { color: var(--teal); font-size: 1.02rem; line-height: 1.25; margin: 13px 0 4px; }
+  p + p { margin-top: 5px; }
+  .lead { font-size: .9rem; color: var(--muted); }
+  .name { margin-top: 8px; font-size: .83rem; }
+  .name span { display: inline-block; border-bottom: 1px solid var(--line); min-width: 13em; max-width: 70%; height: 1rem; }
+  .data {
+    padding: 6px 10px; background: var(--soft); border-left: 3px solid var(--teal); font-size: .88rem;
+    overflow-wrap: anywhere;
+  }
+  .eq { font-family: ui-monospace, "DejaVu Sans Mono", monospace; font-size: .81rem; }
+  .eq i { font-family: inherit; }
+  table { border-collapse: collapse; width: 100%; font-size: .88rem; margin-top: 6px; text-align: left; }
+  th, td { border: 1px solid var(--line); padding: 4px 7px; height: 26px; }
+  th { background: var(--soft); font-weight: 700; }
+  .blank { min-width: 2.4em; }
+  .line { border-bottom: 1px solid var(--line); height: 1.4em; margin: 0 0 1px; }
+  .answer { display: inline-block; min-width: 4em; border-bottom: 1px solid var(--line); }
+  .handoff { margin-top: 11px; padding: 6px 8px; border: 1px solid var(--line); font-size: .83rem; }
+  ol { margin: 3px 0 0; padding-left: 1.3em; }
+  ol li { padding-left: 2px; margin: 3px 0; }
+  sub, sup { line-height: 0; }
+  @page { size: A4; margin: 12mm 13mm; }
+  @media print {
+    :root { font-size: 10.5pt; }
+    body, .sheet { background: #fff; }
+    .nav { display: none; }
+    main { max-width: none; }
+    .sheet { border: 0; margin: 0; padding: 0; break-after: page; page-break-after: always; }
+    .sheet:last-child { break-after: auto; page-break-after: auto; }
+    h1 { font-size: 24pt; }
+    h2 { break-after: avoid; }
+    table { break-inside: avoid; }
+    .data, th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .line { height: 6.2mm; }
+  }
+  @media (max-width: 570px) {
+    .sheet { margin-inline: 8px; padding: 18px 13px; }
+    th, td { padding-inline: 4px; }
+    .blank { min-width: 1.4em; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <nav class="nav" aria-label="Karty do wyboru">
+    <strong>Karty pracy</strong>
+    <a href="#dp">02 · Programowanie dynamiczne</a>
+    <a href="#predykcja">03 · Monte Carlo i TD(0)</a>
+    <a href="#sterowanie">04 · Sterowanie</a>
+    <a href="#n-krokow">05 · Zwroty n-krokowe</a>
+    <a href="#rozszerzenia">06 · Dyna i Double Q</a>
+  </nav>
+  <article class="sheet" id="dp">
+    <header>
+      <p class="stamp">Uczenie ze wzmocnieniem · Karta 02</p>
+      <h1>Ocena polityki i iteracja wartości</h1>
+      <p class="lead">Z tego samego modelu oblicz wartość komendy, wartość zadanej polityki i krok optymalności.</p>
+      <p class="name">Imię i nazwisko <span aria-hidden="true"></span></p>
+    </header>
+
+    <div class="data">
+      <p>Plansza 4 × 4 ma pola od 0 do 15 numerowane wierszami. Z pola 14 ruch w dół trafia na brzeg. Cel 15 wypłaca +1 przy wejściu i kończy epizod. W pozostałych ruchach nagroda wynosi 0.</p>
+      <p>Przyjmij dyskonto <i>γ</i> = 0,95 oraz oszacowania <i>V</i>(10) = 0,40, <i>V</i>(13) = 0,20, <i>V</i>(14) = 0,60. Dalszy zwrot po zakończeniu wynosi 0.</p>
+    </div>
+
+    <h2>1. Sucha plansza</h2>
+    <p>Uzupełnij skutek każdej komendy i policz jej wartość <i>r</i> + <i>γV</i>(<i>s</i>′). <i>r</i> to nagroda, a <i>s</i>′ to pole po ruchu.</p>
+    <table>
+      <thead><tr><th scope="col">Komenda</th><th scope="col">Pole po ruchu</th><th scope="col">Nagroda</th><th scope="col">Koniec?</th><th scope="col">Wartość komendy</th></tr></thead>
+      <tbody>
+        <tr><td>Lewo</td><td class="blank"></td><td></td><td></td><td></td></tr>
+        <tr><td>Dół</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>Prawo</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td>Góra</td><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+
+    <h2>2. Ocena polityki i krok optymalności</h2>
+    <p>Polityka <i>π</i>(<i>a</i> | <i>s</i>) określa szansę wyboru komendy. Dla jednostajnej polityki każda komenda ma szansę ¼. Policz wartość pola 14 po jednej aktualizacji. Potem weź maksimum wraz z najlepszą komendą.</p>
+    <p>Ocena polityki <span class="answer"></span> &nbsp;&nbsp; Maksimum <span class="answer"></span> &nbsp;&nbsp; Komenda <span class="answer"></span></p>
+
+    <h2>3. Ten sam ruch na śliskiej planszy</h2>
+    <p>Agent wybiera „w prawo”. Poślizg realizuje kierunek zamierzony lub jeden z dwóch prostopadłych, każdy z szansą ⅓. Zapisz trzy możliwe wyniki i policz średnią ważoną.</p>
+    <div class="line"></div><div class="line"></div>
+    <p class="handoff"><strong>Oddaj</strong> tabelę i trzy rachunki. Wskaż, w której części zadania prawdopodobieństwo opisuje decyzję agenta, a w której skutek ruchu.</p>
+  </article>
+
+  <article class="sheet" id="predykcja">
+    <header>
+      <p class="stamp">Uczenie ze wzmocnieniem · Karta 03</p>
+      <h1>Jedno przejście i cały epizod</h1>
+      <p class="lead">Porównaj Monte Carlo pierwszej wizyty z TD(0), czyli aktualizacją z różnicy czasowej po jednym kroku.</p>
+      <p class="name">Imię i nazwisko <span aria-hidden="true"></span></p>
+    </header>
+
+    <div class="data">
+      <p>Śliska plansza. Polityka wybiera „w prawo” w 14 i „w dół” w 10. Poślizg decyduje o skutku komendy.</p>
+      <p>Przyjmij <i>γ</i> = 0,95, <i>α</i> = 0,10, <i>V</i>(14) = 0,60 i <i>V</i>(10) = 0,40. Porównaj metody, zaczynając każdą od tych samych wartości.</p>
+    </div>
+    <table>
+      <thead><tr><th scope="col">Stan</th><th scope="col">Komenda</th><th scope="col">Stan po ruchu</th><th scope="col">Nagroda</th><th scope="col">Koniec?</th></tr></thead>
+      <tbody>
+        <tr><td>14</td><td>Prawo</td><td>10</td><td>0</td><td>Epizod trwa</td></tr>
+        <tr><td>10</td><td>Dół</td><td>14</td><td>0</td><td>Epizod trwa</td></tr>
+        <tr><td>14</td><td>Prawo</td><td>15</td><td>+1</td><td>Cel, koniec</td></tr>
+      </tbody>
+    </table>
+
+    <h2>1. TD(0) po pierwszym ruchu</h2>
+    <p>Policz cel <i>y</i> = <i>r</i> + <i>γV</i>(<i>s</i>′), różnicę <i>y</i> − <i>V</i>(14) i nowe <i>V</i>(14). Aktualizacja przesuwa wartość o <i>α</i> razy różnicę. Zapisz osobno cel dla ostatniego, końcowego ruchu.</p>
+    <p>Cel <span class="answer"></span> &nbsp;&nbsp; Różnica <span class="answer"></span> &nbsp;&nbsp; Nowe <i>V</i>(14) <span class="answer"></span></p>
+    <p>Cel przy wejściu do 15 <span class="answer"></span> &nbsp;&nbsp; Uzasadnienie <span class="answer" style="width:36%"></span></p>
+
+    <h2>2. Monte Carlo pierwszej wizyty</h2>
+    <p>Policz zwrot <i>G</i> od pierwszej wizyty w 14. Oblicz też zwrot od drugiej wizyty i zaznacz, który z nich uśredniasz w metodzie pierwszej wizyty.</p>
+    <p>Pierwsza wizyta <span class="answer"></span> &nbsp;&nbsp; Druga wizyta <span class="answer"></span></p>
+    <p>Gdy zastosujesz krok <i>α</i> = 0,10 w kierunku wybranego zwrotu, nowe <i>V</i>(14) wyniesie <span class="answer"></span>.</p>
+    <div class="line"></div>
+
+    <h2>3. Jakich danych potrzebuje każda metoda?</h2>
+    <p>Porównaj TD(0), Monte Carlo i obliczenie z modelu przejść. Wyjaśnij, kiedy możesz policzyć ich cele.</p>
+    <div class="line"></div><div class="line"></div>
+    <p class="handoff"><strong>Oddaj</strong> oba rachunki, wynik terminalnego kroku i krótkie porównanie źródeł informacji.</p>
+  </article>
+
+  <article class="sheet" id="sterowanie">
+    <header>
+      <p class="stamp">Uczenie ze wzmocnieniem · Karta 04</p>
+      <h1>Trzy cele aktualizacji Q</h1>
+      <p class="lead">Porównaj SARSA, Expected SARSA i Q-learning na tej samej próbce.</p>
+      <p class="name">Imię i nazwisko <span aria-hidden="true"></span></p>
+    </header>
+
+    <div class="data">
+      <p>Po wykonaniu akcji <i>a</i> w stanie <i>s</i> środowisko daje nagrodę −1 i kolejny stan <i>s</i>′. Epizod trwa. W <i>s</i>′ polityka zachowania wybiera „w prawo”.</p>
+      <p>Dyskonto <i>γ</i> = 0,9, krok uczenia <i>α</i> = 0,10, stara ocena akcji <i>Q</i>(<i>s</i>, <i>a</i>) = 0,50. Polityka <i>ε</i>-zachłanna z <i>ε</i> = 0,20 dzieli eksplorację równo na cztery akcje, a pozostałą szansę przypisuje najlepszej.</p>
+    </div>
+    <table>
+      <thead><tr><th scope="col">Akcja w <i>s</i>′</th><th scope="col">Lewo</th><th scope="col">Dół</th><th scope="col">Prawo</th><th scope="col">Góra</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><i>Q</i>(<i>s</i>′, akcja)</th><td>4</td><td>1</td><td>2</td><td>0</td></tr>
+        <tr><th scope="row">Szansa wyboru akcji</th><td class="blank"></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+
+    <h2>1. Szanse wyboru i wartość kolejnego kroku</h2>
+    <p>Uzupełnij szanse akcji. Sprawdź ich sumę. Wpisz wybrany składnik przyszłej wartości <i>W</i> dla każdej metody. Cel <i>y</i> = <i>r</i> + <i>γW</i>. Nowe <i>Q</i> = stare <i>Q</i> + <i>α</i> × (<i>y</i> − stare <i>Q</i>).</p>
+    <table>
+      <thead><tr><th scope="col">Metoda</th><th scope="col">Jak ustalasz <i>W</i>?</th><th scope="col"><i>W</i></th><th scope="col">Cel <i>y</i></th><th scope="col">Nowe <i>Q</i></th></tr></thead>
+      <tbody>
+        <tr><th scope="row">SARSA</th><td>Ocena wykonanej akcji w <i>s</i>′</td><td class="blank"></td><td></td><td></td></tr>
+        <tr><th scope="row">Expected SARSA</th><td>Średnia ważona ocen akcji w <i>s</i>′</td><td></td><td></td><td></td></tr>
+        <tr><th scope="row">Q-learning</th><td>Największa ocena akcji w <i>s</i>′</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+
+    <h2>2. Ta sama nagroda przy końcu epizodu</h2>
+    <p>Załóż teraz, że przejście z nagrodą −1 kończy epizod. Jaki cel wpiszesz w każdej metodzie? Uzasadnij.</p>
+    <div class="line"></div><div class="line"></div>
+
+    <h2>3. Zinterpretuj różnicę</h2>
+    <p>Która metoda wycenia dalsze zachowanie z eksploracją, a która dalszą zachłanną grę?</p>
+    <div class="line"></div><div class="line"></div>
+    <p class="handoff"><strong>Oddaj</strong> obie tabele, przykład terminalny i wyjaśnienie różnicy między polityką zbierającą dane a polityką wycenianą.</p>
+  </article>
+
+  <article class="sheet" id="n-krokow">
+    <header>
+      <p class="stamp">Uczenie ze wzmocnieniem · Karta 05</p>
+      <h1>Zwroty n-krokowe i zwrot λ</h1>
+      <p class="lead">Sprawdź, jak zmienia się cel wraz z liczbą obserwowanych kroków.</p>
+      <p class="name">Imię i nazwisko <span aria-hidden="true"></span></p>
+    </header>
+
+    <div class="data">
+      <p>Ta sama trajektoria 14 → 10 → 14 → 15. Nagrody po ruchach to 0, 0 i +1. Stan 15 kończy epizod.</p>
+      <p>Przyjmij <i>γ</i> = 0,95, <i>λ</i> = 0,5, <i>α</i> = 0,10, <i>V</i>(14) = 0,60 i <i>V</i>(10) = 0,40. Licz każdy cel od pierwszej wizyty w 14 z tej samej starej tablicy.</p>
+    </div>
+
+    <h2>1. Rachunek dla horyzontu 1, 2 i 3 kroków</h2>
+    <p>Przy <i>n</i> krokach zsumuj <i>n</i> zdyskontowanych nagród. Jeżeli epizod trwa, dodaj <i>γ</i><sup><i>n</i></sup> × <i>V</i>(stanu po <i>n</i> krokach).</p>
+    <table>
+      <thead><tr><th scope="col">Liczba kroków</th><th scope="col">Zaobserwowane nagrody</th><th scope="col">Wkład bieżącej tablicy</th><th scope="col">Zwrot</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td></td><td></td><td><i>G</i><sup>(1)</sup> = </td></tr>
+        <tr><td>2</td><td></td><td></td><td><i>G</i><sup>(2)</sup> = </td></tr>
+        <tr><td>3</td><td></td><td></td><td><i>G</i><sup>(3)</sup> = </td></tr>
+      </tbody>
+    </table>
+
+    <h2>2. Połącz horyzonty za pomocą λ</h2>
+    <div class="data eq">
+      <i>G</i><sup>λ</sup> = (1 − <i>λ</i>)<i>G</i><sup>(1)</sup> + (1 − <i>λ</i>)<i>λG</i><sup>(2)</sup> + <i>λ</i>²<i>G</i><sup>(3)</sup>
+    </div>
+    <p>Odczytaj trzy wagi, sprawdź ich sumę i oblicz <i>G</i><sup>λ</sup>. Potem przesuń <i>V</i>(14) w stronę wyniku krokiem <i>α</i> = 0,10.</p>
+    <p>Wagi <span class="answer"></span> &nbsp;&nbsp; <i>G</i><sup>λ</sup> <span class="answer"></span> &nbsp;&nbsp; Nowe <i>V</i>(14) <span class="answer"></span></p>
+    <div class="line"></div>
+
+    <h2>3. Skraje i koniec epizodu</h2>
+    <p>Co dostajesz dla <i>λ</i> = 0 i dla <i>λ</i> = 1? Co zrobisz, gdy <i>n</i> przekroczy liczbę pozostałych ruchów?</p>
+    <div class="line"></div><div class="line"></div>
+    <p class="handoff"><strong>Oddaj</strong> trzy zwroty, wagi i wynik mieszania. Wskaż, w których celach użyto bieżącej tablicy.</p>
+  </article>
+
+  <article class="sheet" id="rozszerzenia">
+    <header>
+      <p class="stamp">Uczenie ze wzmocnieniem · Karta 06 · Rozszerzenie</p>
+      <h1>Dyna-Q i Double Q-learning</h1>
+      <p class="lead">Prześledź jeden krok planowania z modelem i jeden rachunek z dwiema tablicami.</p>
+      <p class="name">Imię i nazwisko <span aria-hidden="true"></span></p>
+    </header>
+
+    <h2>1. Dyna-Q wykorzystuje doświadczenia i model</h2>
+    <div class="data">
+      <p>Po rzeczywistych ruchach agent uczy się modelu i poprawia tablicę Q. W przerwie między ruchami losuje z modelu przykładowe przejścia i stosuje do nich aktualizację Q-learningu.</p>
+      <p>Model podaje <i>s</i> = 14, „w prawo”, <i>r</i> = +1, <i>s</i>′ = 15, koniec. Przed tym krokiem <i>Q</i>(14, prawo) = 0,60 i <i>α</i> = 0,10.</p>
+    </div>
+    <p>Policz cel oraz nowe <i>Q</i>(14, prawo). Podaj jedną korzyść i jedno możliwe źródło błędu podczas uczenia z modelu.</p>
+    <p>Cel <span class="answer"></span> &nbsp;&nbsp; Nowe <i>Q</i>(14, prawo) <span class="answer"></span></p>
+    <div class="line"></div><div class="line"></div>
+
+    <h2>2. Double Q-learning rozdziela wybór i ocenę</h2>
+    <div class="data">
+      <p>Rozważ krok z nagrodą 0, <i>γ</i> = 0,95 i epizodem, który trwa. Dla aktualizacji tablicy <i>Q</i><sub>A</sub> wybierz najlepszą akcję według <i>Q</i><sub>A</sub>. Do celu wstaw wartość tej samej akcji odczytaną z <i>Q</i><sub>B</sub>.</p>
+    </div>
+    <table>
+      <thead><tr><th scope="col">Akcja w <i>s</i>′</th><th scope="col">Lewo</th><th scope="col">Dół</th><th scope="col">Prawo</th><th scope="col">Góra</th></tr></thead>
+      <tbody>
+        <tr><th scope="row"><i>Q</i><sub>A</sub></th><td>0,80</td><td>0,95</td><td>0,10</td><td>0,30</td></tr>
+        <tr><th scope="row"><i>Q</i><sub>B</sub></th><td>0,90</td><td>0,45</td><td>0,05</td><td>0,15</td></tr>
+      </tbody>
+    </table>
+    <p>Policz oba cele. Dla zwykłego Q-learningu użyj tablicy <i>Q</i><sub>A</sub>. Dla Double Q-learningu użyj obu tablic zgodnie z podaną regułą.</p>
+    <p>Wybrana akcja <span class="answer"></span> &nbsp;&nbsp; Zwykły cel <span class="answer"></span> &nbsp;&nbsp; Cel Double Q <span class="answer"></span></p>
+    <div class="line"></div>
+
+    <h2>3. Porównaj role obu rozszerzeń</h2>
+    <p>Jaką dodatkową informację wykorzystuje Dyna-Q? Jaką operację zmienia Double Q-learning?</p>
+    <div class="line"></div><div class="line"></div>
+    <p class="handoff"><strong>Oddaj</strong> cel kroku planowania, dwa cele dla tablic Q i wyjaśnienie w dwóch zdaniach.</p>
+  </article>
+</main>
+</body>
+</html>

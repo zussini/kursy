@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="pl">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gridworld A i B · Dwie mapy wartości</title>
+<style>
+:root{color-scheme:light;--paper:#f5f2e9;--sheet:#fffdf6;--ink:#17313a;--muted:#425a5f;--teal:#075b53;--rule:#c8d5cc;--wash:#e6f1e8;--sand:#f7ecce;font:16px/1.55 system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink)}main{max-width:1170px;margin:auto;padding:clamp(16px,4.4vw,56px)}
+h1,h2,h3,p{margin:0}h1,h2{font-family:Georgia,serif;line-height:1.08}h1{font-size:clamp(2.4rem,6vw,4.3rem);margin-bottom:.25em}h2{font-size:clamp(1.45rem,3vw,2.1rem);margin-bottom:.45em}h3{font-size:1.1rem}a{color:var(--teal);text-underline-offset:.2em}
+:focus-visible{outline:3px solid #a45020;outline-offset:2px}p+p{margin-top:.4em}.intro{font-size:1.12rem;max-width:68ch}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:.55em;margin:1em 0}.rules div{border-left:4px solid var(--teal);background:var(--wash);padding:.62em .9em}.detail{color:var(--muted);font-size:.96rem}
+.controls{margin:1.1em 0 .55em;display:flex;gap:.55em;align-items:center;flex-wrap:wrap}.controls label{display:flex;gap:.48em;align-items:center;padding-right:.45em;font-weight:650}
+button,select,input{font:inherit}button,select{border:1px solid #6d9086;background:var(--sheet);color:var(--teal);border-radius:4px;padding:.4em .65em;font-weight:650}button{cursor:pointer}
+button:hover{filter:brightness(.94)}button.primary{background:var(--teal);border-color:var(--teal);color:white}input{accent-color:var(--teal)}
+.board-pair{display:grid;grid-template-columns:1fr 1fr;gap:.9em;margin:1em 0}
+.board-panel{background:var(--sheet);border:1px solid var(--rule);min-width:0;padding:clamp(.55em,1.8vw,1.1em)}
+.board-panel header{padding-bottom:.55em}.board-panel h2{font-size:clamp(1.15rem,3vw,1.65rem);margin-bottom:.25em}
+.board{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.cell{position:relative;display:flex;flex-direction:column;gap:.14em;align-items:center;justify-content:center;min-width:0;padding:.23em .08em;min-height:clamp(49px,8vw,72px);line-height:1.13;border:1px solid #9eb9af;border-radius:3px;color:var(--ink);font-variant-numeric:tabular-nums}
+.cell small{color:#284850;font-size:clamp(.54rem,1.32vw,.75rem)}.cell strong{font-size:clamp(.78rem,2vw,1.12rem)}.cell.active{box-shadow:inset 0 0 0 2px #994315}
+.legend{display:flex;align-items:center;flex-wrap:wrap;gap:.45em;font-size:.88em;color:var(--muted)}
+.swatch{display:inline-block;width:4.5em;height:.65em;border:1px solid #93aca2;background:linear-gradient(90deg,#a8badf,#f5f2e9,#4fae87)}
+.inspector{margin-top:1.45em;border-top:1px solid var(--rule);padding-top:1.1em}.inspector label{font-weight:680}.inspector select{margin-left:.4em}
+pre{overflow:auto;margin:.65em 0;background:var(--wash);border-left:4px solid var(--teal);padding:.65em .85em;line-height:1.45}
+.scroll{overflow-x:auto;margin-top:.85em}table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;background:var(--sheet);margin-bottom:.55em}th,td{text-align:left;padding:.46em .65em;vertical-align:top;border-bottom:1px solid var(--rule)}
+thead{background:var(--teal);color:white}tbody tr.active{background:var(--sand)}.targets{display:grid;grid-template-columns:1fr 1fr;gap:.55em}.targets p{background:var(--wash);padding:.52em .7em;margin:0}footer{border-top:1px solid var(--rule);margin-top:1.65em;padding-top:.65em;font-size:.88em}
+.status{min-height:1.55em;color:var(--teal);font-weight:650}.only-reader{position:absolute;overflow:hidden;clip-path:inset(50%);width:1px;height:1px;white-space:nowrap}
+@media(max-width:675px){.board-pair,.rules,.targets{grid-template-columns:1fr}.cell{min-height:51px}.cell small{font-size:.68rem}.cell strong{font-size:.96rem}}
+</style>
+<main>
+<header>
+  <h1>Gridworld A i B</h1>
+  <p class="intro">Jeden model i dwie mapy wartości. Przewidź, gdzie pojawią się pierwsze wartości dodatnie, a potem porównaj ocenę polityki losowej z iteracją wartości.</p>
+</header>
+<div class="rules">
+  <div><strong>A (0, 1) → A′ (4, 1).</strong> Dowolna akcja w A przenosi do A′ i daje <strong>+10</strong>.</div>
+  <div><strong>B (0, 3) → B′ (2, 3).</strong> Dowolna akcja w B przenosi do B′ i daje <strong>+5</strong>.</div>
+</div>
+<p>Poza A i B ruch wewnątrz planszy daje nagrodę 0. Próba wyjścia poza planszę zostawia agenta na miejscu i daje −1. Zadanie jest ciągłe, dlatego po każdym ruchu liczymy dalszy zwrot. Współrzędne są numerowane od zera.</p>
+<div class="controls" aria-label="Ustawienia obu map">
+  <label for="gamma">Dyskonto γ <output id="gamma-out" for="gamma">0,90</output><input id="gamma" type="range" min="0" max="0.99" step="0.01" value=".9"></label>
+  <button type="button" class="primary" id="one">1 przebieg</button>
+  <button type="button" id="ten">10 przebiegów</button>
+  <button type="button" id="zero">Wyzeruj obie mapy</button>
+</div>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+<div class="board-pair">
+  <section class="board-panel" aria-labelledby="policy-heading">
+    <header><h2 id="policy-heading">Ocena polityki losowej</h2><p class="detail">Cztery komendy po ¼. Wartość to średnia ważona.</p></header>
+    <div class="board" id="policy-board" role="group" aria-label="Siatka oceny polityki losowej"></div>
+  </section>
+  <section class="board-panel" aria-labelledby="value-heading">
+    <header><h2 id="value-heading">Iteracja wartości</h2><p class="detail">Wartość to maksimum po komendach.</p></header>
+    <div class="board" id="value-board" role="group" aria-label="Siatka iteracji wartości"></div>
+  </section>
+</div>
+<p class="legend"><span>−25</span><span class="swatch" aria-hidden="true"></span><span>+25</span><span>Wspólna skala. Po przekroczeniu krańca kolor pozostaje nasycony, a liczba zachowuje wartość.</span></p>
+<section class="inspector" aria-labelledby="inspect-heading">
+  <h2 id="inspect-heading">Wybierz pole i odczytaj model</h2>
+  <label for="action">Komenda<select id="action"><option value="0">0 · góra</option><option value="1">1 · prawo</option><option value="2" selected>2 · dół</option><option value="3">3 · lewo</option></select></label>
+  <pre id="entry"></pre>
+  <p class="detail">Krotka zawiera prawdopodobieństwo, współrzędne następnego pola, nagrodę i znacznik końca. Każda komenda ma tu jeden możliwy skutek z prawdopodobieństwem 1. Tabela pokazuje rachunek następnego przebiegu dla zaznaczonego pola.</p>
+  <div class="scroll" tabindex="0" aria-label="Składniki następnego kroku Bellmana">
+    <table>
+      <thead><tr><th scope="col">Akcja</th><th scope="col">Następne pole</th><th scope="col">Nagroda</th><th scope="col">r + γV(s′), polityka losowa</th><th scope="col">r + γV(s′), iteracja wartości</th></tr></thead>
+      <tbody id="branch-rows"></tbody>
+    </table>
+  </div>
+  <div class="targets">
+    <p><strong>Ocena polityki.</strong> Średnia z czterech komend wynosi <output id="mean-out"></output>.</p>
+    <p><strong>Iteracja wartości.</strong> Maksimum wynosi <output id="max-out"></output>. Najlepsze komendy: <output id="greedy-out"></output>.</p>
+  </div>
+</section>
+<footer><p>Reguły z zeszłorocznego notatnika. <a href="https://github.com/zussini/kursy/blob/170b201b2fe8fd1300d2ceb3afffab7cb823c020/reinforcement_learning/notebooks/Ch04_Dynamic_Programming_full.ipynb">Ch04 · Dynamic Programming</a></p></footer>
+</main>
+<script>
+"use strict";
+
+const size = 5;
+const coords = index => [Math.floor(index / size), index % size];
+const cells = Array.from({length: size * size}, (_, i) => i);
+const moves = [
+  { name: "góra", dr: -1, dc: 0 },
+  { name: "prawo", dr: 0, dc: 1 },
+  { name: "dół", dr: 1, dc: 0 },
+  { name: "lewo", dr: 0, dc: -1 }
+];
+const labels = new Map([[1,"A"],[21,"A′"],[3,"B"],[13,"B′"]]);
+const shortcuts = new Map([[1, { next: 21, reward: 10 }],[3, { next: 13, reward: 5 }]]);
+const format = new Intl.NumberFormat("pl-PL", {minimumFractionDigits: 3, maximumFractionDigits: 3});
+const fmt = n => format.format(Math.abs(n) < 1e-10 ? 0 : n).replace("-", "−");
+const decimal = new Intl.NumberFormat("pl-PL", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const locate = index => "(" + coords(index).join(", ") + ")";
+const get = id => document.getElementById(id);
+
+function transition(state, action) {
+  if (shortcuts.has(state)) return shortcuts.get(state);
+  const [row, col] = coords(state);
+  const { dr, dc } = moves[action];
+  const r = row + dr;
+  const c = col + dc;
+  if (r < 0 || r >= size || c < 0 || c >= size) return {next: state, reward: -1};
+  return {next: r * size + c, reward: 0};
+}
+
+const P = cells.map(state => moves.map((_, action) => {
+  const { next, reward } = transition(state, action);
+  return [[1, next, reward, false]];
+}));
+
+function actionValues(state, values, gamma) {
+  return P[state].map(branches => branches.reduce((total, [p, next, r, terminal]) =>
+    total + p * (r + (terminal ? 0 : gamma * values[next])), 0));
+}
+
+const mean = values => values.reduce((sum, v) => sum + v, 0) / values.length;
+function sweep(values, gamma, mode) {
+  return cells.map(state => {
+    const targets = actionValues(state, values, gamma);
+    return mode === "max" ? Math.max(...targets) : mean(targets);
+  });
+}
+
+function color(value) {
+  const light = [245, 242, 233];
+  const dark = value >= 0 ? [79, 174, 135] : [168, 186, 223];
+  const ratio = Math.min(Math.abs(value) / 25, 1);
+  return "rgb(" + light.map((base, i) => Math.round(base + ratio * (dark[i] - base))).join(",") + ")";
+}
+
+const zeroes = () => cells.map(() => 0);
+const state = { uniform: zeroes(), optimal: zeroes(), gamma: 0.9, selected: 1, count: 0 };
+const boards = {
+  uniform: { element: get("policy-board"), context: "Ocena polityki", buttons: [] },
+  optimal: { element: get("value-board"), context: "Iteracja wartości", buttons: [] }
+};
+Object.values(boards).forEach(board => {
+  cells.forEach(index => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "cell";
+    button.addEventListener("click", () => {
+      state.selected = index;
+      render();
+    });
+    board.buttons.push(button);
+    board.element.append(button);
+  });
+});
+
+function render() {
+  get("gamma-out").value = decimal.format(state.gamma);
+  Object.entries(boards).forEach(([key, board]) => {
+    board.buttons.forEach((button, i) => {
+      const value = state[key][i];
+      const label = labels.get(i);
+      button.style.backgroundColor = color(value);
+      button.classList.toggle("active", i === state.selected);
+      button.setAttribute("aria-pressed", String(i === state.selected));
+      button.setAttribute("aria-label", board.context + ", " + (label ? label + ", " : "") + locate(i) + ", wartość " + fmt(value));
+      button.innerHTML = "<small>" + (label ? "<b>" + label + "</b> " : "") + locate(i) + "</small><strong>" + fmt(value) + "</strong>";
+    });
+  });
+  const action = Number(get("action").value);
+  const [p, next, reward, done] = P[state.selected][action][0];
+  get("entry").textContent = "P[" + locate(state.selected) + "][" + action + "] = [(" +
+    p.toFixed(1) + ", " + locate(next) + ", " + (reward > 0 ? "+" : "") + reward +
+    ", " + (done ? "True" : "False") + ")]";
+  const uniform = actionValues(state.selected, state.uniform, state.gamma);
+  const optimal = actionValues(state.selected, state.optimal, state.gamma);
+  const calc = (r, values, next, ans) => fmt(r) + " + " + decimal.format(state.gamma) + " × (" + fmt(values[next]) + ") = " + fmt(ans);
+  get("branch-rows").innerHTML = moves.map(({ name }, i) => {
+    const { next, reward } = transition(state.selected, i);
+    return "<tr" + (i === action ? " class='active'" : "") + "><th scope='row'>" + i + " · " + name + "</th><td>" +
+      locate(next) + "</td><td>" + reward + "</td><td>" + calc(reward, state.uniform, next, uniform[i]) +
+      "</td><td>" + calc(reward, state.optimal, next, optimal[i]) + "</td></tr>";
+  }).join("");
+  get("mean-out").value = fmt(mean(uniform));
+  const maximum = Math.max(...optimal);
+  get("max-out").value = fmt(maximum);
+  get("greedy-out").value = moves
+    .filter((_, i) => Math.abs(optimal[i] - maximum) < 1e-10)
+    .map(move => move.name).join(", ");
+}
+
+function reset() {
+  state.uniform = zeroes();
+  state.optimal = zeroes();
+  state.count = 0;
+  render();
+  get("status").textContent = "0 przebiegów. Obie mapy zaczynają od wartości 0.";
+}
+
+function iterate(n) {
+  let change;
+  for (let turn = 0; turn < n; turn++) {
+    const uniform = sweep(state.uniform, state.gamma, "mean");
+    const optimal = sweep(state.optimal, state.gamma, "max");
+    change = [Math.max(...uniform.map((v, i) => Math.abs(v - state.uniform[i]))),
+      Math.max(...optimal.map((v, i) => Math.abs(v - state.optimal[i])))];
+    state.uniform = uniform;
+    state.optimal = optimal;
+    state.count++;
+  }
+  render();
+  get("status").textContent = "Przebiegi: " + state.count +
+    ". Największa zmiana w ostatnim: polityka " + fmt(change[0]) + ", iteracja wartości " + fmt(change[1]) + ".";
+}
+
+get("gamma").addEventListener("input", event => {
+  state.gamma = Number(event.target.value);
+  reset();
+});
+get("action").addEventListener("change", render);
+get("one").addEventListener("click", () => iterate(1));
+get("ten").addEventListener("click", () => iterate(10));
+get("zero").addEventListener("click", reset);
+reset();
+</script>
+</html>

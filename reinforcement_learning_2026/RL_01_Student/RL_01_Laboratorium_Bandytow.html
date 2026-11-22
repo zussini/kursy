@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bandyci · Laboratorium eksploracji</title>
+<style>
+:root{--ink:#172438;--muted:#526073;--line:#dce2e8;--paper:#f3f6f8;--white:#fff;--blue:#204491;--gold:#a14524;--green:#086e63;--focus:#b04412}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.58 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select{font:inherit}a{color:var(--blue);text-underline-offset:.18em}a:hover{text-decoration-thickness:2px}:focus-visible{outline:3px solid var(--focus);outline-offset:3px}[hidden]{display:none!important}
+.wrap{width:min(1120px,calc(100% - 48px));margin-inline:auto}
+header{background:var(--white);border-bottom:1px solid var(--line)}.top{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:18px}.wordmark{font-weight:750}.top nav{display:flex;gap:21px;flex-wrap:wrap}.top a{font-size:.91rem;color:var(--ink)}
+main{padding:42px 0 62px}h1,h2,h3,p{margin:0}h1{font-size:clamp(2.25rem,6vw,4.55rem);line-height:1;letter-spacing:-.07em;max-width:17ch}h2{font-size:clamp(1.45rem,3.4vw,2rem);letter-spacing:-.035em;line-height:1.15}h3{font-size:1.07rem;line-height:1.3}p+p{margin-top:9px}small,.small{font-size:.88rem;color:var(--muted)}.kicker{display:block;color:var(--blue);font-size:.78rem;letter-spacing:.12em;font-weight:750;text-transform:uppercase;margin-bottom:12px}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(24px,6vw,70px);align-items:end}.lead{color:var(--muted);font-size:clamp(1.04rem,2vw,1.18rem);max-width:54ch;margin-top:17px}
+.warmup{border-left:3px solid var(--green);background:#e9f1ee;padding:18px 21px}.warmup p{margin-top:8px}.warmup summary{cursor:pointer;color:#075b50;font-weight:690;margin-top:10px}
+.card{margin-top:30px;background:var(--white);border:1px solid var(--line);border-radius:13px;padding:clamp(13px,3vw,32px)}.section-title{margin-bottom:17px}
+.lab{margin-top:28px}.tabs,.controls,.metrics,.downloads{display:flex;flex-wrap:wrap;gap:9px;align-items:center}.tabs{margin-bottom:18px}
+button,.button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:42px;border-radius:7px;border:1px solid #aebac8;background:#fff;color:var(--ink);padding:8px 13px;text-decoration:none;cursor:pointer;font-weight:620}
+button:hover,.button:hover{background:#edf2f6}button[aria-pressed="true"]{background:#e9effd;border-color:var(--blue);color:#143770}button:disabled{opacity:.52;cursor:default}.primary{background:#204491;border-color:#204491;color:#fff}.primary:hover{background:#183575}
+.task{border:1px solid #dbe4f5;border-radius:8px;background:#f4f7fd;padding:16px 18px}.task p{margin-top:7px}.task ol{padding-left:21px;margin:8px 0 0}.task li+li{margin-top:3px}
+.controls{margin-top:15px}.controls label{display:flex;align-items:center;gap:8px;font-size:.91rem;font-weight:650}input[type=number]{width:109px;border:1px solid #aebac8;border-radius:6px;padding:7px 8px;background:#fff;color:var(--ink)}.controls .small{flex:1 1 220px}
+.status{min-height:25px;color:var(--muted);font-size:.9rem;margin:9px 0 0}.readable{max-width:76ch}hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.manual{margin-top:19px}.manual summary{cursor:pointer;font-weight:670;color:#235248}.manual-body{margin-top:10px}.arms{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin:12px 0}.arms button{min-width:0;min-height:60px;flex-direction:column;padding:6px;font-size:.9rem}.arms button span{font-size:.79rem;font-weight:500;color:var(--muted)}
+.trial-controls{display:flex;align-items:center;gap:11px;flex-wrap:wrap}.trial-controls input{accent-color:var(--green)}
+.result-head{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:11px;margin:15px 0 8px}.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:9px 0;font-size:.85rem}.legend span{display:inline-flex;gap:7px;align-items:center}.rule{width:24px;border-top:3px solid var(--series)}.dotted{border-top-style:dotted}.dashed{border-top-style:dashed}
+.charts{display:grid;grid-template-columns:1fr;gap:12px}.charts.paired{grid-template-columns:repeat(2,minmax(0,1fr))}.chartbox{min-width:0;border:1px solid var(--line);border-radius:8px;padding:10px 8px 5px}.chartbox h3{margin-left:10px}.plot{width:100%;height:246px;display:block}.caption{margin:8px 0}
+.table-wrap{overflow-x:auto;margin:12px 0}table{width:100%;border-collapse:collapse;text-align:right;font-variant-numeric:tabular-nums;font-size:.93rem}th,td{border-block-end:1px solid var(--line);padding:8px 10px}thead th{background:#edf2f7}thead tr:first-child th{font-weight:720}th:first-child,td:first-child{text-align:left;white-space:nowrap}.downloads{margin-top:16px}
+.arm-detail{border-top:1px solid var(--line);margin-top:22px;padding-top:20px;scroll-margin-top:16px}
+.arm-detail select{border:1px solid #aebac8;border-radius:6px;padding:7px 8px;background:#fff;color:var(--ink)}
+.arm-detail input[type=checkbox]{accent-color:var(--green)}
+.arm-detail .legend{font-size:.82rem}
+.arm-key{font-weight:800}.arm-key.estimate{color:#614c7c}.arm-key.mean{color:var(--green)}
+.arm-plot{width:100%;height:350px;display:block}
+.arm-summary{font-size:.91rem;font-weight:650;color:#235248;margin:8px 0 10px}
+.arm-detail details{margin-top:8px}.arm-detail summary{cursor:pointer;color:#235248;font-weight:650}
+.arm-detail table{min-width:475px;table-layout:auto}
+.report{display:grid;grid-template-columns:1fr 1fr;gap:24px}.report ul{padding-left:19px;margin:8px 0 0}.report p{margin-top:7px}.report h3{margin-bottom:4px}footer{color:var(--muted);font-size:.84rem;margin-top:25px}
+@media(max-width:760px){.hero,.report,.charts.paired{grid-template-columns:1fr}.wrap{width:calc(100% - 25px)}main{padding-top:29px}.top nav{gap:12px}.top{gap:10px}.arms{grid-template-columns:repeat(2,minmax(0,1fr))}.plot{height:226px}table{table-layout:fixed;font-size:.78rem}th,td{padding:7px 4px}thead tr:first-child th:first-child{width:23%}tbody th:first-child{white-space:normal}thead tr:nth-child(2) th{text-align:right;white-space:normal}}
+@media(max-width:370px){.top a{font-size:.8rem}.controls .primary{width:100%}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header><div class="wrap top"><span class="wordmark">Uczenie ze wzmocnieniem</span><nav aria-label="Spis treści"><a href="#zadania">Eksperymenty</a><a href="#sprawozdanie">Sprawozdanie</a></nav></div></header>
+<main class="wrap">
+<div class="hero">
+<div><span class="kicker">Spotkanie 1 · Część I. Bandyci</span><h1>Czy warto spróbować innego ramienia?</h1><p class="lead">Masz dziesięć automatów i ograniczoną liczbę prób. Każdy wybór daje jedną wypłatę i informację o wybranym ramieniu. Sprawdź, kiedy warto poświęcić próbę na zebranie danych.</p></div>
+<article class="warmup"><h3>Rozgrzewka</h3><p>A dał raz +2, B raz −1. Który automat wybierzesz w trzeciej próbie?</p><details><summary>Odsłoń prawdziwe średnie</summary><p>A daje średnio 0, B daje średnio 1. Reguła zachłanna (ang. greedy) wybrałaby A na podstawie aktualnych ocen. Wypróbowanie B pozwoliłoby zebrać o nim kolejną obserwację.</p></details></article>
+</div>
+
+<section id="zadania" class="card lab" aria-labelledby="lab-title">
+<div class="section-title"><h2 id="lab-title">Dwa eksperymenty</h2><p class="small">Przewiduj, zmierz, a potem spróbuj wyjaśnić różnicę.</p></div>
+<div class="tabs" role="group" aria-label="Wybierz eksperyment">
+<button id="mode-a" type="button" aria-pressed="true">A · Ile eksplorować?</button>
+<button id="mode-b" type="button" aria-pressed="false">B · Co robi szum? (opcjonalnie)</button>
+</div>
+<div class="task" id="task-a">
+<h3>Zmieniasz tylko prawdopodobieństwo eksploracji ε</h3>
+<p>Porównasz regułę zachłanną (ang. greedy) i dwie wersje reguły ε-zachłannej (ang. ε-greedy). Skala losowych wahań wypłat, oznaczona jako σ, wynosi 1. Gdy agent eksploruje, losuje równomiernie spośród wszystkich dziesięciu ramion.</p>
+<ol><li>Zapisz, kto według Ciebie uzyska wyższą średnią wypłatę na początku i pod koniec.</li><li>Sprawdź oba okresy. Porównaj też, jak często w każdym z nich strategie wybierały najlepsze ramię.</li></ol>
+</div>
+<div class="task" id="task-b" hidden>
+<h3>Czy trudniej rozpoznać najlepsze ramię, gdy wypłaty mocniej się wahają?</h3>
+<p><strong>Zmieniamy odchylenie standardowe wypłat</strong> z σ = 0,2 na σ = 2. Prawdziwe średnie ramion, najlepsze ramię w każdym świecie, ziarno i liczba prób są wspólne. Wypłata to prawdziwa średnia ramienia plus losowe odchylenie. Wahania bywają dodatnie albo ujemne. Większe σ oznacza większe wahania wokół tej samej średniej.</p>
+<p><strong>Przykład.</strong> Wyobraź sobie ramię o średniej 1. Wypłata o jedno odchylenie standardowe powyżej średniej wynosi 1,2 przy σ = 0,2 oraz 3 przy σ = 2. O jedno odchylenie poniżej średniej daje odpowiednio 0,8 i −1.</p>
+<ol>
+<li>Zanim uruchomisz oba warianty, przewidź wpływ większego szumu na odsetek wyborów najlepszego ramienia.</li>
+<li>Pozostaw ziarno 7 i kliknij „Uruchom eksperyment”. Kliknij „Najlepsze ramię (%)”. Na obu wykresach lub w obu tabelach czytaj tę samą strategię ε = 0,10. W tabelach porównaj ten sam przedział 901–1000.</li>
+<li>Zapisz oba odsetki i jedno zdanie wniosku dla tej strategii. Jeśli starczy czasu, porównaj też średnią wypłatę w tym samym przedziale. Procent w tabeli mówi, jak często agent trafiał w ramię o najwyższej prawdziwej średniej w swoim świecie.</li>
+</ol>
+</div>
+<div class="controls">
+<label for="seed">Ziarno <input type="number" id="seed" min="0" max="4294967295" step="1" value="7" required></label>
+<button id="run" type="button" class="primary">Uruchom eksperyment</button>
+<span class="small">Jeden świat to jeden zestaw dziesięciu automatów. W każdym z 200 światów wykonujemy po 1000 prób. Zostaw ziarno 7 w pierwszym pomiarze, aby powtórzyć przebieg z zajęć.</span>
+</div>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+
+<div id="result" hidden>
+<div class="result-head">
+<div><h3 id="result-title"></h3><p class="small" id="result-meta"></p></div>
+<div class="metrics" role="group" aria-label="Miara na wykresie">
+<button type="button" id="metric-reward" aria-pressed="true">Średnia wypłata</button>
+<button type="button" id="metric-optimal" aria-pressed="false">Najlepsze ramię (%)</button>
+</div>
+</div>
+<div class="legend" aria-label="Legenda">
+<span><i class="rule dotted" style="--series:#614c7c"></i> ε = 0 · greedy</span>
+<span><i class="rule dashed" style="--series:#a14524"></i> ε = 0,01</span>
+<span><i class="rule" style="--series:#086e63"></i> ε = 0,10</span>
+</div>
+<div id="charts" class="charts">
+<div class="chartbox"><h3 id="chart-title-one"></h3><canvas id="chart-one" class="plot" role="img"></canvas></div>
+<div class="chartbox" id="chart-two-wrap" hidden><h3 id="chart-title-two"></h3><canvas id="chart-two" class="plot" role="img"></canvas></div>
+</div>
+<p class="caption small" id="caption"></p>
+<div id="summaries"></div>
+<div class="downloads">
+<button id="save-png" type="button">Pobierz wykres PNG</button>
+<button id="save-csv" type="button">Pobierz CSV</button>
+<a href="#ramiona">Zobacz wybory poszczególnych ramion</a>
+</div>
+
+<section class="arm-detail" id="ramiona" aria-labelledby="arm-title">
+<div class="section-title">
+<h3 id="arm-title">Wszystkie 10 ramion w jednym świecie</h3>
+<p class="small">Sprawdź, skąd biorą się wyniki dla wybranej strategii. Tutaj oglądasz jeden przebieg z eksperymentu.</p>
+</div>
+<div class="controls">
+<label for="arm-world">Świat <input type="number" id="arm-world" min="1" max="200" step="1" value="1" required></label>
+<label for="arm-method">Strategia <select id="arm-method"></select></label>
+<label for="arm-window">Próby <select id="arm-window"><option value="early">1–50</option><option value="late" selected>901–1000</option></select></label>
+<label for="arm-sigma" id="arm-sigma-wrap" hidden>Szum σ <select id="arm-sigma"></select></label>
+<label for="arm-truth"><input type="checkbox" id="arm-truth"> Odsłoń prawdziwe średnie</label>
+</div>
+<p class="small" id="arm-context" aria-live="polite"></p>
+<div id="arm-analysis">
+<div class="legend">
+<span><b class="arm-key estimate" aria-hidden="true">●</b> Ocena Q agenta</span>
+<span id="arm-legend-truth" hidden><b class="arm-key mean" aria-hidden="true">◆</b> Prawdziwa średnia q* z odcinkiem ±σ</span>
+</div>
+<div id="arm-charts" class="charts paired">
+<div class="chartbox"><h3>Oceny na koniec wybranego przedziału</h3><canvas id="arm-estimates" class="arm-plot" role="img" aria-label="Oceny ramion. Dane liczbowe znajdziesz pod wykresem."></canvas></div>
+<div class="chartbox"><h3>Wybory w tym przedziale</h3><canvas id="arm-frequencies" class="arm-plot" role="img" aria-label="Odsetek wyborów każdego ramienia. Dane liczbowe znajdziesz pod wykresem."></canvas></div>
+</div>
+<p class="caption small">Ocena Q korzysta ze wszystkich wypłat od startu do końca przedziału. Ramię bez prób ma startowe Q = 0 w algorytmie, a na wykresie pojawia się po pierwszej obserwacji. Odcinek ±σ przy q* pokazuje skalę wahań pojedynczej wypłaty.</p>
+<p class="arm-summary" id="arm-summary" aria-live="polite"></p>
+<details><summary>Dane liczbowe dla ramion</summary><div class="table-wrap" tabindex="0" id="arm-table"></div></details>
+<div class="downloads"><button type="button" id="save-arm-csv">Pobierz dane ramion (CSV)</button></div>
+<p class="small">W eksperymencie A porównaj ε = 0 z ε = 0,10 pod koniec świata 1 dla ziarna 7. Które ramię wybierają najczęściej? Odsłoń q* i sprawdź, czy wybierają najlepsze.</p>
+</div>
+</section>
+</div>
+
+<hr>
+<p class="small readable"><strong>Co wie agent?</strong> R to otrzymana wypłata. Q to średnia dotychczasowych wypłat danego ramienia, a N to liczba jego wyborów. Najlepsze ramię to to, które ma najwyższą prawdziwą średnią q*. Symulator zna q* i używa jej do policzenia trafień.</p>
+<details class="manual"><summary>Sprawdź ręcznie jeden świat z dziesięcioma ramionami</summary>
+<div class="manual-body"><p class="small">To osobna rozgrywka w świecie 1 dla ziarna 7. Kliknij dwa różne ramiona i sprawdź, gdzie rośnie N.</p>
+<div id="arms" class="arms"></div>
+<div class="trial-controls"><button type="button" id="reset-manual">Od początku</button><label><input type="checkbox" id="truth"> Odsłoń prawdziwe średnie</label></div>
+<p class="status" id="manual-status" role="status" aria-live="polite"></p>
+</div></details>
+</section>
+
+<section class="card" id="sprawozdanie" aria-labelledby="report-title">
+<h2 id="report-title">Do oddania po zajęciach</h2>
+<div class="report">
+<div>
+<h3>Eksperyment A</h3>
+<p>Przed uruchomieniem zapiszcie przewidywanie dla początku i końca. Po pomiarze podajcie krótki wniosek poparty dwiema liczbami. Przy każdej liczbie zanotujcie strategię, przedział prób i mierzoną wielkość.</p>
+<p class="small">Eksperyment B o szumie jest opcjonalny.</p>
+</div>
+<div>
+<h3>Zadanie w Pythonie</h3>
+<p>Po eksperymencie A uzupełnijcie wybór ramienia i aktualizację jego oceny w <code>badamy_bandytow.py</code>. Zostawcie <code>laboratorium.py</code> obok niego. W tym folderze uruchomcie <code>python badamy_bandytow.py sprawdz</code>.</p>
+<p>Oddajcie jeden uzupełniony skrypt na parę, wynik testu oraz wniosek z eksperymentu A.</p>
+</div>
+</div>
+</section>
+<footer>Na podstawie 10-ramiennego testu Suttona i Barto, <a href="https://www.andrew.cmu.edu/course/10-703/textbook/BartoSutton.pdf">Reinforcement Learning: An Introduction, §2.3</a>. Dane obliczane w przeglądarce.</footer>
+</main>
+<script>
+const BanditExperiment = (() => {
+  'use strict';
+
+  const armCount = 10;
+  const epsilons = Object.freeze([0, 0.01, 0.10]);
+  const uintRange = 4294967296;
+  const streams = {
+    means: 0xa511e9b3,
+    rewards: 0x63d83595,
+    choices: 0x9e3779b9
+  };
+
+  function mix(value) {
+    value = Math.imul(value ^ (value >>> 16), 0x7feb352d);
+    value = Math.imul(value ^ (value >>> 15), 0x846ca68b);
+    return (value ^ (value >>> 16)) >>> 0;
+  }
+
+  function uniform(seed, world, stream) {
+    let state = mix(seed ^ mix(world + 1) ^ stream) || 0x6d2b79f5;
+    return () => {
+      state ^= state << 13;
+      state ^= state >>> 17;
+      state ^= state << 5;
+      return ((state >>> 0) + 0.5) / uintRange;
+    };
+  }
+
+  function normal(nextUniform) {
+    let spare;
+    return () => {
+      if (spare !== undefined) {
+        const value = spare;
+        spare = undefined;
+        return value;
+      }
+      const amplitude = Math.sqrt(-2 * Math.log(nextUniform()));
+      const angle = 2 * Math.PI * nextUniform();
+      spare = amplitude * Math.sin(angle);
+      return amplitude * Math.cos(angle);
+    };
+  }
+
+  function validateWorld(seed, sigma) {
+    if (!Number.isSafeInteger(seed) || seed < 0 || seed >= uintRange) {
+      throw new RangeError('Ziarno musi być liczbą całkowitą od 0 do 4294967295.');
+    }
+    if (!Number.isFinite(sigma) || sigma < 0) {
+      throw new RangeError('Odchylenie standardowe σ musi być nieujemne.');
+    }
+  }
+
+  function worldRandomness(seed, world) {
+    const drawMean = normal(uniform(seed, world, streams.means));
+    return {
+      means: Array.from({length: armCount}, drawMean),
+      drawShock: normal(uniform(seed, world, streams.rewards)),
+      drawChoice: uniform(seed, world, streams.choices)
+    };
+  }
+
+  function agent() {
+    return {
+      counts: new Float64Array(armCount),
+      estimates: new Float64Array(armCount)
+    };
+  }
+
+  function choose(estimates, epsilon, exploreRoll, armRoll, ties) {
+    if (exploreRoll < epsilon) return Math.floor(armRoll * armCount);
+
+    let best = -Infinity;
+    let tied = 0;
+    for (let arm = 0; arm < armCount; arm++) {
+      const estimate = estimates[arm];
+      if (estimate > best) {
+        best = estimate;
+        tied = 0;
+      }
+      if (estimate === best) ties[tied++] = arm;
+    }
+    return ties[Math.floor(armRoll * tied)];
+  }
+
+  function update({counts, estimates}, arm, reward) {
+    counts[arm] += 1;
+    estimates[arm] += (reward - estimates[arm]) / counts[arm];
+  }
+
+  function windowAverage(values, start, end) {
+    let sum = 0;
+    for (let index = start; index < end; index++) sum += values[index];
+    return sum / (end - start);
+  }
+
+  function playWorld(seed, world, steps, sigma, strategies, record) {
+    const {means, drawShock, drawChoice} = worldRandomness(seed, world);
+    const largestMean = Math.max(...means);
+    const agents = strategies.map(agent);
+    const rewards = new Float64Array(armCount);
+    const ties = new Int32Array(armCount);
+    for (let trial = 0; trial < steps; trial++) {
+      // Każde ramię ma w tej próbie jeden potencjalny wynik, wspólny dla metod.
+      for (let arm = 0; arm < armCount; arm++) {
+        rewards[arm] = means[arm] + sigma * drawShock();
+      }
+      const exploreRoll = drawChoice();
+      const armRoll = drawChoice();
+      for (let index = 0; index < agents.length; index++) {
+        const current = agents[index];
+        const arm = choose(current.estimates, strategies[index], exploreRoll, armRoll, ties);
+        const reward = rewards[arm];
+        update(current, arm, reward);
+        record(index, trial, arm, reward, means[arm] === largestMean, current);
+      }
+    }
+    return means;
+  }
+
+  function inspectWorld({seed, world, steps, sigma, epsilon}) {
+    validateWorld(seed, sigma);
+    if (!Number.isSafeInteger(world) || world < 1 || world >= uintRange ||
+        !Number.isSafeInteger(steps) || steps < 1 || !epsilons.includes(epsilon)) {
+      throw new RangeError('Wybierz poprawny świat, liczbę prób i strategię.');
+    }
+    const periods = {
+      early: {start:1, end:Math.min(50, steps), choices:Array(armCount).fill(0)},
+      late: {start:Math.max(1, steps - 99), end:steps, choices:Array(armCount).fill(0)}
+    };
+    const windows = Object.values(periods);
+    const means = playWorld(seed, world - 1, steps, sigma, [epsilon],
+      (_index, trial, arm, _reward, _optimal, current) => {
+        const round = trial + 1;
+        for (const period of windows) {
+          if (round >= period.start && round <= period.end) period.choices[arm]++;
+          if (round === period.end) {
+            period.counts = Array.from(current.counts);
+            period.estimates = Array.from(current.estimates);
+          }
+        }
+      });
+    return {means, periods};
+  }
+
+  function create({seed = 7, worlds = 200, steps = 1000, sigma = 1} = {}) {
+    validateWorld(seed, sigma);
+    if (!Number.isSafeInteger(worlds) || worlds < 1 || worlds >= uintRange ||
+        !Number.isSafeInteger(steps) || steps < 1) {
+      throw new RangeError('Liczba światów i prób musi być dodatnią liczbą całkowitą.');
+    }
+    const accumulators = epsilons.map(epsilon => ({
+      epsilon,
+      rewardSums: new Float64Array(steps),
+      optimalCounts: new Float64Array(steps)
+    }));
+    let completed = 0;
+
+    function runWorld(world) {
+      playWorld(seed, world, steps, sigma, epsilons, (index, trial, _arm, reward, optimal) => {
+        const accumulator = accumulators[index];
+        accumulator.rewardSums[trial] += reward;
+        accumulator.optimalCounts[trial] += Number(optimal);
+      });
+    }
+
+    function runBatch(size = 10) {
+      if (!Number.isSafeInteger(size) || size < 1) {
+        throw new RangeError('Paczka obliczeń musi zawierać przynajmniej jeden świat.');
+      }
+      const end = Math.min(worlds, completed + size);
+      for (; completed < end; completed++) runWorld(completed);
+      return completed;
+    }
+
+    function results() {
+      if (!completed) throw new Error('Najpierw zasymuluj co najmniej jeden świat.');
+      const toMean = total => total / completed;
+      const methods = accumulators.map(({epsilon, rewardSums, optimalCounts}) => {
+        const rewardsByTrial = Array.from(rewardSums, toMean);
+        const optimalRates = Array.from(optimalCounts, toMean);
+        const summarize = (start, end) => ({
+          reward: windowAverage(rewardsByTrial, start, end),
+          optimalRate: windowAverage(optimalRates, start, end)
+        });
+        return {
+          epsilon,
+          rewards: rewardsByTrial,
+          optimalRates,
+          early: summarize(0, Math.min(50, steps)),
+          late: summarize(Math.max(0, steps - 100), steps)
+        };
+      });
+      return {seed, worlds: completed, steps, sigma, methods};
+    }
+
+    return {
+      get completed() {
+        return completed;
+      },
+      runBatch,
+      results
+    };
+  }
+
+  function exampleWorld(seed = 7, sigma = 1) {
+    validateWorld(seed, sigma);
+    const {means, drawShock} = worldRandomness(seed, 0);
+    const player = agent();
+    let round = 0;
+    let totalReward = 0;
+
+    function snapshot() {
+      return {
+        round,
+        totalReward,
+        means: means.slice(),
+        counts: Array.from(player.counts),
+        estimates: Array.from(player.estimates)
+      };
+    }
+
+    function pull(arm) {
+      if (!Number.isInteger(arm) || arm < 0 || arm >= armCount) {
+        throw new RangeError('Wybierz jedno z dziesięciu ramion.');
+      }
+      const previousEstimate = player.estimates[arm];
+      let reward;
+      for (let candidate = 0; candidate < armCount; candidate++) {
+        const shock = drawShock();
+        if (candidate === arm) reward = means[arm] + sigma * shock;
+      }
+      update(player, arm, reward);
+      totalReward += reward;
+      round += 1;
+      return {...snapshot(), arm, reward, previousEstimate};
+    }
+
+    return {snapshot, pull};
+  }
+
+  return {armCount, epsilons, create, exampleWorld, inspectWorld};
+})();
+
+</script>
+<script>
+(() => {
+  'use strict';
+  const by = id => document.getElementById(id);
+  const fields = ['a', 'b'];
+  const runs = new Map();
+  const styles = [
+    {name:'ε = 0 · greedy', color:'#614c7c', dash:[2,4]},
+    {name:'ε = 0,01', color:'#a14524', dash:[7,4]},
+    {name:'ε = 0,10', color:'#086e63', dash:[]}
+  ];
+  const fixed = (n, d = 2) => n.toFixed(d).replace('.', ',');
+  const view = () => runs.get(mode);
+  const waitFrame = () => new Promise(resolve => setTimeout(resolve, 0));
+  let mode = 'a';
+  let metric = 'reward';
+  let busy = false;
+  let inspectedWorld;
+  let armView;
+
+  function selectMode(next) {
+    mode = next;
+    fields.forEach(id => {
+      by('mode-' + id).setAttribute('aria-pressed', String(next === id));
+      by('task-' + id).hidden = next !== id;
+    });
+    by('status').textContent = view() ? 'Wynik ostatniego przebiegu tego eksperymentu.' : '';
+    render();
+  }
+
+  function selectMetric(next) {
+    metric = next;
+    for (const id of ['reward','optimal']) {
+      by('metric-' + id).setAttribute('aria-pressed', String(id === next));
+    }
+    drawVisibleCharts();
+  }
+
+  async function run() {
+    if (busy) return;
+    const seedInput = by('seed');
+    if (!seedInput.reportValidity()) return;
+    const seed = seedInput.valueAsNumber;
+    const controls = [seedInput, by('run'), by('mode-a'), by('mode-b')];
+    const sigmas = mode === 'a' ? [1] : [.2, 2];
+    let done = 0;
+    const results = [];
+    busy = true;
+    controls.forEach(control => control.disabled = true);
+    by('result').hidden = true;
+    try {
+      for (const sigma of sigmas) {
+        const task = BanditExperiment.create({seed, worlds:200, steps:1000, sigma});
+        while (task.completed < 200) {
+          by('status').textContent = 'Obliczam światy ' + (done + task.completed) + ' / ' + (200 * sigmas.length) + '…';
+          await waitFrame();
+          task.runBatch(20);
+        }
+        results.push(task.results());
+        done += 200;
+      }
+      runs.set(mode, results);
+      by('status').textContent = mode === 'a' ? 'Zakończono pomiar na 200 wspólnych światach.' :
+        'Zakończono oba przebiegi na tych samych 200 światach.';
+      render();
+      if (location.hash === '#ramiona') by('ramiona').scrollIntoView();
+    } catch (error) {
+      console.error(error);
+      by('status').textContent = 'Obliczenia zostały przerwane. Możesz uruchomić je ponownie.';
+      render();
+    } finally {
+      controls.forEach(control => control.disabled = false);
+      busy = false;
+    }
+  }
+
+  function render() {
+    const batches = view();
+    by('result').hidden = !batches;
+    if (!batches) return;
+    const paired = batches.length === 2;
+    by('result-title').textContent = paired ? 'Porównanie dwóch poziomów szumu' : 'Porównanie strategii';
+    const {seed, worlds, steps} = batches[0];
+    by('result-meta').textContent = 'Ziarno ' + seed + ' · ' + worlds + ' światów · ' + steps + ' prób na świat';
+    by('charts').classList.toggle('paired', paired);
+    by('chart-two-wrap').hidden = !paired;
+    by('chart-title-one').textContent = 'Szum σ = ' + fixed(batches[0].sigma, paired ? 1 : 0);
+    if (paired) by('chart-title-two').textContent = 'Szum σ = ' + fixed(batches[1].sigma, 0);
+    by('arm-sigma-wrap').hidden = !paired;
+    by('arm-sigma').replaceChildren(...batches.map((batch, i) => new Option(fixed(batch.sigma, 1), i)));
+    by('arm-world').max = batches[0].worlds;
+    renderTable(batches);
+    drawVisibleCharts();
+    renderArmDetails();
+  }
+
+  function statistic(data) {
+    return '<td>' + fixed(data.reward, 3) + '</td><td>' + fixed(100 * data.optimalRate, 1) + '%</td>';
+  }
+
+  function renderTable(batches) {
+    const [low, high] = batches;
+    const first = high ? 'σ = 0,2 · próby 901–1000' : 'Próby 1–50';
+    const second = high ? 'σ = 2 · próby 901–1000' : 'Próby 901–1000';
+    by('summaries').innerHTML = '<h3>Wyniki do sprawozdania</h3><div class="table-wrap" tabindex="0" ' +
+      'aria-label="Tabela wyników. Na małym ekranie można ją przewinąć poziomo."><table><thead><tr>' +
+      '<th rowspan="2" scope="col">Strategia</th><th colspan="2" scope="colgroup">' + first +
+      '</th><th colspan="2" scope="colgroup">' + second + '</th></tr>' +
+      '<tr><th scope="col">Śr. wypłata</th><th scope="col">Najl. ramię</th>' +
+      '<th scope="col">Śr. wypłata</th><th scope="col">Najl. ramię</th></tr></thead><tbody>' +
+      low.methods.map((method, i) => '<tr><th scope="row">' + styles[i].name + '</th>' +
+        statistic(high ? method.late : method.early) +
+        statistic(high ? high.methods[i].late : method.late) + '</tr>').join('') +
+      '</tbody></table></div>';
+  }
+
+  function blocks(values, scale) {
+    const points = [];
+    for (let from = 0; from < values.length; from += 20) {
+      const end = Math.min(from + 20, values.length);
+      let sum = 0;
+      for (let i = from; i < end; i++) sum += values[i];
+      points.push([end, scale * sum / (end - from)]);
+    }
+    return points;
+  }
+
+  function chartData(batches) {
+    const optimal = metric === 'optimal';
+    const lines = batches.map(batch => batch.methods.map(method =>
+      blocks(optimal ? method.optimalRates : method.rewards, optimal ? 100 : 1)));
+    let domain = [0, 100];
+    if (!optimal) {
+      const values = lines.flatMap(group => group.flatMap(series => series.map(point => point[1])));
+      const min = Math.min(0, ...values);
+      const max = Math.max(.25, ...values);
+      const tick = Math.max(.25, Math.ceil((max - min) / 5 / .25) * .25);
+      domain = [Math.floor(min / tick) * tick, Math.ceil(max / tick) * tick];
+    }
+    return {lines, domain, optimal, steps:batches[0].steps};
+  }
+
+  function drawPlot(context, width, height, lines, options) {
+    const {domain:[lo, hi], optimal, steps} = options;
+    const left = 44;
+    const right = width - 16;
+    const top = 13;
+    const bottom = height - 44;
+    const x = round => left + round * (right - left) / steps;
+    const y = value => bottom - (value - lo) * (bottom - top) / (hi - lo);
+    context.save();
+    context.fillStyle = '#fff';
+    context.fillRect(0, 0, width, height);
+    context.font = '12px system-ui, sans-serif';
+    context.textBaseline = 'middle';
+    context.textAlign = 'right';
+    for (let i = 0; i <= 4; i++) {
+      const value = lo + i * (hi - lo) / 4;
+      const yy = y(value);
+      context.strokeStyle = '#dce2e8';
+      context.lineWidth = 1;
+      context.beginPath();
+      context.moveTo(left, yy);
+      context.lineTo(right, yy);
+      context.stroke();
+      context.fillStyle = '#425169';
+      context.fillText(optimal ? value.toFixed(0) + '%' : fixed(value, 2), left - 6, yy);
+    }
+    for (const tick of [0,250,500,750,1000]) {
+      context.fillStyle = '#425169';
+      context.textAlign = tick === 0 ? 'left' : tick === steps ? 'right' : 'center';
+      context.fillText(String(tick), x(tick), bottom + 17);
+    }
+    context.fillStyle = '#425169';
+    context.textAlign = 'center';
+    context.fillText('Koniec bloku 20 prób', (left + right) / 2, height - 9);
+    for (const [i, points] of lines.entries()) {
+      context.strokeStyle = styles[i].color;
+      context.setLineDash(styles[i].dash);
+      context.lineWidth = 2.2;
+      context.lineJoin = 'round';
+      context.beginPath();
+      points.forEach(([round,value], j) => {
+        if (j) context.lineTo(x(round), y(value));
+        else context.moveTo(x(round), y(value));
+      });
+      context.stroke();
+    }
+    context.restore();
+  }
+
+  function drawVisibleCharts() {
+    const batches = view();
+    if (!batches || by('result').hidden) return;
+    const data = chartData(batches);
+    ['one','two'].slice(0, batches.length).forEach((which, i) => {
+      const canvas = by('chart-' + which);
+      const {width, height} = canvas.getBoundingClientRect();
+      if (width < 1 || height < 1) return;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      canvas.setAttribute('aria-label', (data.optimal ? 'Najlepsze ramię, odsetek' : 'Średnia wypłata') +
+        '. Trzy strategie. Szum ' + fixed(batches[i].sigma) + '. Dane liczbowe są w tabeli poniżej.');
+      const context = canvas.getContext('2d');
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawPlot(context, width, height, data.lines[i], data);
+    });
+    by('caption').textContent = 'Każdy punkt uśrednia blok 20 prób w 200 światach. ' +
+      (data.optimal ? 'Odsetek oznacza wybory ramienia o najwyższej prawdziwej średniej.' :
+        'Wypłata zawiera szum. Na przykład punkt przy 40 obejmuje próby 21–40.') +
+      (batches.length > 1 ? ' Oba wykresy mają wspólną skalę pionową.' : '');
+  }
+
+  function renderArmDetails() {
+    const batches = view();
+    if (!batches) return;
+    const world = by('arm-world').valueAsNumber;
+    if (!by('arm-world').validity.valid) {
+      armView = undefined;
+      by('arm-analysis').hidden = true;
+      by('arm-context').textContent = 'Podaj całkowity numer świata od 1 do ' + batches[0].worlds + '.';
+      return;
+    }
+    const {seed, sigma, steps} = batches[Number(by('arm-sigma').value)];
+    const epsilon = Number(by('arm-method').value);
+    const key = [seed, world, steps, sigma, epsilon].join('/');
+    if (inspectedWorld?.key !== key) {
+      inspectedWorld = {key, ...BanditExperiment.inspectWorld({seed, world, steps, sigma, epsilon})};
+    }
+    const period = inspectedWorld.periods[by('arm-window').value];
+    const {means} = inspectedWorld;
+    const showTruth = by('arm-truth').checked;
+    const largestMean = Math.max(...means);
+    const best = means.map(mean => mean === largestMean);
+    const bestNames = best.flatMap((isBest, arm) => isBest ? [arm + 1] : []);
+    const highestCount = Math.max(...period.choices);
+    const mostPlayed = period.choices.flatMap((count, arm) => count === highestCount ? [arm + 1] : []);
+    const seen = period.counts.filter(Boolean).length;
+    armView = {seed, world, sigma, epsilon, period, means, showTruth, best};
+    by('arm-analysis').hidden = false;
+    by('arm-legend-truth').hidden = !showTruth;
+    by('arm-context').textContent = 'Ziarno ' + seed + ' · świat ' + world + ' z ' +
+      batches[0].worlds + ' · σ = ' + fixed(sigma, 1) +
+      ' · Q po ' + period.end + ' próbach';
+    const armNames = (mostPlayed.length === 1 ? 'ramię ' : 'ramiona ') + mostPlayed.join(', ');
+    by('arm-summary').textContent = 'W tym przedziale najczęściej wybierano ' + armNames +
+      ' (' + highestCount + (highestCount === 1 ? ' raz' : ' razy') + '). Do końca przedziału agent sprawdził ' +
+      seen + ' z 10 ramion.' +
+      (showTruth ? (bestNames.length === 1 ? ' Najwyższą prawdziwą średnią ma ramię ' :
+        ' Najwyższą prawdziwą średnią mają ramiona ') + bestNames.join(', ') + '.' : '');
+    by('arm-table').innerHTML = '<table><thead><tr><th scope="col">Ramię</th>' +
+      '<th scope="col">Q po ' + period.end + ' próbach</th><th scope="col">Łączny N</th>' +
+      '<th scope="col">Wybory w przedziale</th>' + (showTruth ? '<th scope="col">q*</th>' : '') +
+      '</tr></thead><tbody>' + means.map((mean, arm) => '<tr><th scope="row">' + (arm + 1) +
+        (showTruth && best[arm] ? ' (najlepsze)' : '') +
+        '</th><td>' + (period.counts[arm] ? fixed(period.estimates[arm], 3) : 'bez prób') + '</td><td>' +
+        period.counts[arm] + '</td><td>' + period.choices[arm] + '</td>' +
+        (showTruth ? '<td>' + fixed(mean, 3) + '</td>' : '') + '</tr>').join('') + '</tbody></table>';
+    drawVisibleArms();
+  }
+
+  function drawArmRows(canvas, ticks, tickLabel, highlight, drawRow) {
+    const {width, height} = canvas.getBoundingClientRect();
+    if (width < 1 || height < 1) return;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const lo = ticks[0];
+    const hi = ticks[ticks.length - 1];
+    const left = 35;
+    const right = width - 29;
+    const top = 28;
+    const bottom = height - 31;
+    const rowHeight = (bottom - top) / BanditExperiment.armCount;
+    const x = value => left + (value - lo) * (right - left) / (hi - lo);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, width, height);
+    for (let arm = 0; arm < BanditExperiment.armCount; arm++) {
+      if (highlight[arm] || arm % 2 === 0) {
+        ctx.fillStyle = highlight[arm] ? '#e8f3ef' : '#f7f8fa';
+        ctx.fillRect(0, top + arm * rowHeight, width, rowHeight);
+      }
+    }
+    ctx.font = '12px system-ui, sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#425169';
+    for (const tick of ticks) {
+      ctx.strokeStyle = tick === 0 ? '#8d9bae' : '#dce2e8';
+      ctx.beginPath();
+      ctx.moveTo(x(tick), top);
+      ctx.lineTo(x(tick), bottom);
+      ctx.stroke();
+      ctx.fillText(tickLabel(tick), x(tick), bottom + 15);
+    }
+    ctx.textAlign = 'left';
+    ctx.fillText('Ramię', 5, 14);
+    for (let arm = 0; arm < BanditExperiment.armCount; arm++) {
+      const y = top + (arm + 0.5) * rowHeight;
+      ctx.fillStyle = '#425169';
+      ctx.fillText(arm + 1, 8, y);
+      drawRow(ctx, x, y, arm);
+    }
+  }
+
+  function drawVisibleArms() {
+    if (!armView || by('result').hidden || by('arm-analysis').hidden) return;
+    const {means, period, sigma, showTruth, best} = armView;
+    const seenEstimates = period.estimates.filter((_estimate, i) => period.counts[i]);
+    const truthRange = showTruth ? means.flatMap(mean => [mean - sigma, mean + sigma]) : [];
+    const values = [0, ...seenEstimates, ...truthRange];
+    const limit = Math.max(1, Math.ceil(Math.max(...values.map(Math.abs))));
+    const highlight = showTruth ? best : [];
+    drawArmRows(by('arm-estimates'), [-limit, -limit / 2, 0, limit / 2, limit],
+      value => fixed(value, Number.isInteger(value) ? 0 : 1), highlight,
+      (ctx, x, y, arm) => {
+        if (showTruth) {
+          const mean = means[arm];
+          const yy = y + 4;
+          ctx.strokeStyle = '#6aa99f';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x(mean - sigma), yy);
+          ctx.lineTo(x(mean + sigma), yy);
+          ctx.stroke();
+          ctx.fillStyle = '#086e63';
+          ctx.beginPath();
+          ctx.moveTo(x(mean), yy - 5);
+          ctx.lineTo(x(mean) + 5, yy);
+          ctx.lineTo(x(mean), yy + 5);
+          ctx.lineTo(x(mean) - 5, yy);
+          ctx.closePath();
+          ctx.fill();
+          ctx.lineWidth = 1;
+        }
+        if (period.counts[arm]) {
+          ctx.fillStyle = '#614c7c';
+          ctx.beginPath();
+          ctx.arc(x(period.estimates[arm]), showTruth ? y - 4 : y, 4.5, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+      });
+    const trials = period.end - period.start + 1;
+    drawArmRows(by('arm-frequencies'), [0,25,50,75,100], value => value + '%', highlight,
+      (ctx, x, y, arm) => {
+        ctx.fillStyle = highlight[arm] ? '#086e63' : '#204491';
+        ctx.fillRect(x(0), y - 6, x(100 * period.choices[arm] / trials) - x(0), 12);
+      });
+  }
+
+  function filename(extension) {
+    return 'bandyci_' + mode.toUpperCase() + '_ziarno_' + view()[0].seed + '.' + extension;
+  }
+
+  function download(blob, name) {
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = name;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 5000);
+  }
+
+  function saveCsv() {
+    const rows = ['eksperyment,ziarno,swiaty,sigma,epsilon,proba,srednia_wyplata,najlepsze_ramie_pct'];
+    for (const batch of view()) for (const method of batch.methods) {
+      for (let i = 0; i < batch.steps; i++) rows.push([
+        mode.toUpperCase(),batch.seed,batch.worlds,batch.sigma,method.epsilon,i + 1,
+        method.rewards[i].toFixed(8),(100 * method.optimalRates[i]).toFixed(8)
+      ].join(','));
+    }
+    download(new Blob(['\ufeff',rows.join('\r\n'),'\r\n'], {type:'text/csv;charset=utf-8'}), filename('csv'));
+  }
+
+  function saveArmCsv() {
+    if (!armView) return;
+    const {seed, world, sigma, epsilon, period, means, showTruth} = armView;
+    const columns = ['ziarno','swiat','sigma','epsilon','od_proby','do_proby','ramie','Q','N_lacznie','wybory_w_przedziale'];
+    if (showTruth) columns.push('q_prawdziwe');
+    const rows = [columns.join(',')];
+    for (let arm = 0; arm < means.length; arm++) {
+      const row = [seed, world, sigma, epsilon, period.start, period.end, arm + 1,
+        period.counts[arm] ? period.estimates[arm].toFixed(8) : '', period.counts[arm], period.choices[arm]];
+      if (showTruth) row.push(means[arm].toFixed(8));
+      rows.push(row.join(','));
+    }
+    const name = 'bandyci_ramiona_' + seed + '_swiat_' + world + '_sigma_' + sigma +
+      '_epsilon_' + epsilon + '_' + period.start + '-' + period.end + '.csv';
+    download(new Blob(['\ufeff',rows.join('\r\n'),'\r\n'], {type:'text/csv;charset=utf-8'}), name);
+  }
+
+  function savePng() {
+    const batches = view();
+    const series = chartData(batches);
+    const canvas = document.createElement('canvas');
+    canvas.width = 900;
+    canvas.height = 125 + 330 * batches.length;
+    const context = canvas.getContext('2d');
+    context.fillStyle = '#fff';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = '#172438';
+    context.font = 'bold 25px system-ui, sans-serif';
+    const label = series.optimal ? 'Wybór najlepszego ramienia (%)' : 'Średnia wypłata';
+    context.fillText('Eksperyment ' + mode.toUpperCase() + ' · ' + label, 30, 41);
+    context.font = '15px system-ui, sans-serif';
+    const b = batches[0];
+    context.fillText('Ziarno ' + b.seed + ' · ' + b.worlds + ' światów · ' + b.steps + ' prób na świat', 30, 66);
+    for (const [i,style] of styles.entries()) {
+      const offset = 32 + i * 185;
+      context.save();
+      context.strokeStyle = style.color;
+      context.setLineDash(style.dash);
+      context.lineWidth = 3;
+      context.beginPath();
+      context.moveTo(offset, 89);
+      context.lineTo(offset + 24, 89);
+      context.stroke();
+      context.restore();
+      context.fillText(style.name, offset + 32, 95);
+    }
+    batches.forEach((batch,i) => {
+      const yy = 123 + i * 330;
+      context.font = 'bold 16px system-ui, sans-serif';
+      context.fillStyle = '#172438';
+      context.fillText('Szum σ = ' + fixed(batch.sigma, 1), 30, yy);
+      context.save();
+      context.translate(27, yy + 10);
+      drawPlot(context, 843, 302, series.lines[i], series);
+      context.restore();
+    });
+    const name = filename((series.optimal ? 'najlepsze' : 'wyplata') + '.png').replace(/\.(najlepsze|wyplata)\./, '_$1.');
+    canvas.toBlob(blob => {
+      if (blob) download(blob, name);
+    }, 'image/png');
+  }
+
+  let manual = BanditExperiment.exampleWorld(7);
+  const chooseArms = Array.from({length:10}, (_, arm) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    const name = document.createElement('strong');
+    name.textContent = 'Ramię ' + (arm+1);
+    const stats = document.createElement('span');
+    button.append(name, stats);
+    by('arms').append(button);
+    button.addEventListener('click', () => {
+      const step = manual.pull(arm);
+      by('manual-status').textContent = 'Próba ' + step.round + ' · ramię ' + (arm+1) +
+        ' · wypłata ' + fixed(step.reward, 3) + ' · ocena Q ' + fixed(step.estimates[arm], 3) + '.';
+      renderManual();
+    });
+    return stats;
+  });
+  function renderManual() {
+    const {counts,estimates,means} = manual.snapshot();
+    chooseArms.forEach((text,i) => {
+      text.textContent = 'N = ' + counts[i] + ' · ' + (counts[i] ? 'Q' : 'Q₀') + ' = ' +
+        fixed(estimates[i]) + (by('truth').checked ? ' · q* = ' + fixed(means[i]) : '');
+    });
+  }
+
+  fields.forEach(id => by('mode-' + id).addEventListener('click', () => selectMode(id)));
+  ['reward','optimal'].forEach(id => by('metric-' + id).addEventListener('click', () => selectMetric(id)));
+  by('run').addEventListener('click', run);
+  by('save-png').addEventListener('click', savePng);
+  by('save-csv').addEventListener('click', saveCsv);
+  by('arm-method').replaceChildren(...BanditExperiment.epsilons.map((epsilon, i) =>
+    new Option(styles[i].name, epsilon)));
+  by('arm-method').value = '0.1';
+  for (const id of ['world','method','window','sigma','truth']) {
+    by('arm-' + id).addEventListener('change', renderArmDetails);
+  }
+  by('save-arm-csv').addEventListener('click', saveArmCsv);
+  by('reset-manual').addEventListener('click', () => {
+    manual = BanditExperiment.exampleWorld(7);
+    by('manual-status').textContent = 'Próby zaczynają się od początku w tym samym świecie, ziarno 7.';
+    renderManual();
+  });
+  by('truth').addEventListener('change', renderManual);
+  new ResizeObserver(drawVisibleCharts).observe(by('charts'));
+  new ResizeObserver(drawVisibleArms).observe(by('arm-charts'));
+  renderManual();
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jedno przejście, różne aktualizacje</title>
+<style>
+:root {
+  color-scheme: light;
+  --paper: #f5f2e9;
+  --sheet: #fffdf6;
+  --ink: #17313a;
+  --muted: #425a5f;
+  --teal: #075b53;
+  --rule: #c8d5cc;
+  --wash: #e6f1e8;
+  --sand: #f7ecce;
+  --ruby: #853e23;
+  font: 16px/1.58 system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); }
+main { max-width: 1150px; margin: auto; padding: clamp(20px, 5vw, 66px); }
+h1, h2, h3, p { margin: 0; }
+h1, h2 { font-family: Georgia, serif; line-height: 1.08; }
+h1 { font-size: clamp(2.2rem, 5.7vw, 4.5rem); max-width: 17ch; margin: 0 0 .45em; }
+h2 { font-size: clamp(1.6rem, 3.5vw, 2.55rem); margin-bottom: .55em; }
+h3 { font-size: 1.13rem; }
+p + p { margin-top: .6em; }
+a { color: var(--teal); text-underline-offset: .22em; }
+:focus-visible { outline: 3px solid #a15b27; outline-offset: 3px; }
+.intro { font-size: 1.13rem; max-width: 65ch; }
+nav { display: flex; gap: .35em 1.5em; flex-wrap: wrap; margin-top: 1.25em; font-weight: 650; }
+.lab { margin-top: 2.4em; padding-top: 1.75em; border-top: 1px solid var(--rule); scroll-margin-top: 1em; }
+.data { margin: 1.1em 0; border-left: 4px solid var(--teal); padding: .8em 1.15em; background: var(--wash); }
+.data p { max-width: 90ch; }
+.data span { white-space: nowrap; }
+.path { margin: 1em 0; padding: 0; list-style-type: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: .55rem; }
+.path li { background: var(--sheet); border: 1px solid var(--rule); border-radius: 4px; padding: .7em; text-align: center; }
+.path strong, .path small { display: block; }
+.path strong { font-size: 1.15rem; }
+.path small, .hint { color: var(--muted); }
+.sticky-note { margin: 1rem 0 1.25rem; }
+.controls, .predictions { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,155px),1fr)); gap: .75rem; align-items: end; }
+.controls { background: var(--sheet); border: 1px solid var(--rule); padding: .85em; margin: .9em 0 1.2em; }
+.controls label, .predictions label { font-weight: 650; }
+.predictions input { width: 100%; display: block; margin-top: .28em; }
+.controls select, .controls input[type=range] { width: 100%; display: block; margin-top: .28em; }
+.controls label.flag { padding: .48em 0; min-height: 2.7em; }
+input, select, button { font: inherit; }
+input[type=range], input[type=checkbox] { accent-color: var(--teal); }
+input[type=text], select { color: var(--ink); border: 1px solid #708f83; border-radius: 4px; padding: .35em .55em; background: white; }
+output { white-space: nowrap; font-variant-numeric: tabular-nums; }
+form { margin: 1em 0; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend { font-weight: 750; margin-bottom: .35em; }
+.buttons { display: flex; flex-wrap: wrap; gap: .5em; margin-top: .85em; }
+button { color: var(--teal); background: var(--sheet); border: 1px solid #688d83; border-radius: 4px; padding: .4em .85em; cursor: pointer; font-weight: 650; }
+button.primary { color: white; background: var(--teal); border-color: var(--teal); }
+button:hover { filter: brightness(.94); }
+.feedback:not(:empty) { color: var(--teal); font-weight: 650; margin-top: .7em; }
+.scroll { overflow-x: auto; }
+.answers { margin: 1.15em 0; }
+.answers h3 { margin: 0 0 .65em; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; background: var(--sheet); margin-bottom: .8em; }
+th, td { text-align: left; padding: .55em .75em; vertical-align: top; }
+thead th { background: var(--teal); color: white; }
+tbody th, tbody td { border-bottom: 1px solid var(--rule); }
+tbody th { color: var(--teal); min-width: 8.3em; }
+tbody tr:nth-child(even) { background: #edf2e9; }
+.answer { font-weight: 800; color: var(--teal); text-align: right; white-space: nowrap; }
+.after { margin: 1em 0; padding: .75em .95em; background: var(--sand); }
+.after strong { color: var(--ruby); }
+details { margin: .8em 0; }
+summary { cursor: pointer; color: var(--teal); font-weight: 650; }
+details p { padding: .35em 0 0 1em; max-width: 88ch; }
+footer { border-top: 1px solid var(--rule); margin-top: 2.4em; padding-top: .8em; color: var(--muted); }
+[hidden] { display: none !important; }
+@media (max-width: 470px) {
+  .path li { padding: .4em; }
+  .path strong { font-size: 1rem; }
+  th, td { padding: .4em .5em; }
+}
+@media print {
+  main { max-width: none; padding: 0; }
+  body, table { background: white; }
+  nav, .buttons, footer { display: none; }
+  .lab + .lab { break-before: page; }
+  tr { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Jedno przejście, różne aktualizacje</h1>
+    <p class="intro">Ustal, skąd algorytm bierze dalszy zwrot. Zapisz przewidywanie, odsłoń rachunek i sprawdź, które liczby zmieniłyby się po zmianie polityki lub zakończeniu epizodu.</p>
+    <nav aria-label="Laboratoria"><a href="#predykcja">FrozenLake · ocena stanu</a><a href="#sterowanie">Urwisko · sterowanie</a></nav>
+  </header>
+
+  <section class="lab" id="predykcja" aria-labelledby="prediction-title">
+    <h2 id="prediction-title">FrozenLake. Jak ocenić pole 14?</h2>
+    <p>Polityka jest ustalona. W 14 agent zleca ruch „w prawo”, a w 10 „w dół”. Porównujemy cele dla <strong>pierwszej wizyty</strong> w polu 14.</p>
+    <div class="data">
+      <p><strong>Znane przed krokiem.</strong> Dyskonto <span>γ = 0,95</span> i zapisane wartości <span>V(14) = 0,60</span> oraz <span>V(10) = 0,40</span>. Po zleceniu „w prawo” w 14 poślizg daje trzy skutki po <strong>⅓</strong>.</p>
+    </div>
+    <details>
+      <summary>Rozwiń trzy możliwe skutki według modelu</summary>
+      <p>Ruch w górę na 10 daje 0. Odbicie od brzegu w dół zostawia agenta na 14 i daje 0. Wejście w prawo na 15 daje +1 i kończy epizod.</p>
+    </details>
+    <ol class="path" aria-label="Kolejne kroki zaobserwowanego epizodu">
+      <li><strong>14 → 10</strong><small>nagroda 0</small></li>
+      <li><strong>10 → 14</strong><small>nagroda 0</small></li>
+      <li><strong>14 → 15</strong><small>nagroda 1, koniec</small></li>
+    </ol>
+    <p class="sticky-note">W celu z dwóch kroków użyj starego V pola, do którego trafiliśmy po dwóch przejściach. Gdy ścieżka dojdzie do terminala, w tym miejscu dalsza kontynuacja wynosi 0.</p>
+    <form id="v-form">
+      <fieldset>
+        <legend>Jakie są cele aktualizacji V(14)?</legend>
+        <div class="predictions">
+          <label>Programowanie dynamiczne<input id="v-dp" type="text" inputmode="decimal" autocomplete="off" placeholder="Cel"></label>
+          <label>Monte Carlo<input id="v-mc" type="text" inputmode="decimal" autocomplete="off" placeholder="Cel"></label>
+          <label>TD(0)<input id="v-td" type="text" inputmode="decimal" autocomplete="off" placeholder="Cel"></label>
+          <label>2-krokowe TD<input id="v-two" type="text" inputmode="decimal" autocomplete="off" placeholder="Cel"></label>
+          <label>Zwrot λ = 0,5<input id="v-lambda" type="text" inputmode="decimal" autocomplete="off" placeholder="Cel"></label>
+        </div>
+        <div class="buttons">
+          <button class="primary" type="submit">Sprawdź przewidywania</button>
+          <button id="toggle-v" type="button" aria-controls="answers-v" aria-expanded="false">Odsłoń rachunki</button>
+        </div>
+      </fieldset>
+      <p id="v-feedback" class="feedback" role="status" aria-live="polite"></p>
+    </form>
+    <div class="answers" id="answers-v" hidden>
+      <h3>Cele dla tego samego stanu</h3>
+      <div class="scroll" tabindex="0" aria-label="Tabela celów oceny stanu">
+        <table>
+          <thead><tr><th scope="col">Metoda</th><th scope="col">Rachunek z tej samej tablicy wejściowej</th><th scope="col">Cel</th></tr></thead>
+          <tbody id="v-rows"></tbody>
+        </table>
+      </div>
+      <p class="after"><strong>Co zmienia się między metodami?</strong> DP uśrednia wszystkie gałęzie jednej akcji przewidziane przez model. TD(0) używa tego, co nastąpiło po pierwszym ruchu, i kontynuacji z tablicy. Monte Carlo odczytuje nagrody do końca epizodu. Zwrot λ łączy cele o różnych horyzontach.</p>
+      <p class="hint">Zwrot przy <em>drugiej</em> wizycie w 14 wynosi 1. Metoda pierwszej wizyty przypisuje temu epizodowi dla 14 próbkę z pierwszej wizyty.</p>
+    </div>
+  </section>
+
+  <section class="lab" id="sterowanie" aria-labelledby="control-title">
+    <h2 id="control-title">Urwisko. Jak zaktualizować ocenę akcji?</h2>
+    <p>Po zaobserwowanym ruchu aktualizujemy jego ocenę <strong>Q(s,a)</strong> od wspólnego wyniku 0,50 z krokiem α = 0,10. Każda metoda podstawia własny cel <strong>y</strong> do wzoru Q ← Q + α × (y − Q).</p>
+    <div class="data">
+      <p><strong>Znane po ruchu.</strong> Nagroda r = −1. Oceny dostępnych akcji w następnym stanie to <span>lewo 4</span>, <span>dół 1</span>, <span>prawo 2</span>, <span>góra 0</span>.</p>
+      <p>Polityka ε-zachłanna z szansą ε losuje spośród wszystkich czterech akcji, w tym najlepszej. W pozostałych przypadkach wybiera najlepszą ocenę. Suwak ε zmienia tę politykę.</p>
+    </div>
+    <div class="controls">
+      <label for="epsilon">Eksploracja ε <output id="epsilon-value" for="epsilon"></output><input id="epsilon" type="range" min="0" max="1" step="0.05" value="0.20"></label>
+      <label for="gamma">Dyskonto γ <output id="gamma-value" for="gamma"></output><input id="gamma" type="range" min="0" max="1" step="0.05" value="0.90"></label>
+      <label for="next-action">Wybrana następna akcja<select id="next-action"><option value="0">Lewo, Q = 4</option><option value="1">Dół, Q = 1</option><option value="2" selected>Prawo, Q = 2</option><option value="3">Góra, Q = 0</option></select></label>
+      <label class="flag"><input id="terminal" type="checkbox"> Przejście do celu</label>
+    </div>
+    <p id="control-hint" class="hint">Wybierając akcję w polu, ustalasz próbkę dla SARSA. Expected SARSA uśrednia według polityki, a Q-learning odczytuje maksimum.</p>
+    <form id="q-form">
+      <fieldset>
+        <legend>Jakie są cele aktualizacji Q(s,a)?</legend>
+        <div class="predictions">
+          <label>SARSA<input id="q-sarsa" type="text" inputmode="decimal" autocomplete="off" placeholder="Cel"></label>
+          <label>Expected SARSA<input id="q-expected" type="text" inputmode="decimal" autocomplete="off" placeholder="Cel"></label>
+          <label>Q-learning<input id="q-learning" type="text" inputmode="decimal" autocomplete="off" placeholder="Cel"></label>
+        </div>
+        <div class="buttons">
+          <button class="primary" type="submit">Sprawdź przewidywania</button>
+          <button id="toggle-q" type="button" aria-controls="answers-q" aria-expanded="false">Odsłoń rachunki</button>
+          <button id="q-reset" type="button">Przywróć przykład</button>
+        </div>
+      </fieldset>
+      <p id="q-feedback" class="feedback" role="status" aria-live="polite"></p>
+    </form>
+    <div class="answers" id="answers-q" hidden>
+      <h3>Składniki celu i nowe wartości</h3>
+      <p id="q-probabilities" class="hint"></p>
+      <div class="scroll" tabindex="0" aria-label="Tabela celów sterowania">
+        <table>
+          <thead><tr><th scope="col">Metoda</th><th scope="col">Rachunek celu</th><th scope="col">Cel y</th><th scope="col">Nowe Q(s,a)</th></tr></thead>
+          <tbody id="q-rows"></tbody>
+        </table>
+      </div>
+      <p class="after"><strong>Co sprawdzić?</strong> Przy γ &gt; 0 wypróbuj inną następną akcję, a potem zmień ε. Zobacz, w których kolumnach cel pozostaje ten sam. Na końcu ustaw przejście terminalne.</p>
+      <p class="hint">W Urwisku upadek przenosi agenta na start i daje nagrodę −100. Epizod kończy dopiero wejście na pole celu. Przełącznik w tym zadaniu oznacza dojście do celu z nagrodą −1.</p>
+    </div>
+  </section>
+  <footer><p>Moduły 02–05 · Porównanie rachunków przed uruchomieniem notatników</p></footer>
+</main>
+<script>
+"use strict";
+
+const actionNames = ["lewo", "dół", "prawo", "góra"];
+const nextValues = [4, 1, 2, 0];
+const format = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 5 });
+const fmt = number => format.format(number).replace("-", "−");
+const find = id => document.getElementById(id);
+
+function frozenLakeTargets() {
+  const gamma = 0.95;
+  const highBranch = gamma * 0.60;
+  const td = gamma * 0.40;
+  const two = gamma ** 2 * 0.60;
+  const mc = gamma ** 2;
+  const dp = (td + highBranch + 1) / 3;
+  const mixed = 0.5 * td + 0.25 * two + 0.25 * mc;
+  return { dp, mc, td, two, mixed };
+}
+
+function controlTargets(epsilon, gamma, action, terminal) {
+  const reward = -1;
+  const probabilities = nextValues.map((_, index) => epsilon / 4 + (index === 0 ? 1 - epsilon : 0));
+  const expectedValue = nextValues.reduce((sum, value, index) => sum + probabilities[index] * value, 0);
+  const continuation = [nextValues[action], expectedValue, Math.max(...nextValues)];
+  const targets = continuation.map(value => reward + (terminal ? 0 : gamma * value));
+  const newValues = targets.map(target => 0.50 + 0.10 * (target - 0.50));
+  return { probabilities, expectedValue, continuation, targets, newValues };
+}
+
+function renderPrediction() {
+  const { dp, mc, td, two, mixed } = frozenLakeTargets();
+  const rows = [
+    ["Programowanie dynamiczne (DP)", "(0,38 + 0,57 + 1) ÷ 3", dp],
+    ["Monte Carlo", "0 + 0,95 × 0 + 0,95² × 1", mc],
+    ["TD(0)", "0 + 0,95 × V(10) = 0 + 0,95 × 0,40", td],
+    ["2-krokowe TD", "0 + 0,95 × 0 + 0,95² × V(14)", two],
+    ["Zwrot λ = 0,5", "0,50 × 0,38 + 0,25 × 0,5415 + 0,25 × 0,9025", mixed]
+  ];
+  find("v-rows").innerHTML = rows.map(([name, math, target]) =>
+    "<tr><th scope='row'>" + name + "</th><td>" + math + "</td><td class='answer'>" + fmt(target) + "</td></tr>"
+  ).join("");
+  return [dp, mc, td, two, mixed];
+}
+
+function renderControl() {
+  const epsilon = Number(find("epsilon").value);
+  const gamma = Number(find("gamma").value);
+  const action = Number(find("next-action").value);
+  const terminal = find("terminal").checked;
+  const { probabilities, continuation, targets, newValues } = controlTargets(epsilon, gamma, action, terminal);
+  find("epsilon-value").value = fmt(epsilon);
+  find("gamma-value").value = fmt(gamma);
+  find("next-action").disabled = terminal;
+  find("control-hint").textContent = terminal
+    ? "Ruch kończy epizod. Trzy cele wykorzystują już tylko nagrodę za wejście do celu."
+    : epsilon === 0 && action !== 0
+      ? "Przy ε = 0 ta akcja ma zerową szansę w podanej polityce. Rachunek SARSA pokazuje tu wariant hipotetyczny."
+      : "Wybierając następną akcję, ustalasz próbkę dla SARSA. Expected SARSA uśrednia według polityki, a Q-learning odczytuje maksimum.";
+  const weighted = nextValues.map((value, index) => fmt(probabilities[index]) + " × " + value).join(" + ");
+  const math = [
+    "−1 + " + fmt(gamma) + " × " + fmt(continuation[0]),
+    "−1 + " + fmt(gamma) + " × (" + weighted + ")",
+    "−1 + " + fmt(gamma) + " × " + fmt(continuation[2])
+  ];
+  const methods = ["SARSA", "Expected SARSA", "Q-learning"];
+  find("q-probabilities").textContent = terminal
+    ? "Po tym ruchu nie wybieramy już kolejnej akcji."
+    : "Szanse komend w następnym stanie: " +
+      actionNames.map((name, index) => name + " " + fmt(100 * probabilities[index]) + "%").join(", ") + ".";
+  find("q-rows").innerHTML = methods.map((name, index) =>
+    "<tr><th scope='row'>" + name + "</th><td>" + (terminal ? "−1 (nagroda przy wejściu do celu)" : math[index]) +
+    "</td><td class='answer'>" + fmt(targets[index]) + "</td><td class='answer'>" + fmt(newValues[index]) + "</td></tr>"
+  ).join("");
+  return targets;
+}
+
+function changeReveal(buttonId, answerId, visible) {
+  find(answerId).hidden = !visible;
+  const button = find(buttonId);
+  button.setAttribute("aria-expanded", String(visible));
+  button.textContent = visible ? "Ukryj rachunki" : "Odsłoń rachunki";
+}
+
+function readNumber(value) {
+  const input = value.trim().replace("−", "-").replace(",", ".");
+  return /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)$/.test(input) ? Number(input) : NaN;
+}
+
+function predictionFeedback(ids, targets) {
+  const entries = ids.map(id => find(id).value.trim());
+  const attempted = entries.filter(Boolean).length;
+  if (attempted === 0) return "Wpisz przynajmniej jedno przewidywanie lub odsłoń rachunki.";
+  const correct = entries.filter((value, index) => Math.abs(readNumber(value) - targets[index]) <= 0.00051).length;
+  return correct + " z " + attempted + " wpisanych wyników zgodnych. Dla niezgodnego celu porównaj składniki rachunku.";
+}
+
+function connectExample({ form, buttonId, answerId, inputIds, feedbackId, render }) {
+  find(form).addEventListener("submit", event => {
+    event.preventDefault();
+    find(feedbackId).textContent = predictionFeedback(inputIds, render());
+  });
+  find(buttonId).addEventListener("click", () => {
+    render();
+    changeReveal(buttonId, answerId, find(answerId).hidden);
+  });
+}
+
+const vInputIds = ["v-dp", "v-mc", "v-td", "v-two", "v-lambda"];
+const qInputIds = ["q-sarsa", "q-expected", "q-learning"];
+connectExample({ form: "v-form", buttonId: "toggle-v", answerId: "answers-v", inputIds: vInputIds,
+  feedbackId: "v-feedback", render: renderPrediction });
+connectExample({ form: "q-form", buttonId: "toggle-q", answerId: "answers-q", inputIds: qInputIds,
+  feedbackId: "q-feedback", render: renderControl });
+["epsilon", "gamma", "next-action", "terminal"].forEach(id =>
+  find(id).addEventListener("input", () => {
+    find("q-feedback").textContent = "";
+    renderControl();
+  })
+);
+find("q-reset").addEventListener("click", () => {
+  find("epsilon").value = "0.20";
+  find("gamma").value = "0.90";
+  find("next-action").value = "2";
+  find("terminal").checked = false;
+  qInputIds.forEach(id => { find(id).value = ""; });
+  find("q-feedback").textContent = "";
+  changeReveal("toggle-q", "answers-q", false);
+  renderControl();
+});
+renderPrediction();
+renderControl();
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+SPOTKANIE 1. BANDYCI I ROBOT ZBIERAJĄCY PUSZKI
+
+Rozpakuj archiwum do jednego folderu. Prowadzący wyświetli pełne prezentacje i zadania. Pliki dla siebie otwieraj w poniższej kolejności.
+
+OTWARCIE · KRÓTKI POKAZ ENARIS
+
+Jeśli prowadzący włączy pokaz, na ekranie zobaczysz fragmenty gry w pięć monet i labiryntu robota szukającego baterii. W każdym przykładzie nazwij stan, możliwą akcję i jej skutek.
+
+CZĘŚĆ I · BANDYCI
+
+1. Zacznij od rozgrzewki na ekranie. Po omówieniu rozwiązania otwórz RL_01_Bandyci_teoria.pdf. To trzystronicowa, ilustrowana ściąga z pełnej prezentacji. Przyda się w eksperymencie i przy pisaniu kodu.
+2. Otwórz RL_01_Laboratorium_Bandytow.html w przeglądarce. Do wpisania przewidywania, wyników i wniosku możesz użyć RL_01_Bandyci_wyniki.docx. W eksperymencie A przewidź, która strategia da większą średnią wypłatę na początku i pod koniec, a potem uruchom pomiar z ziarnem 7. Porównaj średnią wypłatę i odsetek wyborów najlepszego ramienia w próbach 1–50 i 901–1000. W dodatkowym eksperymencie B skup się na jednej strategii ε = 0,10 w obu wariantach. Porównaj procent wyborów najlepszego ramienia w próbach 901–1000 przy σ = 0,2 i σ = 2. σ opisuje skalę wahań wypłat wokół tej samej prawdziwej średniej.
+3. Rachunek przed kodem. Jeżeli N dotychczasowych wypłat miało średnią Q, ich suma to N × Q. Dolicz nową wypłatę R i podziel przez N + 1. Przekształć ten zapis tak, aby otrzymać starą średnią plus poprawkę. Sprawdź wynik dla wypłat −1 i +3.
+
+   W badamy_bandytow.py uzupełnij wybierz_ramie i aktualizuj_ocene. Przy obu TODO znajdziesz przykład do prześledzenia i pseudokod. Plik laboratorium.py dostarcza symulację i testy. Zostaw go w tym samym folderze co swój skrypt. W terminalu otwartym w rozpakowanym folderze wpisz:
+
+   python badamy_bandytow.py sprawdz
+
+   Jeśli w Twoim środowisku działa polecenie python3 lub py, użyj go zamiast python. Po testach możesz odtworzyć A w Pythonie z tymi samymi ustawieniami:
+
+   python badamy_bandytow.py A --swiaty 200 --ziarno 7
+
+Po bloku bandytów para oddaje jeden uzupełniony badamy_bandytow.py, wynik polecenia sprawdz i krótki wniosek z A poparty dwiema liczbami. Wynik testu i wniosek można wpisać do arkusza Word. Przy każdej liczbie podaj strategię, przedział prób i miarę.
+
+CZĘŚĆ II · ROBOT ZBIERAJĄCY PUSZKI
+
+1. Otwórz RL_01_Robot_slajdy_student.pdf. Rozgrzewka pokazuje, jak liczyć średnią z prawdopodobieństwami, skąd biorą się potęgi γ i jak opisać regułę wyboru akcji (politykę). Na slajdach są też zadania do samodzielnego policzenia. Rachunki możesz wpisywać bezpośrednio w RL_01_Robot_zadania.docx. Jeśli chcesz pracować na kartce, użyj RL_01_Robot_zadania.pdf do druku. Zachowaj stany i nagrody z zadania 2 oraz zwrot z zadania 3, by sprawdzić je w kodzie.
+2. Gdy zacznie się kodowanie, otwórz Szablony/02B_Robot_live_coding_student.ipynb w Jupyterze lub VS Code z obsługą Jupytera. Uruchom komórki od góry. W części 2 spróbuj odczytać wynik na granicy dwóch przedziałów. Skorzystaj z pseudokodu i uzupełnij funkcję step_robot. Potem wykonaj testy.
+3. Odtwórz trzy ruchy z kartki i porównaj stany, nagrody oraz zdyskontowaną sumę nagród. Po rozwiązaniu dwóch równań Bellmana możesz też sprawdzić w notebooku obliczone wartości obu stanów. Kod robota korzysta wyłącznie ze standardowej biblioteki Pythona 3.
+
+REZERWA · GRA W PIĘĆ MONET
+
+Wykonajcie to ćwiczenie, gdy zapowie je prowadzący. Może pojawić się przed robotem albo po nim.
+
+1. Rozegrajcie jedną partię w parze. Zacznijcie od pięciu monet. Na zmianę zabierajcie jedną albo dwie. Kto bierze ostatnią, przegrywa. Zapiszcie ruchy i wskażcie zwycięzcę.
+2. Porównajcie dwa zadania. Pierwsze polega na wyborze otwarcia z pięciu monet i ocenie go po całej partii. W drugim decydujecie także w późniejszych turach, zależnie od liczby monet. Rozpiszcie dwie odpowiedzi rywala na konkretny ruch. Na stole są trzy monety, a agent zabiera jedną. Ile monet zostanie po każdej odpowiedzi? Kiedy gra się kończy i jaką nagrodę otrzymuje agent w tym kroku?
+3. Otwórzcie Szablony/01_Monety_live_coding_student.ipynb w Jupyterze lub VS Code. Uzupełnijcie tylko opponent_step_student(n, b). Funkcja dostaje liczbę monet po ruchu agenta i ruch rywala. Uruchomcie trzy testy i porównajcie wyniki z przewidywaniami z kartki.
+
+PYTANIE NA KONIEC
+
+Co dzieje się po zakończeniu próby bandyty i po ratunku robota? Jeśli graliście w monety, dopiszcie, co dzieje się po zabraniu ostatniej monety. W których przykładach trzeba brać pod uwagę kolejną decyzję w tym samym przebiegu?

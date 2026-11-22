@@ -1,0 +1,538 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bellman krok po kroku | Uczenie ze wzmocnieniem</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f7f4ec; --surface: #fffdf7; --ink: #192d31; --muted: #4a6064;
+    --rule: #bacac7; --teal: #005a55; --light-teal: #e8f3e9;
+    --deep-teal: #143e40; --warm: #f5e8c9;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: clamp(15px, 1.05vw, 17px);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); }
+  main { max-width: 1420px; margin: auto; padding: 34px clamp(18px, 4vw, 63px) 42px; }
+  h1, h2, h3, p { margin: 0; }
+  h1 { font: 700 clamp(2.25rem, 4.1vw, 4rem)/1.05 Georgia, serif; letter-spacing: -.035em; }
+  h2 { font-size: 1.3rem; line-height: 1.2; }
+  h3 { font-size: 1rem; }
+  .eyebrow { color: var(--teal); font-weight: 750; font-size: .8rem; letter-spacing: .075em; text-transform: uppercase; margin-bottom: 10px; }
+  .intro { margin-top: 12px; max-width: 76ch; color: var(--muted); line-height: 1.55; }
+  .section-link { display: inline-block; margin-top: 9px; font-weight: 700; color: var(--teal); }
+  .section-link:focus-visible { outline: 3px solid #9d4802; outline-offset: 3px; }
+  .toolbar { margin-top: 25px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--rule); display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; }
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  legend, .range-label { color: var(--muted); font-size: .83rem; font-weight: 700; margin-bottom: 5px; }
+  .choices { display: flex; flex-wrap: wrap; gap: 1px; padding: 2px; background: #e9eeea; border-radius: 6px; }
+  .choices label { position: relative; cursor: pointer; }
+  .choices input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+  .choices span { display: block; min-height: 35px; padding: 7px 10px; border-radius: 4px; font-weight: 650; font-size: .85rem; white-space: nowrap; }
+  .choices input:checked + span { background: var(--deep-teal); color: white; }
+  .choices input:focus-visible + span, button:focus-visible, summary:focus-visible, input[type="range"]:focus-visible, select:focus-visible { outline: 3px solid #9d4802; outline-offset: 3px; }
+  .gamma-control { min-width: 140px; }
+  .range-label { display: flex; justify-content: space-between; gap: 12px; }
+  input[type="range"] { width: 100%; margin: 5px 0 0; accent-color: var(--teal); cursor: pointer; }
+  .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; padding-top: 12px; }
+  button, select {
+    font: inherit; color: var(--ink); cursor: pointer; font-weight: 680;
+    background: var(--surface); border: 1px solid #839995; border-radius: 5px;
+    min-height: 38px; padding: 7px 11px; line-height: 1.2;
+  }
+  button:not(.cell):hover, select:hover { background: #e9f1ea; }
+  button.primary { background: var(--teal); color: white; border-color: var(--teal); }
+  button.primary:hover { background: #004c48; }
+  button:disabled, select:disabled { color: #536866; opacity: .62; cursor: default; }
+  .workspace { display: grid; grid-template-columns: minmax(270px, .87fr) minmax(390px, 1.13fr); gap: 24px; margin-top: 22px; align-items: start; }
+  .panel { background: var(--surface); border: 1px solid var(--rule); min-width: 0; }
+  .board-panel, .inspect { padding: clamp(14px, 1.6vw, 23px); }
+  .panel-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .panel-head output { font: 600 .85rem ui-monospace, "DejaVu Sans Mono", monospace; color: var(--teal); }
+  .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 15px 0 10px; }
+  .cell {
+    position: relative; display: flex; justify-content: center; align-items: center;
+    min-width: 0; min-height: clamp(58px, 6.1vw, 89px); aspect-ratio: 1.48;
+    background: #e6efeb; padding: 7px 4px 3px; border: 1px solid #a8bdb4;
+    transition: background 140ms ease;
+  }
+  .cell:not(.selected):hover { border-color: #456d68; }
+  .cell.selected { outline: 3px solid #995200; outline-offset: 0; z-index: 1; }
+  .cell.selected:focus-visible { outline-offset: 2px; }
+  .cell.hole { background: #d6dddd; border-color: #a5b7b8; }
+  .cell.goal { background: #bfdfc3; border-color: #7aab89; }
+  .cell.start { background: #d5e9da; }
+  .cell-index { position: absolute; top: 4px; left: 5px; color: #34504e; font-weight: 650; font-size: .68rem; }
+  .cell-value { font: 650 clamp(.85rem, 1.5vw, 1.25rem) ui-monospace, "DejaVu Sans Mono", monospace; }
+  .cell-arrow { position: absolute; right: 5px; bottom: 3px; color: #284f4d; font-size: .82rem; letter-spacing: -.06em; }
+  .legend, .support, .caption { font-size: .86rem; color: var(--muted); line-height: 1.5; }
+  .board-footer { display: grid; gap: 7px; padding-top: 5px; }
+  .mode-explain { color: var(--teal); }
+  .inspect-header { margin-bottom: 12px; }
+  .select-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 11px; }
+  .select-row label { font-size: .84rem; font-weight: 700; color: var(--muted); }
+  .select-row select, .select-row button { font-size: .86rem; }
+  .value-row { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 9px 0; font-size: .9rem; border-bottom: 1px solid var(--rule); color: var(--muted); }
+  .value-row b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .exercise { background: var(--warm); border-left: 4px solid #8b550c; padding: 8px 10px; margin: 12px 0; line-height: 1.4; font-size: .87rem; }
+  .exercise strong { color: #623905; }
+  .placeholder { background: #f0f5ef; padding: 13px 12px; margin: 13px 0; color: var(--ink); line-height: 1.5; font-size: .9rem; }
+  .branch-holder { margin-top: 12px; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; text-align: left; font-variant-numeric: tabular-nums; }
+  caption { text-align: left; margin-bottom: 5px; font-size: .86rem; color: var(--muted); }
+  th, td { padding: 7px 5px; border-bottom: 1px solid #d4dfd9; font-size: .86rem; }
+  th { background: #e8efea; font-weight: 700; color: var(--deep-teal); }
+  td { white-space: nowrap; }
+  td:last-child { white-space: normal; }
+  .branch-total { text-align: right; border: 0; padding-top: 7px; font-weight: 750; color: var(--teal); }
+  .result { margin: 12px 0; padding: 9px 11px; border-left: 4px solid var(--teal); background: var(--light-teal); line-height: 1.55; font-size: .9rem; }
+  .result b { color: var(--teal); }
+  .turn-help { padding: 12px 0 0; }
+  .status { margin-top: 11px; min-height: 1.35em; font-size: .82rem; color: var(--muted); }
+  .comparison { margin-top: 26px; padding: clamp(14px, 1.6vw, 23px); }
+  .comparison .support { margin-top: 8px; max-width: 94ch; }
+  .comparison .prompt { margin: 14px 0 0; }
+  .comparison .actions { padding-top: 14px; }
+  .episode { margin-top: 14px; font-variant-numeric: tabular-nums; }
+  .episode > div { margin-top: 5px; }
+  .comparison table { min-width: 540px; }
+  .comparison th, .comparison td { padding: 9px 10px; }
+  .comparison tbody th { white-space: nowrap; }
+  .comparison td { white-space: normal; }
+  .comparison .target { color: var(--teal); font-weight: 750; }
+  details { margin-top: 19px; }
+  details p { margin-top: 8px; max-width: 83ch; }
+  summary { cursor: pointer; font-weight: 700; color: var(--teal); }
+  sub { font-size: .74em; }
+  [hidden] { display: none !important; }
+  @media (max-width: 980px) {
+    .workspace { grid-template-columns: minmax(245px, .84fr) minmax(315px, 1.16fr); gap: 14px; }
+  }
+  @media (max-width: 675px) {
+    main { padding-top: 24px; }
+    .workspace { grid-template-columns: 1fr; }
+    .toolbar { gap: 12px 17px; }
+    .cell { min-height: 58px; }
+    .actions { padding-top: 2px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">Uczenie ze wzmocnieniem · Spotkanie 2</p>
+    <h1>Bellman krok po kroku</h1>
+    <p class="intro">Przewidź wartość pola. Rozpisz skutki wybranej akcji, a następnie zaktualizuj wszystkie pola na podstawie tych samych wartości z poprzedniej iteracji.</p>
+    <a href="#od-modelu-do-doswiadczenia" class="section-link">Przejdź do porównania DP, Monte Carlo i TD(0)</a>
+  </header>
+
+  <section class="toolbar" aria-label="Parametry algorytmu i planszy">
+    <fieldset>
+      <legend>Algorytm</legend>
+      <div class="choices">
+        <label><input type="radio" name="mode" value="evaluate" checked><span>Ocena polityki</span></label>
+        <label><input type="radio" name="mode" value="optimal"><span>Iteracja wartości</span></label>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Nawierzchnia</legend>
+      <div class="choices">
+        <label><input type="radio" name="surface" value="dry" checked><span>Sucha</span></label>
+        <label><input type="radio" name="surface" value="slip"><span>Poślizg</span></label>
+      </div>
+    </fieldset>
+    <div class="gamma-control">
+      <label class="range-label" for="gamma"><span>Dyskonto γ</span><output id="gamma-out" for="gamma">0,95</output></label>
+      <input id="gamma" type="range" min="0" max="0.99" step="0.01" value="0.95">
+    </div>
+    <div class="actions" aria-label="Aktualizacja wartości">
+      <button class="primary" id="one-step" type="button">Zrób 1 iterację</button>
+      <button id="ten-steps" type="button">Zrób 10 iteracji</button>
+      <button id="reset" type="button">Zeruj wartości</button>
+    </div>
+  </section>
+
+  <div class="workspace">
+    <section class="panel board-panel" aria-labelledby="board-title">
+      <div class="panel-head">
+        <h2 id="board-title">Plansza 4 × 4</h2>
+        <output id="metrics"></output>
+      </div>
+      <div class="board" id="board" aria-label="Wybierz pole planszy"></div>
+      <div class="board-footer">
+        <p class="legend"><b>S</b> — start, <b>H</b> — dziura, <b>G</b> — cel. Pola H i G kończą próbę. Nagroda +1 jest wypłacana przy wejściu do celu.</p>
+        <p class="support mode-explain" id="board-mode"></p>
+      </div>
+    </section>
+
+    <section class="panel inspect" aria-labelledby="inspect-title">
+      <header class="inspect-header">
+        <div class="panel-head">
+          <h2 id="inspect-title">Rachunek dla pola <output id="inspected-index">14</output></h2>
+          <button id="load-example" type="button">Wczytaj przykład z zadania</button>
+        </div>
+        <div class="value-row" id="value-row"></div>
+        <div class="select-row">
+          <label for="action">Wybrana akcja</label>
+          <select id="action">
+            <option value="0">← w lewo</option>
+            <option value="1">↓ w dół</option>
+            <option value="2" selected>→ w prawo</option>
+            <option value="3">↑ w górę</option>
+          </select>
+          <button class="primary" id="reveal" type="button" aria-controls="calculation" aria-expanded="false">Pokaż rachunek</button>
+        </div>
+        <p class="exercise" id="exercise" hidden><strong>Ćwiczenie rachunkowe.</strong> <span id="exercise-task"></span> Wartości wejściowe to V(14) = 0,60, V(10) = 0,40 i V(13) = 0,20.</p>
+      </header>
+      <p class="placeholder" id="predict"></p>
+      <div id="calculation" hidden></div>
+      <p class="caption turn-help" id="environment-caption"></p>
+    </section>
+  </div>
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+  <details>
+    <summary>Jak liczymy jeden krok?</summary>
+    <p class="support">Dla danej akcji dodajemy wkłady wszystkich możliwych skutków. Wkład wynosi p × [r + γ × V<sub>k</sub>(s′)], gdzie p to szansa skutku, r to bieżąca nagroda, a s′ to pole po ruchu. Jeśli skutek kończy próbę, wkład wynosi p × r.</p>
+    <p class="support">W ocenie polityki ważymy wartości akcji szansami ich wyboru. Tu cztery akcje są jednakowo prawdopodobne. W iteracji wartości wybieramy największą wartość akcji. Δ na planszy oznacza największą zmianę wartości pojedynczego pola w ostatniej pełnej iteracji.</p>
+  </details>
+
+  <section id="od-modelu-do-doswiadczenia" class="panel comparison" aria-labelledby="experience-title">
+    <h2 id="experience-title">Od modelu do doświadczenia</h2>
+    <p class="support">Na śliskiej planszy badamy wartość pola 14 przy ustalonej polityce. W 14 agent wydaje komendę „w prawo”, a w 10 „w dół”. Poślizg daje po ⅓ szansy na ruch zamierzony i każdy z dwóch kierunków prostopadłych.</p>
+    <p class="support">Dla wszystkich metod przyjmij γ = 0,95, V(14) = 0,60 i V(10) = 0,40. Dane tego zadania są stałe.</p>
+
+    <div class="episode">
+      <p><strong>Pierwszy zaobserwowany ruch</strong> &nbsp; 14 → 10, nagroda 0.</p>
+      <div id="experience-episode" hidden>
+        <p><strong>Dwa dalsze ruchy</strong> &nbsp; 10 → 14, nagroda 0. Następnie 14 → 15, nagroda +1 i koniec epizodu.</p>
+      </div>
+    </div>
+    <p class="exercise prompt"><strong>Ćwiczenie.</strong> Która metoda wykorzysta pierwszy ruch? Która potrzebuje całego epizodu? Jak zmieni się rachunek, jeżeli mamy tabelę wszystkich możliwych skutków?</p>
+    <div class="actions">
+      <button type="button" id="experience-episode-toggle" aria-controls="experience-episode" aria-expanded="false">Odsłoń resztę epizodu</button>
+      <button type="button" class="primary" id="experience-targets-toggle" aria-controls="experience-targets" aria-expanded="false">Porównaj rachunki</button>
+    </div>
+    <div id="experience-targets" class="branch-holder" hidden>
+      <table>
+        <caption>Liczby, w kierunku których każda metoda aktualizuje V(14)</caption>
+        <thead><tr><th scope="col">Metoda</th><th scope="col">Potrzebne dane</th><th scope="col">Rachunek</th><th scope="col">Wynik</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Programowanie dynamiczne (DP)</th><td>Model poślizgu i bieżące wartości. Można liczyć przed ruchem.</td><td>[(0 + γ V(10)) + 1 + (0 + γ V(14))] ÷ 3</td><td id="experience-dp" class="target"></td></tr>
+          <tr><th scope="row">TD(0)</th><td>Zaobserwowane przejście 14 → 10 i bieżące V(10).</td><td>0 + γ V(10)</td><td id="experience-td" class="target"></td></tr>
+          <tr><th scope="row">Monte Carlo (MC)</th><td>Cały zakończony epizod. Zwrot liczymy od pierwszej wizyty w 14.</td><td>0 + γ × 0 + γ² × 1</td><td id="experience-mc" class="target"></td></tr>
+        </tbody>
+      </table>
+      <p class="support">TD(0) to uczenie z różnicy czasowej po jednym kroku. TD(0) i Monte Carlo mogą przesunąć wartość o ułamek różnicy względem wyniku. W pełnej aktualizacji DP przyjmujemy średnią po skutkach jako nową wartość.</p>
+    </div>
+  </section>
+</main>
+<script>
+"use strict";
+const MAP = ["SFFF", "FHFH", "FFFH", "HFFG"].join("");
+const ACTIONS = [
+  { label: "w lewo", arrow: "←", row: 0, col: -1 },
+  { label: "w dół", arrow: "↓", row: 1, col: 0 },
+  { label: "w prawo", arrow: "→", row: 0, col: 1 },
+  { label: "w górę", arrow: "↑", row: -1, col: 0 }
+];
+
+function terminal(state) {
+  return MAP[state] === "H" || MAP[state] === "G";
+}
+
+function move(state, direction) {
+  const { row, col } = ACTIONS[direction];
+  const nextRow = Math.min(3, Math.max(0, Math.floor(state / 4) + row));
+  const nextCol = Math.min(3, Math.max(0, state % 4 + col));
+  return nextRow * 4 + nextCol;
+}
+
+function transitions(state, action, slippery) {
+  if (terminal(state)) return [];
+  const directions = slippery ? [(action + 3) % 4, action, (action + 1) % 4] : [action];
+  const results = new Map();
+  for (const direction of directions) {
+    const next = move(state, direction);
+    const previous = results.get(next);
+    if (previous) {
+      previous.weight += 1;
+      previous.directions.push(direction);
+      continue;
+    }
+    results.set(next, {
+      next, reward: Number(MAP[next] === "G"), ends: terminal(next),
+      weight: 1, total: directions.length, directions: [direction]
+    });
+  }
+  return [...results.values()].map(row => ({ ...row, probability: row.weight / row.total }));
+}
+
+function branchesWithValues(state, action, values, gamma, slippery) {
+  return transitions(state, action, slippery).map(row => {
+    const future = row.ends ? 0 : values[row.next];
+    return { ...row, future, contribution: row.probability * (row.reward + gamma * future) };
+  });
+}
+
+function actionValues(state, values, gamma, slippery) {
+  return ACTIONS.map((_, action) => branchesWithValues(state, action, values, gamma, slippery)
+    .reduce((sum, row) => sum + row.contribution, 0));
+}
+
+function stateBackup(scores, mode) {
+  return mode === "optimal" ? Math.max(...scores) : scores.reduce((sum, value) => sum + value, 0) / scores.length;
+}
+
+function sweep(values, gamma, slippery, mode) {
+  return values.map((_, state) => terminal(state) ? 0 : stateBackup(actionValues(state, values, gamma, slippery), mode));
+}
+
+const el = id => document.getElementById(id);
+const format = (value, digits = 3) => new Intl.NumberFormat("pl-PL",
+  { minimumFractionDigits: 0, maximumFractionDigits: digits }).format(Math.abs(value) < 5e-13 ? 0 : value);
+const formatTable = value => format(value, 6);
+const formatDelta = value => value > 0 && value < 0.000001 ? "< 0,000001" : `= ${formatTable(value)}`;
+const zeroValues = () => Array.from({ length: MAP.length }, () => 0);
+const settings = {
+  gamma: 0.95, slippery: false, mode: "evaluate", state: 14, action: 2,
+  values: zeroValues(), previous: null, iteration: 0, delta: null, revealed: false, example: false
+};
+
+function label(state) {
+  const name = { S: "start", F: "pole przechodnie", H: "dziura, koniec próby", G: "cel, koniec próby" }[MAP[state]];
+  return `Pole ${state}, ${name}`;
+}
+
+function largestActions(scores) {
+  const best = Math.max(...scores);
+  return ACTIONS.filter((_, index) => Math.abs(scores[index] - best) < 1e-10);
+}
+
+function renderBoard() {
+  const board = el("board");
+  for (let state = 0; state < MAP.length; state++) {
+    const button = board.children[state];
+    const chosen = state === settings.state;
+    button.classList.toggle("selected", chosen);
+    button.setAttribute("aria-pressed", String(chosen));
+    let marker = "";
+    if (!terminal(state)) {
+      if (settings.mode === "optimal") {
+        const winners = largestActions(actionValues(state, settings.values, settings.gamma, settings.slippery));
+        marker = winners.length === ACTIONS.length ? "=" : winners.map(action => action.arrow).join("");
+      } else {
+        marker = "¼";
+      }
+    }
+    const value = format(settings.values[state]);
+    button.querySelector(".cell-value").textContent = terminal(state) ? MAP[state] : value;
+    button.querySelector(".cell-arrow").textContent = marker;
+    button.setAttribute("aria-label", `${label(state)}, wartość ${value}`);
+  }
+  const iteration = settings.example ? "Dane zadania" : `Iteracja k = ${settings.iteration}`;
+  el("metrics").textContent = settings.delta === null ? iteration : `${iteration} · Δ ${formatDelta(settings.delta)}`;
+  el("board-mode").textContent = settings.mode === "optimal"
+    ? "Strzałki pokazują najlepsze akcje według aktualnych wartości. Znak „=” oznacza remis wszystkich akcji."
+    : "¼ oznacza, że zadana polityka wybiera każdą z czterech akcji z tą samą szansą.";
+}
+
+function branchRows(rows, gamma) {
+  return rows.map(row => {
+    const probability = row.weight === row.total ? "1" : `${row.weight}/${row.total}`;
+    const equation = row.ends
+      ? `${probability} × ${row.reward}`
+      : `${probability} × (${row.reward} + ${format(gamma, 2)} × ${formatTable(row.future)})`;
+    const mark = MAP[row.next] === "F" ? "" : ` · ${MAP[row.next]}`;
+    const directions = row.directions.map(index => ACTIONS[index].arrow).join(" ");
+    return `<tr><td>${directions}</td><td>${row.next}${mark}</td><td>${probability}</td>
+      <td>${row.reward}</td><td>${row.ends ? "tak" : "nie"}</td>
+      <td>${equation} ≈ ${formatTable(row.contribution)}</td></tr>`;
+  }).join("");
+}
+
+function renderInspector() {
+  const { state, action, values, previous, gamma, slippery, mode, revealed, example, iteration } = settings;
+  const done = terminal(state);
+  el("inspected-index").textContent = state;
+  el("value-row").innerHTML = previous
+    ? `<span>Przed ostatnią iteracją V<sub>${iteration - 1}</sub> = <b>${format(previous[state])}</b></span>
+       <span>Teraz V<sub>${iteration}</sub> = <b>${format(values[state])}</b></span>`
+    : `<span>${example ? "Wartość w danych zadania" : "Wartość początkowa V₀"} = <b>${format(values[state])}</b></span>`;
+  el("action").disabled = done;
+  el("reveal").disabled = done;
+  el("reveal").setAttribute("aria-expanded", String(revealed && !done));
+  el("reveal").textContent = revealed && !done ? "Ukryj rachunek" : "Pokaż rachunek";
+  el("exercise").hidden = !(example && state === 14);
+  el("exercise-task").textContent = slippery
+    ? "W polu 14 wybierz „w prawo”. Wypisz trzy skutki ruchu, przypisz im szanse i oblicz średnią ważoną."
+    : "Policz cztery wartości akcji w polu 14. Jaką nową wartość pola da średnia, a jaką maksimum?";
+  const visibility = revealed && !done;
+  el("calculation").hidden = !visibility;
+  el("predict").hidden = visibility;
+  el("predict").textContent = done
+    ? "To pole kończy próbę. Jego wartość dalszego zwrotu wynosi 0."
+    : "Wskaż następne pola. Gdzie pojawi się nagroda, a gdzie doliczysz dalszy zwrot? Odsłoń rachunek, by sprawdzić.";
+  el("environment-caption").textContent = slippery
+    ? "Poślizg daje po ⅓ szansy na ruch zamierzony i oba kierunki prostopadłe. Przy krawędzi ruch zatrzymuje się na bieżącym polu. Jeżeli dwa kierunki dają ten sam skutek, ich szanse się sumują."
+    : "Na suchej planszy ruch odbywa się zgodnie z wybraną akcją. Przy krawędzi agent zostaje na bieżącym polu.";
+  if (!visibility) return;
+  const scores = actionValues(state, values, gamma, slippery);
+  const backup = stateBackup(scores, mode);
+  const branches = branchesWithValues(state, action, values, gamma, slippery);
+  const valuesLine = scores.map((value, index) => `${ACTIONS[index].arrow} ${formatTable(value)}`).join(" · ");
+  const op = mode === "optimal" ? "Maksimum po akcjach" : "Średnia z czterech akcji";
+  el("calculation").innerHTML = `
+    <div class="branch-holder">
+      <table>
+        <caption>Skutki wybranej akcji i wkłady do jej wartości</caption>
+        <thead><tr><th scope="col">Ruch</th><th scope="col">Pole s′</th><th scope="col">Szansa p</th><th scope="col">Nagroda r</th><th scope="col">Koniec</th><th scope="col">Wkład</th></tr></thead>
+        <tbody>${branchRows(branches, gamma)}</tbody>
+        <tfoot><tr><td colspan="6" class="branch-total">Wartość tej akcji Q = ${formatTable(scores[action])}</td></tr></tfoot>
+      </table>
+    </div>
+    <div class="result">
+      Wartości akcji w tym polu <b>${valuesLine}</b><br>
+      ${op} daje <b>V<sub>${example ? "nowe" : iteration + 1}</sub>(${state}) = ${formatTable(backup)}</b>.
+    </div>`;
+}
+
+function render() {
+  el("gamma-out").textContent = format(settings.gamma, 2);
+  renderBoard();
+  renderInspector();
+}
+
+function setStatus(message) {
+  el("status").textContent = message;
+}
+
+function resetValues(message) {
+  settings.values = zeroValues();
+  settings.previous = null;
+  settings.iteration = 0;
+  settings.delta = null;
+  settings.revealed = false;
+  settings.example = false;
+  render();
+  setStatus(message);
+}
+
+function iterate(count) {
+  for (let step = 0; step < count; step++) {
+    settings.previous = settings.values;
+    settings.values = sweep(settings.previous, settings.gamma, settings.slippery, settings.mode);
+    settings.delta = Math.max(...settings.values.map((value, index) => Math.abs(value - settings.previous[index])));
+    settings.iteration++;
+  }
+  settings.example = false;
+  render();
+  setStatus(`Zaktualizowano wszystkie pola. Iteracja ${settings.iteration}, największa zmiana ${formatDelta(settings.delta).replace("= ", "")}.`);
+}
+
+function loadExample() {
+  resetValues("");
+  settings.gamma = 0.95;
+  settings.state = 14;
+  settings.action = 2;
+  settings.values[14] = 0.6;
+  settings.values[10] = 0.4;
+  settings.values[13] = 0.2;
+  settings.example = true;
+  el("gamma").value = "0.95";
+  el("action").value = "2";
+  render();
+  setStatus("Wczytano wartości z zadania. Zacznij od przewidywania, potem odsłoń rachunek.");
+}
+
+function updateModel(cause) {
+  if (settings.example) {
+    render();
+    setStatus(`${cause} Zachowano wartości z zadania.`);
+  } else {
+    resetValues(`${cause} Obliczenia znów zaczynają się od wartości 0.`);
+  }
+}
+
+const board = el("board");
+for (let state = 0; state < MAP.length; state++) {
+  const button = document.createElement("button");
+  button.type = "button";
+  const tileClass = { S: " start", H: " hole", G: " goal", F: "" }[MAP[state]];
+  button.className = `cell${tileClass}`;
+  button.innerHTML = `<span class="cell-index">${state}${MAP[state] === "S" ? " · S" : ""}</span>
+    <span class="cell-value"></span><span class="cell-arrow" aria-hidden="true"></span>`;
+  button.addEventListener("click", () => {
+    settings.state = state;
+    render();
+  });
+  board.append(button);
+}
+
+document.querySelectorAll('input[name="mode"]').forEach(input => input.addEventListener("change", () => {
+  settings.mode = input.value;
+  updateModel("Zmieniono algorytm.");
+}));
+document.querySelectorAll('input[name="surface"]').forEach(input => input.addEventListener("change", () => {
+  settings.slippery = input.value === "slip";
+  updateModel("Zmieniono nawierzchnię.");
+}));
+el("gamma").addEventListener("input", event => {
+  settings.gamma = Number(event.target.value);
+  resetValues(`Dyskonto wynosi ${format(settings.gamma, 2)}. Obliczenia znów zaczynają się od wartości 0.`);
+});
+el("action").addEventListener("change", event => {
+  settings.action = Number(event.target.value);
+  renderInspector();
+});
+el("reveal").addEventListener("click", () => {
+  settings.revealed = !settings.revealed;
+  renderInspector();
+});
+el("one-step").addEventListener("click", () => iterate(1));
+el("ten-steps").addEventListener("click", () => iterate(10));
+el("reset").addEventListener("click", () => resetValues("Wszystkie wartości ustawiono na 0."));
+el("load-example").addEventListener("click", loadExample);
+render();
+
+const experienceGamma = 0.95;
+const experienceValues = zeroValues();
+experienceValues[14] = 0.6;
+experienceValues[10] = 0.4;
+const experienceRewards = [0, 0, 1];
+const experienceDp = actionValues(14, experienceValues, experienceGamma, true)[2];
+const experienceTd = experienceRewards[0] + experienceGamma * experienceValues[10];
+const experienceMc = experienceRewards.reduce(
+  (value, reward, step) => value + experienceGamma ** step * reward, 0
+);
+el("experience-dp").textContent = formatTable(experienceDp);
+el("experience-td").textContent = formatTable(experienceTd);
+el("experience-mc").textContent = formatTable(experienceMc);
+
+function revealEpisode(visible) {
+  el("experience-episode").hidden = !visible;
+  el("experience-episode-toggle").setAttribute("aria-expanded", String(visible));
+  el("experience-episode-toggle").textContent = visible ? "Ukryj resztę epizodu" : "Odsłoń resztę epizodu";
+}
+
+function revealTargets(visible) {
+  el("experience-targets").hidden = !visible;
+  el("experience-targets-toggle").setAttribute("aria-expanded", String(visible));
+  el("experience-targets-toggle").textContent = visible ? "Ukryj rachunki" : "Porównaj rachunki";
+}
+
+el("experience-episode-toggle").addEventListener("click", () => {
+  const visible = el("experience-episode").hidden;
+  revealEpisode(visible);
+  if (!visible) revealTargets(false);
+});
+el("experience-targets-toggle").addEventListener("click", () => {
+  const visible = el("experience-targets").hidden;
+  if (visible) revealEpisode(true);
+  revealTargets(visible);
+});
+</script>
+</body>
+</html>
